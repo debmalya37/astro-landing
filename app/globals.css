@@ -1,26 +1,32 @@
-@import "tailwindcss";
+/* ✅ FIRST — ALL IMPORTS */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@300;500;700&family=Nunito+Sans:wght@300;400;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ✅ THEN YOUR STYLES */
+body {
+  background-color: #FCF7EE;
+  color: #2A1400;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Paper texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,...");
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.animate-spin-slow {
+  animation: spin-slow 60s linear infinite;
 }
