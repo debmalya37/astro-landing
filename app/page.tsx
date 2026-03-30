@@ -620,7 +620,7 @@ export default function KundaliPage() {
                 {/* DESKTOP ASTROLOGER IMAGE - Moved up and centered on right side */}
                 <div className="hidden lg:block absolute -right-12 top-1/2 -translate-y-1/2 z-10">
                   <div className="w-[240px] h-[300px] rounded-2xl overflow-hidden border-[3px] border-[#C8A84B]/60 shadow-[0_30px_80px_rgba(0,0,0,0.7)] bg-[#2A0E00]">
-                    <img src="/surbhi-gupta.jpg" alt="Surbhi Gupta" className="w-full h-full object-cover" />
+                    <img src="/news/surbhi-gupta.jpg" alt="Surbhi Gupta" className="w-full h-full object-cover" />
                   </div>
                   <div className="bg-black/70 backdrop-blur-md -mt-5 p-2.5 rounded-b-2xl text-center font-bold text-[#E2C06A] text-sm border border-[#C8A84B]/30">
                     Surbhi Gupta
@@ -630,7 +630,7 @@ export default function KundaliPage() {
                 {/* MOBILE ASTROLOGER IMAGE */}
                 <div className="lg:hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
                   <div className="w-[110px] h-[110px] sm:w-[140px] sm:h-[140px] rounded-full overflow-hidden border-[3px] border-[#C8A84B]/60 shadow-2xl">
-                    <img src="/surbhi-gupta.jpg" alt="Surbhi Gupta" className="w-full h-full object-cover" />
+                    <img src="/news/surbhi-gupta.jpg" alt="Surbhi Gupta" className="w-full h-full object-cover" />
                   </div>
                 </div>
 
