@@ -1297,21 +1297,45 @@ export default function KundaliPage() {
             </div>
           </div>
 
-          {/* Video row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-[16px] mt-6 lg:mt-[24px]">
+         {/* Text Reviews Row (Replaced Video Row) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-[16px] mt-6 lg:mt-[24px]">
             {[
-              { bg: "🌟", name: "Priya S. · Mumbai", q: "\"My career suddenly made sense\"" },
-              { bg: "💫", name: "Meera R. · Hyderabad", q: "\"The WhatsApp reply changed my decision\"" },
-              { bg: "🌙", name: "Vikram K. · Pune", q: "\"I finally understood the pattern\"" },
+              { 
+                name: "Priya S.", 
+                loc: "Mumbai", 
+                text: "\"My career suddenly made sense. The detailed dasha breakdown showed exactly why I felt stuck for 3 years, and when the block would lift.\"" 
+              },
+              { 
+                name: "Meera R.", 
+                loc: "Hyderabad", 
+                text: "\"The WhatsApp reply changed my decision. Surbhi ji's voice note was so specific to my chart, it saved me from a terrible business partnership.\"" 
+              },
+              { 
+                name: "Vikram K.", 
+                loc: "Pune", 
+                text: "\"I finally understood the pattern. 100+ pages of pure, specific insight. Not the generic software fluff you get on other sites.\"" 
+              },
             ].map((v, i) => (
-              <div key={i} className={`vid-card reveal${i > 0 ? " d" + i : ""} relative cursor-pointer overflow-hidden rounded-[18px] shadow-[0_8px_36px_rgba(42,14,0,.13)] aspect-video sm:aspect-[4/5] max-h-[200px] sm:max-h-[280px]`} style={{ background: C.dk2, border: "1px solid rgba(255,255,255,.07)" }}>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-6xl lg:text-[5rem] opacity-5">{v.bg}</div>
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top,rgba(42,14,0,.95) 30%,rgba(42,14,0,.2) 70%)" }} />
-                <div className="vid-play absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 lg:w-[50px] lg:h-[50px] rounded-full flex items-center justify-center text-[0.8rem] lg:text-[0.95rem] z-10 transition-transform duration-220" style={{ background: `linear-gradient(135deg,${C.g},${C.g2})`, boxShadow: "0 6px 22px rgba(200,168,75,.28)" }}>▶</div>
-                <div className="absolute bottom-0 left-0 right-0 p-3.5 lg:p-[14px_16px] z-10">
-                  <div className="text-[0.6rem] lg:text-[0.7rem] mb-1 lg:mb-[3px]" style={{ color: C.g2 }}>★★★★★</div>
-                  <div className="text-[0.8rem] lg:text-[0.83rem] font-bold text-white mb-0.5 lg:mb-[2px]">{v.name}</div>
-                  <div className="text-[0.65rem] lg:text-[0.7rem] italic" style={{ color: "rgba(255,255,255,.52)" }}>{v.q}</div>
+              <div 
+                key={i} 
+                className={`reveal${i > 0 ? " d" + i : ""} relative flex flex-col justify-between overflow-hidden rounded-[18px] shadow-[0_8px_36px_rgba(42,14,0,.13)] p-6 lg:p-[28px_24px] transition-transform duration-300 hover:-translate-y-1.5`} 
+                style={{ background: C.dk2, border: "1px solid rgba(255,255,255,.07)" }}
+              >
+                {/* Decorative Quote Icon Background */}
+                <div className="absolute top-2 right-4 text-[5rem] font-serif leading-none pointer-events-none" style={{ color: C.g2, opacity: 0.04 }}>
+                  "
+                </div>
+                
+                <div>
+                  <div className="text-[0.7rem] lg:text-[0.75rem] mb-3.5 tracking-[1.5px]" style={{ color: C.g2 }}>★★★★★</div>
+                  <div className="text-[0.85rem] lg:text-[0.92rem] italic leading-[1.7]" style={{ color: "rgba(255,255,255,.85)" }}>
+                    {v.text}
+                  </div>
+                </div>
+                
+                <div className="mt-6 lg:mt-[24px] pt-4 border-t" style={{ borderColor: "rgba(255,255,255,.08)" }}>
+                  <div className="text-[0.85rem] lg:text-[0.9rem] font-bold text-white mb-0.5">{v.name}</div>
+                  <div className="text-[0.65rem] lg:text-[0.7rem]" style={{ color: C.td4 }}>{v.loc}</div>
                 </div>
               </div>
             ))}
