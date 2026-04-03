@@ -288,40 +288,50 @@ export default function KundaliPage() {
     <>
       <GlobalStyles />
 
-     {/* ── STICKY BAR ── */}
+    {/* ── STICKY BAR ── */}
       <div
-        className={`sticky-bar ${stickyVisible ? "show" : ""} fixed bottom-0 left-0 right-0 z-[200] flex items-center justify-between gap-2 px-4 py-3 sm:px-7 sm:py-3 backdrop-blur-md`}
+        // Added 'ann-bar-shimmer' for the slow continuous gold sweep
+        className={`sticky-bar ${stickyVisible ? "show" : ""} ann-bar-shimmer fixed bottom-0 left-0 right-0 z-[200] flex items-center justify-between gap-2 px-4 py-3 sm:px-7 sm:py-3 backdrop-blur-md`}
         style={{
-          background: "rgba(252,247,238,.96)",
-          borderTop: `1.5px solid ${C.iv3}`,
-          boxShadow: "0 -5px 32px rgba(42,14,0,.12)",
+          background: C.red, // Premium red background
+          borderTop: "1px solid rgba(255,255,255,0.15)", // Subtle light border
+          boxShadow: "0 -8px 32px rgba(168,32,32,0.4)", // Red-tinted shadow glow
         }}
       >
         {/* Left Column: Title & Spots */}
-        <div className="flex flex-col gap-0.5 sm:gap-1 max-w-[45%] sm:max-w-none truncate">
-          <div className="text-[0.75rem] sm:text-[0.86rem] font-bold truncate" style={{ color: C.t1 }}>
+        <div className="flex flex-col gap-0.5 sm:gap-1 max-w-[45%] sm:max-w-none truncate relative z-10">
+          <div className="text-[0.75rem] sm:text-[0.86rem] font-bold truncate" style={{ color: C.iv }}>
             <span className="hidden sm:inline">Surbhi Gupta — </span>Kundali Report
-            <span className="hidden lg:inline-flex items-center gap-1 text-[0.62rem] font-bold bg-[#D0F0E0] text-[#0E6040] px-2 py-0.5 rounded-full ml-2">
+            
+            {/* Updated badge: Translucent background with Gold text instead of Green */}
+            <span className="hidden lg:inline-flex items-center gap-1 text-[0.62rem] font-bold px-2 py-0.5 rounded-full ml-2" 
+                  style={{ background: "rgba(255,255,255,0.1)", color: C.g3, border: "1px solid rgba(200,168,75,0.3)" }}>
               + Free Consultation
             </span>
           </div>
-          <div className="text-[0.65rem] sm:text-[0.7rem] truncate" style={{ color: C.t3 }}>
-            🔥 <strong style={{ color: C.red }}>{spots} spots left</strong> <span className="hidden sm:inline">at ₹999</span>
+          
+          <div className="text-[0.65rem] sm:text-[0.7rem] truncate" style={{ color: "rgba(252,247,238,0.8)" }}>
+            {/* Changed 'spots left' text to Gold since the background is now Red */}
+            🔥 <strong style={{ color: C.g3 }}>{spots} spots left</strong> <span className="hidden sm:inline">at ₹999</span>
           </div>
         </div>
 
         {/* Right Column: Price & Button */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          <div className="fraunces text-[1.15rem] sm:text-[1.48rem] whitespace-nowrap" style={{ color: C.t1 }}>
-            <del className="text-[0.65rem] sm:text-[0.76rem] font-sans mr-1" style={{ color: C.t4 }}>₹2,999</del>₹999
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 relative z-10">
+          {/* Updated Price to White, and Strikethrough to faded White */}
+          <div className="fraunces text-[1.15rem] sm:text-[1.48rem] whitespace-nowrap" style={{ color: C.iv }}>
+            <del className="text-[0.65rem] sm:text-[0.76rem] font-sans mr-1" style={{ color: "rgba(252,247,238,0.5)" }}>₹2,999</del>₹999
           </div>
+          
           <a
             href="#offer"
-            className="btn-shimmer inline-flex items-center justify-center font-bold rounded-full text-white no-underline text-[0.75rem] sm:text-[0.86rem] px-4 py-2 sm:px-[26px] sm:py-[12px] whitespace-nowrap"
+            // Button keeps the fast/medium shine to draw the eye to the click action
+            className="btn-auto-shine inline-flex items-center justify-center font-bold rounded-full text-white no-underline text-[0.75rem] sm:text-[0.86rem] px-4 py-2 sm:px-[26px] sm:py-[12px] whitespace-nowrap"
             style={{
               fontFamily: "'Nunito Sans',sans-serif",
-              background: `linear-gradient(135deg,${C.g} 0%,${C.g2} 55%,${C.g} 100%)`,
-              boxShadow: `0 12px 44px rgba(200,168,75,.28),inset 0 1px 0 rgba(255,255,255,.22)`,
+              background: `linear-gradient(135deg,${C.g} 0%,${C.g2} 55%,${C.g} 100%)`, // Gold button pops perfectly on red
+              color: C.dk, // Dark text on gold button for readability
+              boxShadow: `0 12px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,.3)`,
             }}
           >
             Get Report <span className="hidden sm:inline">&nbsp;+ Consultation</span> →
@@ -342,31 +352,35 @@ export default function KundaliPage() {
       </a>
 
     {/* ════════════════════════════════
-          ANNOUNCEMENT BAR
+          ANNOUNCEMENT BAR — PREMIUM RED
       ════════════════════════════════ */}
       <div 
-        className="relative z-[100] flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 px-4 py-2.5 text-[0.65rem] sm:text-[0.75rem] font-semibold text-center border-b"
+        className="ann-bar-shimmer relative z-[100] flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 px-4 py-2.5 text-[0.65rem] sm:text-[0.75rem] font-semibold text-center border-b"
         style={{ 
-          background: C.dk, 
-          borderColor: "rgba(200,168,75,.18)", 
-          color: C.td3 
+          background: C.red, // Premium red base
+          borderColor: "rgba(255,255,255,.15)", // Subtle white border
+          color: C.iv, // White/Cream text
+          boxShadow: "0 2px 12px rgba(168,32,32,.3)",
         }}
       >
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <div className="ann-dot" />
+          {/* Use the new ann-dot-gold class for gold pulse */}
+          <div className="ann-dot-gold" />
           <span>🔥 Launch:&nbsp;<strong style={{ color: C.g3 }}>{spots} of 1,000 spots remain</strong></span>
         </div>
         
         <span className="hidden sm:inline">&nbsp;at ₹999 — includes&nbsp;</span>
         
-        <span style={{ color: "#B0F0D0", fontWeight: 700 }}>
+        {/* Switched to gold accent for '1 FREE Question' for better premium feel against red */}
+        <span style={{ color: C.g3, fontWeight: 700 }}>
           <span className="sm:hidden">+ </span>1 FREE Question <span className="hidden sm:inline">Answered on WhatsApp</span>
         </span>
         
         <a 
           href="#offer" 
-          className="ml-1 sm:ml-0 px-3 py-1 sm:px-[13px] sm:py-[4px] rounded-full font-bold no-underline whitespace-nowrap tracking-[0.04em] text-[0.6rem] sm:text-[0.68rem]"
-          style={{ background: C.g, color: "#fff" }}
+          // Reusing the btn-auto-shine class for a continuous gold gleam on the CTA button
+          className="btn-auto-shine ml-1 sm:ml-0 px-3 py-1 sm:px-[13px] sm:py-[4px] rounded-full font-bold no-underline whitespace-nowrap tracking-[0.04em] text-[0.6rem] sm:text-[0.68rem]"
+          style={{ background: C.g, color: C.dk }} // Gold button, dark text
         >
           Claim Yours →
         </a>
@@ -401,7 +415,7 @@ export default function KundaliPage() {
           
           <a 
             href="#offer" 
-            className="rounded-full font-bold no-underline transition-all duration-220 px-4 py-2 sm:px-[22px] sm:py-[10px] text-[0.75rem] sm:text-[0.82rem]"
+            className="btn-auto-shine rounded-full font-bold no-underline transition-all duration-220 px-4 py-2 sm:px-[22px] sm:py-[10px] text-[0.75rem] sm:text-[0.82rem]"
             style={{ 
               background: C.dk, 
               color: C.td1, 
@@ -504,11 +518,11 @@ export default function KundaliPage() {
               {/* CTA */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <a
-                  href="/checkout"
-                  className="w-full sm:w-auto bg-gradient-to-r from-[#C8A84B] to-[#E2C06A] px-8 py-3.5 lg:py-4 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition text-center text-[#2A0E00]"
-                >
-                  ✨ Get My Kundali
-                </a>
+  href="/checkout"
+  className="btn-auto-shine w-full sm:w-auto bg-gradient-to-r from-[#C8A84B] to-[#E2C06A] px-8 py-3.5 lg:py-4 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition text-center text-[#2A0E00]"
+>
+  ✨ Get My Kundali
+</a>
 
                 <a
                   href="#what"
@@ -865,7 +879,7 @@ It's none of those things., your birth report will tell you exactly why this is 
                 ))}
               </div>
               
-              <a href="#offer" className="btn-shimmer w-full sm:w-auto inline-flex items-center justify-center gap-2 font-bold px-6 py-3.5 lg:px-[32px] lg:py-[15px] rounded-full text-[0.9rem] tracking-[0.025em] no-underline" style={{ fontFamily: "'Nunito Sans',sans-serif", background: `linear-gradient(135deg,${C.g} 0%,${C.g2} 55%,${C.g} 100%)`, color: "#fff", boxShadow: `0 12px 44px rgba(200,168,75,.28)` }}>
+              <a href="#offer" className="btn-auto-shine btn-shimmer w-full sm:w-auto inline-flex items-center justify-center gap-2 font-bold px-6 py-3.5 lg:px-[32px] lg:py-[15px] rounded-full text-[0.9rem] tracking-[0.025em] no-underline" style={{ fontFamily: "'Nunito Sans',sans-serif", background: `linear-gradient(135deg,${C.g} 0%,${C.g2} 55%,${C.g} 100%)`, color: "#fff", boxShadow: `0 12px 44px rgba(200,168,75,.28)` }}>
                 Begin Your Reading — ₹999 →
               </a>
             </div>
@@ -1382,8 +1396,7 @@ It's none of those things., your birth report will tell you exactly why this is 
               <div className="flex flex-col gap-3 lg:gap-[12px] mb-6 lg:mb-[28px]">
                 {[
                   { ico: "📖", title: "Complete 100+ Page Kundali Report", sub: "All 10 life domains, personally prepared by Surbhi Gupta", val: "₹2,499", fc: false },
-                  { ico: "🔮", title: "10-Year Detailed Predictions (2025–2035)", sub: "Year-by-year career, wealth, love & health analysis", val: "₹499", fc: false },
-                  { ico: "🎁", title: "1 Free Question Answered on WhatsApp", sub: "One question, answered personally by Surbhi ji — voice note or text, within 48 hours. Worth ₹1,500+ standalone.", val: "FREE", fc: true },
+                  { ico: "🎁", title: "1 Free Question Answered on WhatsApp", sub: "One question, answered personally by Surbhi ji — voice note or text, within 48 hours. Worth ₹11,000+ standalone.", val: "FREE", fc: true },
                 ].map((vs, i) => (
                   <div key={i} className={`vs-row reveal${i > 0 ? " d" + i : ""} flex items-center gap-3 lg:gap-[14px] p-3.5 lg:p-[15px_18px] rounded-xl`} style={{ background: vs.fc ? "rgba(26,106,64,.06)" : "rgba(255,255,255,.04)", border: `1px solid ${vs.fc ? "rgba(80,200,140,.28)" : "rgba(255,255,255,.07)"}` }}>
                     <div className="w-10 h-10 lg:w-[42px] lg:h-[42px] rounded-lg flex-shrink-0 flex items-center justify-center text-[1rem] lg:text-[1.1rem]" style={{ background: vs.fc ? "rgba(26,106,64,.14)" : "rgba(200,168,75,.1)", border: `1px solid ${vs.fc ? "rgba(80,200,140,.28)" : "rgba(200,168,75,.2)"}` }}>{vs.ico}</div>
@@ -1472,7 +1485,7 @@ It's none of those things., your birth report will tell you exactly why this is 
                   <div className="text-[0.65rem] lg:text-[0.68rem] font-bold mt-1" style={{ color: C.red }}>⚠️ Only {spots} spots at ₹999</div>
                 </div>
 
-                <a href="/checkout" target="_blank" rel="noopener noreferrer" className="oc-cta-btn flex items-center justify-center w-full p-4 lg:p-[17px] rounded-full font-bold text-[0.9rem] lg:text-[0.98rem] tracking-[0.02em] no-underline mb-2.5 lg:mb-[10px]" style={{ background: `linear-gradient(135deg,${C.dk},${C.dk3})`, color: C.td1, fontFamily: "'Nunito Sans',sans-serif", boxShadow: "0 10px 32px rgba(42,14,0,.38)" }}>
+                <a href="/checkout" target="_blank" rel="noopener noreferrer" className="btn-auto-shine oc-cta-btn flex items-center justify-center w-full p-4 lg:p-[17px] rounded-full font-bold text-[0.9rem] lg:text-[0.98rem] tracking-[0.02em] no-underline mb-2.5 lg:mb-[10px]" style={{ background: `linear-gradient(135deg,${C.dk},${C.dk3})`, color: C.td1, fontFamily: "'Nunito Sans',sans-serif", boxShadow: "0 10px 32px rgba(42,14,0,.38)" }}>
                   ✨ Get Report + Free Consultation — ₹999
                 </a>
 
@@ -1536,12 +1549,27 @@ It's none of those things., your birth report will tell you exactly why this is 
             <p className="reveal d3 text-[0.95rem] lg:text-[1rem] leading-[1.8] lg:leading-[1.85] mb-8 lg:mb-[44px] font-light" style={{ color: C.td3 }}>You've felt it — that quiet sense of a larger pattern. Your Kundali is a 5,000-year system for understanding that pattern precisely. For ₹999, you get 100+ pages of it, plus direct personal access to the astrologer trusted when the stakes are highest.</p>
 
             <div className="reveal d4 flex flex-col items-center gap-3 lg:gap-[11px] mb-10 lg:mb-[50px] w-full">
-              <a href="#offer" className="btn-shimmer flex sm:inline-flex items-center justify-center gap-2 lg:gap-[9px] w-full sm:w-auto px-8 py-4 lg:px-[62px] lg:py-[22px] rounded-full font-bold text-[0.95rem] lg:text-[1.08rem] tracking-[0.025em] no-underline" style={{ fontFamily: "'Nunito Sans',sans-serif", background: `linear-gradient(135deg,${C.g} 0%,${C.g2} 55%,${C.g} 100%)`, color: "#fff", boxShadow: `0 12px 44px rgba(200,168,75,.28),inset 0 1px 0 rgba(255,255,255,.22)` }}>
-                ✨ Get Report + Free Consultation — ₹999
-              </a>
-              <div className="text-[0.65rem] lg:text-[0.72rem]" style={{ color: C.td4 }}>🔥 <strong style={{ color: C.red }}>Only {spots} spots left</strong> at launch price · 67% off</div>
-              <div className="text-[0.65rem] lg:text-[0.72rem]" style={{ color: C.td4 }}>🔒 Secure · PDF in 72 hrs · Free WhatsApp consultation included</div>
-            </div>
+  <a 
+    href="#offer" 
+    className="btn-auto-shine btn-shimmer flex sm:inline-flex items-center justify-center gap-2 lg:gap-[9px] w-full sm:w-auto px-8 py-4 lg:px-[62px] lg:py-[22px] rounded-full font-bold text-[0.95rem] lg:text-[1.08rem] tracking-[0.025em] no-underline" 
+    style={{ 
+      fontFamily: "'Nunito Sans',sans-serif", 
+      background: `linear-gradient(135deg,${C.g} 0%,${C.g2} 55%,${C.g} 100%)`, 
+      color: "#fff", 
+      boxShadow: `0 12px 44px rgba(200,168,75,.28),inset 0 1px 0 rgba(255,255,255,.22)` 
+    }}
+  >
+    ✨ Get Report + Free Consultation — <del className="opacity-60 mr-1.5 font-normal">₹2,999</del> ₹999
+  </a>
+  
+  <div className="text-[0.65rem] lg:text-[0.72rem]" style={{ color: C.td4 }}>
+    🔥 <strong style={{ color: C.red }}>Only {spots} spots left</strong> at launch price · 67% off
+  </div>
+  
+  <div className="text-[0.65rem] lg:text-[0.72rem]" style={{ color: C.td4 }}>
+    🔒 Secure · PDF in 72 hrs · Free WhatsApp consultation included
+  </div>
+</div>
 
             {/* Countdown */}
             <div className="reveal d5 flex items-center justify-center gap-2 lg:gap-[11px]">

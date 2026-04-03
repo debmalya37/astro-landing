@@ -28,5 +28,44 @@ body::before {
 }
 
 .animate-spin-slow {
-  animation: spin-slow 60s linear infinite;
+  animation: spin-slow 200s linear infinite;
 }
+@keyframes auto-shine {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  /* We removed the 40% stop. Now it sweeps across the entire time */
+  100% { transform: translateX(200%) skewX(-20deg); } 
+}
+
+.btn-auto-shine { position: relative; overflow: hidden; }
+.btn-auto-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+  
+  /* Changed to 2.5s for a nice pace, and 'linear' so the speed stays perfectly consistent between loops */
+  animation: auto-shine 2.5s infinite linear; 
+}
+
+
+    /* Continuous very slow gold shimmer for the whole bar */
+    @keyframes bar-shimmer {
+      0% { transform: translateX(-150%) skewX(-20deg); }
+      30% { transform: translateX(200%) skewX(-20deg); }
+      100% { transform: translateX(200%) skewX(-20deg); }
+    }
+    .ann-bar-shimmer { overflow: hidden; }
+    .ann-bar-shimmer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 40%, rgba(200, 168, 75, 0.45) 50%, transparent 60%);
+      animation: bar-shimmer 8s infinite ease-in-out;
+    }
+
+    /* Pulsating gold dot on red background */
+    @keyframes gold-pd {
+      0%,100%{box-shadow:0 0 0 0 rgba(200,168,75,.6)}
+      50%{box-shadow:0 0 0 7px rgba(200,168,75,0)}
+    }
+    .ann-dot-gold { width:7px;height:7px;background:#C8A84B;border-radius:50%;flex-shrink:0;animation:gold-pd 1.5s ease-in-out infinite; }
