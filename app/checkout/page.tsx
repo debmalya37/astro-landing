@@ -28,14 +28,14 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
 
   // Calculate dynamic pricing
-  const basePrice = 499;
-  const expressPrice = 149;
-  const consultationPrice = 1100;
+  const basePrice = 999;
+  // const expressPrice = 149;
+  // const consultationPrice = 1100;
   
-  const finalAmount = 
-    basePrice + 
-    (offers.expressDelivery ? expressPrice : 0) + 
-    (offers.consultation ? consultationPrice : 0);
+  const finalAmount = basePrice 
+    // + 
+    // (offers.expressDelivery ? expressPrice : 0) + 
+    // (offers.consultation ? consultationPrice : 0);
 
   // Load Razorpay script
   useEffect(() => {
@@ -129,8 +129,8 @@ export default function CheckoutPage() {
       <div className="text-center mb-10">
         {/* Replace with your actual logo path */}
         <img 
-          src="/logo.png" 
-          alt="Astro Arun Pandit" 
+          src="/logo.svg" 
+          alt="Astro Surbhi Gupta" 
           className="h-16 mx-auto mb-4 object-contain"
           onError={(e) => { e.currentTarget.style.display = 'none' }} // Hides broken image if logo doesn't exist yet
         />
@@ -142,13 +142,20 @@ export default function CheckoutPage() {
         {/* ================= LEFT PRODUCT COLUMN ================= */}
         <div className="bg-white rounded-xl p-8 shadow-[0_4px_20px_rgba(0,0,0,0.05)] h-fit">
           <img
-            src="/book.png" // Ensure you have the 2 books image here
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjFOIp4TI3nRU3pQBCJuC5iP7w6aEYmK5BXw&s" // Ensure you have the 2 books image here
             alt="Fortune Report Book"
             className="w-56 mx-auto mb-8"
           />
 
           <h2 className="text-[22px] font-bold text-gray-900">Fortune Report</h2>
-          <p className="text-[#882333] text-[22px] font-bold mt-1">₹499</p>
+<div className="flex items-center gap-3 mt-1">
+  <p className="text-[#882333] text-[26px] font-extrabold leading-none">₹999</p>
+  <p className="text-gray-400 text-[16px] line-through font-medium leading-none">₹2999</p>
+  <span className="bg-[#fdecea] text-[#c0392b] text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide">67% OFF</span>
+</div>
+<p className="text-[#c0392b] text-[12.5px] font-bold mt-2.5 flex items-center gap-1.5">
+  🔥 Limited Launch Price — Only 200 seats left!
+</p>
 
           <p className="text-[15px] text-gray-600 mt-4 leading-relaxed">
             Your Personalized Roadmap to Life's Big Questions
@@ -254,35 +261,8 @@ export default function CheckoutPage() {
               </select>
             </div>
 
-            {/* Exclusive Offer Section */}
-            <div className="mt-8 border border-[#e4e4e4] rounded-lg bg-[#f6f5f3] p-5 relative overflow-hidden">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-[15px] font-medium text-gray-800">Exclusive Offer for You</h3>
-                {/* CSS Badge for Limited Time Offer */}
-                <div className="absolute top-0 right-0 bg-[#d9232d] text-white text-[10px] font-bold px-3 py-1.5 rounded-bl-lg flex items-center gap-1">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  LIMITED TIME OFFER
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input type="checkbox" name="expressDelivery" checked={offers.expressDelivery} onChange={handleOfferChange} className="mt-1 w-4 h-4 accent-[#882333] cursor-pointer" />
-                  <div>
-                    <p className="text-[14px] text-gray-800">Express Delivery (+₹{expressPrice})</p>
-                    <p className="text-[11px] text-gray-500">Get priority delivery of report within 24 hours</p>
-                  </div>
-                </label>
-
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input type="checkbox" name="consultation" checked={offers.consultation} onChange={handleOfferChange} className="mt-1 w-4 h-4 accent-[#882333] cursor-pointer" />
-                  <div>
-                    <p className="text-[14px] text-gray-800">Astrology Consultation (+₹{consultationPrice})</p>
-                    <p className="text-[11px] text-gray-500">Need more clarity? Talk to an astrologer one-on-one.</p>
-                  </div>
-                </label>
-              </div>
-            </div>
+           
+           
 
             {/* Terms and Conditions */}
             <div className="flex items-center gap-2 mt-4">

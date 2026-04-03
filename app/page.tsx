@@ -419,7 +419,7 @@ export default function KundaliPage() {
       {/* ════════════════════════════════
          HERO
       ════════════════════════════════ */}
-      <section className="relative bg-[#2A0E00] text-white min-h-screen flex items-center overflow-hidden py-16 lg:py-20">
+      <section className="relative bg-[#2A0E00] text-white min-h-screen flex items-center overflow-hidden py-4 sm:py-16 lg:py-20">
         
         {/* Background gradients */}
         <div className="absolute w-[400px] lg:w-[600px] h-[300px] lg:h-[400px] bg-[radial-gradient(ellipse,rgba(130,55,0,.35),transparent)] top-[-80px] lg:top-[-120px] right-[-50px] lg:right-[-100px] rounded-full pointer-events-none" />
@@ -438,11 +438,11 @@ export default function KundaliPage() {
               </p>
 
               {/* Heading */}
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-tight mb-6 lg:mb-8">
-                <span className="block">Your Stars Have a</span>
-                <span className="block italic text-[#E2C06A]">Story to Tell.</span>
-                <span className="block">Are You Ready</span>
-                <span className="block">to Hear It?</span>
+              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl leading-tight mb-6 lg:mb-8">
+                <span className="block">You’re not unlucky.</span>
+                <span className="block italic text-[#E2C06A]">You’re just making moves at the wrong time</span>
+                {/* <span className="block"></span> */}
+                {/* <span className="block">to Hear It?</span> */}
               </h1>
 
               {/* Profile Card */}
@@ -504,7 +504,7 @@ export default function KundaliPage() {
               {/* CTA */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <a
-                  href="#offer"
+                  href="/checkout"
                   className="w-full sm:w-auto bg-gradient-to-r from-[#C8A84B] to-[#E2C06A] px-8 py-3.5 lg:py-4 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition text-center text-[#2A0E00]"
                 >
                   ✨ Get My Kundali
@@ -526,13 +526,15 @@ export default function KundaliPage() {
 
             {/* ================= RIGHT (WHEEL & IMAGES) ================= */}
             {/* ================= RIGHT (WHEEL & IMAGES) ================= */}
-            <div className="reveal d2 relative flex justify-center items-center mt-8 lg:mt-0 mb-10 lg:mb-0">
+            {/* ================= RIGHT (WHEEL & IMAGES) ================= */}
+            <div className="reveal d2 relative flex justify-center items-start mt-8 lg:mt-0 mb-10 lg:mb-0 lg:-translate-y-12 w-full">
               
               {/* Main scalable container for the wheel */}
-              <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[460px] aspect-square flex-shrink-0">
+              {/* Decreased wheel size slightly to 420px so the image pops more */}
+              <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[420px] aspect-square flex-shrink-0">
                 
                 {/* Spot Badge */}
-                <div className="badge-float absolute -top-3 left-0 lg:top-4 lg:-left-2 z-20 bg-[#A82020] text-white text-[10px] lg:text-[0.65rem] font-extrabold tracking-wider px-3 py-1.5 rounded-full shadow-[0_4px_16px_rgba(168,32,32,0.4)]">
+                <div className="badge-float absolute -top-3 left-0 lg:top-4 lg:-left-6 z-20 bg-[#A82020] text-white text-[10px] lg:text-[0.75rem] font-extrabold tracking-wider px-3.5 py-2 rounded-full shadow-[0_4px_16px_rgba(168,32,32,0.4)]">
                   🔥 {spots} spots left
                 </div>
 
@@ -617,12 +619,12 @@ export default function KundaliPage() {
                   <polygon points="45,230 75,215 75,245" fill="rgba(200,168,75,0.15)" stroke="rgba(200,168,75,0.3)" strokeWidth="0.5"/>
                 </svg>
 
-                {/* DESKTOP ASTROLOGER IMAGE - Moved up and centered on right side */}
-                <div className="hidden lg:block absolute -right-12 top-1/2 -translate-y-1/2 z-10">
-                  <div className="w-[240px] h-[300px] rounded-2xl overflow-hidden border-[3px] border-[#C8A84B]/60 shadow-[0_30px_80px_rgba(0,0,0,0.7)] bg-[#2A0E00]">
+                {/* DESKTOP ASTROLOGER IMAGE - Massively Increased Size */}
+                <div className="hidden lg:block absolute lg:-right-24 top-[20%] -translate-y-1/2 z-10">
+                  <div className="w-[340px] h-[460px] rounded-[24px] overflow-hidden border-[4px] border-[#C8A84B]/60 shadow-[0_30px_80px_rgba(0,0,0,0.7)] bg-[#2A0E00]">
                     <img src="/news/surbhi-gupta.JPG" alt="Surbhi Gupta" className="w-full h-full object-cover" />
                   </div>
-                  <div className="bg-black/70 backdrop-blur-md -mt-5 p-2.5 rounded-b-2xl text-center font-bold text-[#E2C06A] text-sm border border-[#C8A84B]/30">
+                  <div className="bg-black/70 backdrop-blur-md -mt-5 p-4 rounded-b-[24px] text-center font-bold text-[#E2C06A] text-[1.1rem] border border-[#C8A84B]/30">
                     Surbhi Gupta
                   </div>
                 </div>
@@ -634,19 +636,19 @@ export default function KundaliPage() {
                   </div>
                 </div>
 
-                {/* Report preview card - Pushed to bottom right corner */}
-                <div className="absolute right-0 lg:-right-6 -bottom-6 w-[140px] lg:w-[180px] bg-[#FCF7EE] rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-[#E8D8B8] overflow-hidden z-20">
-                  <div className="bg-[#3D1600] px-2 py-2 lg:px-3 lg:py-2.5 flex items-center gap-1.5 lg:gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#C8A84B] flex-shrink-0"/>
-                    <div className="text-[8px] lg:text-[10px] font-bold text-[#FCF7EE]/50 tracking-wider uppercase leading-tight">Your Kundali</div>
-                    <div className="ml-auto text-[8px] lg:text-[9px] bg-[#C8A84B]/20 text-[#E2C06A] px-1.5 py-0.5 rounded-full font-bold">100+ pg</div>
+                {/* Report preview card - Scaled up and pushed right */}
+                <div className="absolute right-0 lg:-right-12 -bottom-6 lg:-bottom-10 w-[140px] lg:w-[240px] bg-[#FCF7EE] rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-[#E8D8B8] overflow-hidden z-20">
+                  <div className="bg-[#3D1600] px-2 py-2 lg:px-4 lg:py-3 flex items-center gap-1.5 lg:gap-2.5">
+                    <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-[#C8A84B] flex-shrink-0"/>
+                    <div className="text-[8px] lg:text-[11px] font-bold text-[#FCF7EE]/50 tracking-wider uppercase leading-tight">Your Kundali</div>
+                    <div className="ml-auto text-[8px] lg:text-[10px] bg-[#C8A84B]/20 text-[#E2C06A] px-2 py-1 rounded-full font-bold">100+ pg</div>
                   </div>
-                  <div className="p-2 lg:p-3 blur-[2px]">
+                  <div className="p-2 lg:p-4 blur-[2px]">
                     {[100,85,100,70,85,100,55].map((w,i)=>(
-                      <div key={i} className="h-1 lg:h-1.5 bg-[#E8D8B8] rounded-full mb-1 lg:mb-1.5" style={{width:`${w}%`}}/>
+                      <div key={i} className="h-1 lg:h-2 bg-[#E8D8B8] rounded-full mb-1 lg:mb-2" style={{width:`${w}%`}}/>
                     ))}
                   </div>
-                  <div className="text-center text-[8px] lg:text-[10px] text-[#9A7A58] pb-2 italic leading-tight px-1">
+                  <div className="text-center text-[8px] lg:text-[11px] text-[#9A7A58] pb-2 lg:pb-3 italic leading-tight px-1">
                     Sample — your name & chart here
                   </div>
                 </div>
@@ -699,7 +701,7 @@ export default function KundaliPage() {
     {/* ════════════════════════════════
           PROBLEM — EDITORIAL
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden py-16 lg:py-[100px]" style={{ background: C.iv }}>
+      <section className="relative overflow-hidden py-4 sm:py-16 lg:py-[100px]" style={{ background: C.iv }}>
         {/* Hide giant background moon on mobile to prevent overflow */}
         <div className="hidden lg:block absolute right-[-60px] top-1/2 -translate-y-1/2 text-[32rem] pointer-events-none select-none leading-none" style={{ color: C.g, opacity: .018 }}>☽</div>
         
@@ -713,12 +715,17 @@ export default function KundaliPage() {
                 ✦ Something You Already Know
               </div>
               <h2 className="fraunces reveal d1 text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-bold leading-[1.12] tracking-[-0.02em] mb-5 lg:mb-6" style={{ color: C.t1 }}>
-                There's a Question You've Been Carrying.<br/><em style={{ fontStyle: "italic", color: C.g2 }}>For Years.</em>
+                Why is this happening to<em style={{ fontStyle: "italic", color: C.g2 }}> me?</em>
               </h2>
               <div className="reveal d1 w-[50px] h-[2px] rounded-sm mb-6 lg:mb-7" style={{ background: `linear-gradient(90deg,${C.g},${C.g2})` }}/>
 
               <p className="reveal d2 text-[1rem] lg:text-[1.04rem] leading-[1.8] lg:leading-[1.88] mb-5 lg:mb-6 font-light" style={{ color: C.t2 }}>
-                Not a casual question. The deep kind. <strong style={{ color: C.t1, fontWeight: 700 }}>Why does my career keep hitting the same ceiling?</strong> Why do I attract the same type of person, no matter how much I grow? Why does money feel like it flows through my hands? Why does something that should feel right still feel… off?
+                You already know something is off.
+Your career keeps hitting the same invisible wall. You earn, but money doesn't stay. You meet people, but the relationship always ends the same way. You work hard, but someone else always seems to move forward faster.
+              </p>
+              <p className="reveal d2 text-[1rem] lg:text-[1.04rem] leading-[1.8] lg:leading-[1.88] mb-5 lg:mb-6 font-light" style={{ color: C.t2 }}>
+                You've told yourself it's bad luck. Or bad timing. Or that you're not trying hard enough.
+It's none of those things., your birth report will tell you exactly why this is happening, and when this loop will stop, and what you should do to stop this
               </p>
 
               <div className="reveal d2 my-6 lg:my-8 py-5 px-5 lg:px-6 rounded-r-xl" style={{ borderLeft: `3px solid ${C.g}`, background: "rgba(200,168,75,.05)" }}>
@@ -735,17 +742,17 @@ export default function KundaliPage() {
               </p>
 
               {/* Pain points */}
-              <div className="flex flex-col gap-4 my-7 lg:my-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 my-7 lg:my-8">
                 {[
-                  { icon:"😰",title:"Career that hits the same wall",text:"There's a Kundali explanation — and a specific dasha window — for why this keeps happening and when it finally breaks open." },
-                  { icon:"💔",title:"The relationship pattern that won't quit",text:"Your 7th house and Venus placement explain why, precisely. And exactly what kind of connection would actually work for you." },
-                  { icon:"⏳",title:"The quiet fear that time is running out",text:"Your Mahadasha sequence has an answer. The current weight might be the end of a difficult period — not the beginning." },
+                  { icon:"😰", title:"I work very hard, still not able to get that promotion", text:"There's a Kundali explanation — and a specific dasha window — for why this keeps happening and when it finally breaks open." },
+                  { icon:"💔", title:"You attract the same person who doesn't deserve you", text:"Your 7th house and Venus placement explain why, precisely. And exactly what kind of connection would actually work for you." },
+                  { icon:"⏳", title:"You feel scared, everyone around you is making progress", text:"Your Mahadasha sequence has an answer. The current weight might be the end of a difficult period — not the beginning.", isWide: true },
                 ].map((p,i)=>(
-                  <div key={i} className={`pi-card reveal${i>0?" d"+i:""} flex items-start gap-3.5 p-4 lg:p-5 bg-white rounded-xl`} style={{ border: `1px solid ${C.iv3}`, boxShadow: "0 2px 14px rgba(42,14,0,.09)" }}>
-                    <span className="text-2xl lg:text-[1.5rem] flex-shrink-0 mt-0.5">{p.icon}</span>
+                  <div key={i} className={`pi-card reveal${i>0?" d"+i:""} ${p.isWide ? 'sm:col-span-2 sm:flex-row sm:items-center' : 'flex-col items-start'} flex gap-4 p-5 lg:p-6 bg-white rounded-xl`} style={{ border: `1px solid ${C.iv3}`, boxShadow: "0 2px 14px rgba(42,14,0,.09)" }}>
+                    <span className="text-3xl lg:text-[2.2rem] flex-shrink-0">{p.icon}</span>
                     <div>
-                      <h4 className="text-[0.9rem] lg:text-[0.95rem] font-bold mb-1" style={{ color: C.t1 }}>{p.title}</h4>
-                      <p className="text-[0.8rem] lg:text-[0.81rem] leading-[1.65] m-0" style={{ color: C.t2 }}>{p.text}</p>
+                      <h4 className="text-[0.9rem] lg:text-[1rem] font-bold mb-2 leading-snug" style={{ color: C.t1 }}>{p.title}</h4>
+                      <p className="text-[0.8rem] lg:text-[0.85rem] leading-[1.65] m-0" style={{ color: C.t2 }}>{p.text}</p>
                     </div>
                   </div>
                 ))}
@@ -755,12 +762,14 @@ export default function KundaliPage() {
             {/* Right letter card */}
             <div>
               <div className="reveal d2 bg-white rounded-2xl lg:rounded-[26px] p-6 lg:p-7 shadow-[0_8px_36px_rgba(42,14,0,.13)] sticky top-20 lg:top-[88px]" style={{ border: `1px solid ${C.iv3}` }}>
-                <div className="w-[70px] h-[70px] lg:w-[80px] lg:h-[80px] rounded-full flex items-center justify-center text-3xl lg:text-[2rem] mx-auto mb-3 lg:mb-4" style={{ background: `linear-gradient(135deg,${C.dk2},${C.dk3})`, border: "2.5px solid rgba(200,168,75,.45)", boxShadow: "0 0 0 6px rgba(200,168,75,.07)" }}>🔮</div>
+                <div className="w-[70px] h-[70px] lg:w-[90px] lg:h-[90px] rounded-full mx-auto mb-3 lg:mb-4 overflow-hidden relative" style={{ border: "2.5px solid rgba(200,168,75,.45)", boxShadow: "0 0 0 6px rgba(200,168,75,.07)", background: C.dk2 }}>
+  <img src="/news/surbhi-gupta.JPG" alt="Surbhi Gupta" className="w-full h-full object-cover object-center" />
+</div>
                 <div className="fraunces text-lg lg:text-[1.15rem] text-center mb-0.5" style={{ color: C.t1 }}>Surbhi Gupta</div>
-                <div className="text-[10px] lg:text-[0.66rem] font-bold tracking-[0.14em] uppercase text-center mb-4 lg:mb-5" style={{ color: C.g }}>Vedic Jyotish Expert · 18 Years</div>
+                <div className="text-[10px] lg:text-[0.66rem] font-bold tracking-[0.14em] uppercase text-center mb-4 lg:mb-5" style={{ color: C.g }}>Vedic Jyotish Expert · 35 years</div>
                 
                 <div className="fraunces text-[0.9rem] lg:text-[0.96rem] italic leading-[1.72] pt-4 border-t" style={{ color: C.t2, borderTopColor: C.iv3 }}>
-                  <p className="mb-4">"In 18 years of reading charts, the one thing that strikes me again and again is this — people already sense their own patterns. They just don't have the language for it yet.</p>
+                  <p className="mb-4">"In 35 years of reading charts, the one thing that strikes me again and again is this — people already sense their own patterns. They just don't have the language for it yet.</p>
                   <p className="mb-4">When I read your chart, I'm not telling you something foreign. I'm handing you a mirror that reflects something you've always felt but couldn't name.</p>
                   <p className="mb-0">That is what a real Kundali does. Not predict your fate — illuminate your nature."</p>
                 </div>
@@ -834,7 +843,7 @@ export default function KundaliPage() {
             <div className="reveal d1">
               <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-bold tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>✦ Why Surbhi Gupta</div>
               <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-bold leading-[1.12] tracking-[-0.02em] mb-5 lg:mb-[22px]" style={{ color: C.td1 }}>
-                Trusted When the<br/><em style={{ fontStyle: "italic", color: C.g2 }}>Stakes Are Highest.</em>
+                The same reading that guides India's most powerful decisions<br/><em style={{ fontStyle: "italic", color: C.g2 }}>now available to you.</em>
               </h2>
               <div className="w-[50px] h-[2px] rounded-sm mb-6 lg:mb-[28px]" style={{ background: `linear-gradient(90deg,${C.g2},${C.g3})` }}/>
               
@@ -868,7 +877,7 @@ export default function KundaliPage() {
 {/* ════════════════════════════════
           FREE CONSULTATION — DARK
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden py-16 lg:py-[100px]" style={{ background: `linear-gradient(155deg,${C.dk2} 0%,#3D1600 50%,${C.dk} 100%)` }}>
+      <section className="relative overflow-hidden py-4 sm:py-16 lg:py-[100px]" style={{ background: `linear-gradient(155deg,${C.dk2} 0%,#3D1600 50%,${C.dk} 100%)` }}>
         {/* Hide large background blobs on mobile to prevent clipping/overflow issues */}
         <div className="hidden lg:block absolute top-[-100px] left-[-80px] w-[500px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse,rgba(26,106,64,.1) 0%,transparent 65%)" }}/>
         <div className="hidden lg:block absolute bottom-[-60px] right-[-40px] w-[400px] h-[300px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse,rgba(200,168,75,.06) 0%,transparent 65%)" }}/>
@@ -956,7 +965,7 @@ export default function KundaliPage() {
       {/* ════════════════════════════════
           WHAT YOU GET
       ════════════════════════════════ */}
-      <section className="relative bg-[#FCF7EE] py-16 lg:py-24 overflow-hidden" id="what">
+      <section className="relative bg-[#FCF7EE] py-4 sm:py-16 lg:py-24 overflow-hidden" id="what">
         
         {/* Background Symbol hidden on mobile to prevent horizontal scrolling */}
         <div className="hidden lg:block absolute -left-20 -bottom-20 text-[30rem] opacity-[0.02] pointer-events-none text-[#C8A84B]">
@@ -972,9 +981,9 @@ export default function KundaliPage() {
             </div>
 
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-[#2A1400] max-w-2xl mx-auto">
-              Not a List of Topics.<br />
+              Most people realize this too late<br />
               <span className="italic text-[#E2C06A]">
-                Answers to Questions You've Lived With.
+                don’t be one of them.
               </span>
             </h2>
 
@@ -1087,12 +1096,65 @@ export default function KundaliPage() {
       {/* ════════════════════════════════
           IN THE MEDIA (NEWS SNIPPETS)
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden py-16 lg:py-[100px]" style={{ background: C.dk2 }}>
-        
-        {/* Subtle background decoration */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse at top, rgba(200,168,75,0.05) 0%, transparent 60%)" }} />
+      
+
+     {/* ════════════════════════════════
+          TESTIMONIALS
+      ════════════════════════════════ */}
+    {/* ════════════════════════════════
+          TESTIMONIALS
+      ════════════════════════════════ */}
+      <section className="relative overflow-hidden py-4 sm:py-16 lg:py-[100px]" style={{ background: C.dk }}>
+        <StarCanvas id="proofC" style={{ opacity: .5 }} />
+        {/* Hide large floating symbols on mobile to prevent overflow/distraction */}
+        <div className="hidden lg:block absolute right-[-30px] top-[20%] text-[24rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♀</div>
+        <div className="hidden lg:block absolute left-[-20px] bottom-[25%] text-[18rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♂</div>
+
+        {/* Global style injection just for hiding scrollbar in the carousel */}
+        <style dangerouslySetInnerHTML={{ __html: `.hide-scroll::-webkit-scrollbar { display: none; } .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }` }} />
 
         <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10">
+          
+          <div className="reveal text-center mb-10 lg:mb-[40px]">
+            <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-bold tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>✦ Real People. Real Shifts.</div>
+            <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-bold leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
+              15,000 Lives Touched.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Stars.</em>
+            </h2>
+          </div>
+
+          {/* CELEBRITY CAROUSEL (Mobile Swipeable / Desktop Scrollable) */}
+          <div className="reveal d1 mb-16 lg:mb-[80px]">
+            <div className="flex items-center gap-3 lg:gap-4 mb-6 lg:mb-8 max-w-[800px] mx-auto">
+              <div className="h-[1px] flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(200,168,75,0.3))" }} />
+              <div className="text-[0.65rem] lg:text-[0.8rem] font-bold tracking-[0.2em] uppercase text-center" style={{ color: C.g2 }}>Celebrity Consultations</div>
+              <div className="h-[1px] flex-1" style={{ background: "linear-gradient(270deg, transparent, rgba(200,168,75,0.3))" }} />
+            </div>
+
+            {/* Carousel Container */}
+            <div className="flex overflow-x-auto gap-4 lg:gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scroll px-2 -mx-2">
+              {[
+                { name: "Leading Politician", desc: "Muhurat & Strategy", img: "/celebs/4.jpeg" },
+                { name: "Bollywood Actor", desc: "Career Timing", img: "/celebs/5.jpeg" },
+                { name: "Top Industrialist", desc: "Business Expansion", img: "/celebs/6.jpeg" },
+                { name: "Cricket Icon", desc: "Injury & Comeback", img: "/celebs/11.png" },
+                { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/8.png" },
+              ].map((celeb, i) => (
+                <div key={i} className="relative shrink-0 w-[140px] sm:w-[180px] lg:w-[220px] aspect-[3/4] rounded-2xl lg:rounded-[24px] overflow-hidden snap-center group transition-transform duration-300 hover:-translate-y-2" style={{ border: "1px solid rgba(200,168,75,.3)", background: C.dk2, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+                  
+                  {/* Image (Replace src with actual celeb images) */}
+                  <div className="absolute inset-0 bg-[#3D1600] flex items-center justify-center text-4xl opacity-20 z-0">👤</div>
+                  <img src={celeb.img} alt={celeb.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 z-0" />
+
+                  {/* Dark Gradient Overlay for Text Readability */}
+                  <div className="absolute inset-x-0 bottom-0 p-3 lg:p-5 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, rgba(20,5,0,0.6) 60%, transparent 100%)" }}>
+                    {/* <div className="text-[0.55rem] lg:text-[0.65rem] font-bold mb-1 tracking-wider uppercase" style={{ color: C.g }}>✦ {celeb.desc}</div> */}
+                    {/* <div className="fraunces text-[0.9rem] lg:text-[1.2rem] font-bold text-white leading-tight">{celeb.name}</div> */}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+              <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10">
           
           {/* Header */}
           <div className="reveal text-center mb-10 lg:mb-[52px]">
@@ -1180,65 +1242,6 @@ export default function KundaliPage() {
           )}
 
         </div>
-      </section>
-
-     {/* ════════════════════════════════
-          TESTIMONIALS
-      ════════════════════════════════ */}
-    {/* ════════════════════════════════
-          TESTIMONIALS
-      ════════════════════════════════ */}
-      <section className="relative overflow-hidden py-16 lg:py-[100px]" style={{ background: C.dk }}>
-        <StarCanvas id="proofC" style={{ opacity: .5 }} />
-        {/* Hide large floating symbols on mobile to prevent overflow/distraction */}
-        <div className="hidden lg:block absolute right-[-30px] top-[20%] text-[24rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♀</div>
-        <div className="hidden lg:block absolute left-[-20px] bottom-[25%] text-[18rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♂</div>
-
-        {/* Global style injection just for hiding scrollbar in the carousel */}
-        <style dangerouslySetInnerHTML={{ __html: `.hide-scroll::-webkit-scrollbar { display: none; } .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }` }} />
-
-        <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10">
-          
-          <div className="reveal text-center mb-10 lg:mb-[40px]">
-            <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-bold tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>✦ Real People. Real Shifts.</div>
-            <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-bold leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
-              15,000 Lives Touched.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Stars.</em>
-            </h2>
-          </div>
-
-          {/* CELEBRITY CAROUSEL (Mobile Swipeable / Desktop Scrollable) */}
-          <div className="reveal d1 mb-16 lg:mb-[80px]">
-            <div className="flex items-center gap-3 lg:gap-4 mb-6 lg:mb-8 max-w-[800px] mx-auto">
-              <div className="h-[1px] flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(200,168,75,0.3))" }} />
-              <div className="text-[0.65rem] lg:text-[0.8rem] font-bold tracking-[0.2em] uppercase text-center" style={{ color: C.g2 }}>Celebrity Consultations</div>
-              <div className="h-[1px] flex-1" style={{ background: "linear-gradient(270deg, transparent, rgba(200,168,75,0.3))" }} />
-            </div>
-
-            {/* Carousel Container */}
-            <div className="flex overflow-x-auto gap-4 lg:gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scroll px-2 -mx-2">
-              {[
-                { name: "Leading Politician", desc: "Muhurat & Strategy", img: "/celebs/4.jpeg" },
-                { name: "Bollywood Actor", desc: "Career Timing", img: "/celebs/5.jpeg" },
-                { name: "Top Industrialist", desc: "Business Expansion", img: "/celebs/6.jpeg" },
-                { name: "Cricket Icon", desc: "Injury & Comeback", img: "/celebs/11.png" },
-                { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/8.png" },
-              ].map((celeb, i) => (
-                <div key={i} className="relative shrink-0 w-[140px] sm:w-[180px] lg:w-[220px] aspect-[3/4] rounded-2xl lg:rounded-[24px] overflow-hidden snap-center group transition-transform duration-300 hover:-translate-y-2" style={{ border: "1px solid rgba(200,168,75,.3)", background: C.dk2, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
-                  
-                  {/* Image (Replace src with actual celeb images) */}
-                  <div className="absolute inset-0 bg-[#3D1600] flex items-center justify-center text-4xl opacity-20 z-0">👤</div>
-                  <img src={celeb.img} alt={celeb.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 z-0" />
-
-                  {/* Dark Gradient Overlay for Text Readability */}
-                  <div className="absolute inset-x-0 bottom-0 p-3 lg:p-5 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, rgba(20,5,0,0.6) 60%, transparent 100%)" }}>
-                    {/* <div className="text-[0.55rem] lg:text-[0.65rem] font-bold mb-1 tracking-wider uppercase" style={{ color: C.g }}>✦ {celeb.desc}</div> */}
-                    {/* <div className="fraunces text-[0.9rem] lg:text-[1.2rem] font-bold text-white leading-tight">{celeb.name}</div> */}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Responsive Grid: Stacks on mobile, 2 columns on desktop */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-5">
             
@@ -1357,7 +1360,7 @@ export default function KundaliPage() {
       {/* ════════════════════════════════
           OFFER — DARK
       ════════════════════════════════ */}
-      <section id="offer" className="relative overflow-hidden py-16 lg:py-[100px]" style={{ background: `linear-gradient(150deg,${C.dk} 0%,${C.dk2} 50%,#2A0E00 100%)` }}>
+      <section id="offer" className="relative overflow-hidden py-4 sm:py-16 lg:py-[100px]" style={{ background: `linear-gradient(150deg,${C.dk} 0%,${C.dk2} 50%,#2A0E00 100%)` }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 55% 45% at 50% 0%,rgba(200,168,75,.07) 0%,transparent 55%)" }} />
         <StarCanvas id="offerC" />
         
@@ -1365,7 +1368,7 @@ export default function KundaliPage() {
           <div className="reveal text-center mb-10 lg:mb-[52px]">
             <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-bold tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4 lg:mb-[16px]" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>✦ Limited Launch Offer</div>
             <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-bold leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
-              The Report. The Consultation.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>One Price. Right Now.</em>
+              You’ve tried everything<br /><em style={{ fontStyle: "italic", color: C.g2 }}>except understanding your timing.</em>
             </h2>
           </div>
 
@@ -1491,13 +1494,13 @@ export default function KundaliPage() {
       {/* ════════════════════════════════
           FAQ
       ════════════════════════════════ */}
-      <section className="py-16 lg:py-[100px]" style={{ background: C.iv }}>
+      <section className="py-4 sm:py-16 lg:py-[100px]" style={{ background: C.iv }}>
         <div className="max-w-[1100px] mx-auto px-5 lg:px-7">
           <div className="reveal text-center mb-10 lg:mb-[52px]">
             <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-bold tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4 lg:mb-[16px]" style={{ color: C.g, background: "rgba(200,168,75,.1)", border: "1px solid rgba(200,168,75,.28)" }}>✦ Honest Answers</div>
-            <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-bold leading-[1.12] tracking-[-0.02em] text-center" style={{ color: C.t1 }}>
-              No Vague Answers.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Just the Truth.</em>
-            </h2>
+            <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-bold leading-[1.4] tracking-[-0.02em] text-center" style={{ color: C.t1 }}>
+  No Vague Answers.<br /><em style={{ fontStyle: "italic", color: C.g2 }} className="leading-[1]" >Just the Truth.</em>
+</h2>
           </div>
           
           <div className="max-w-[700px] mx-auto">
@@ -1515,7 +1518,7 @@ export default function KundaliPage() {
       {/* ════════════════════════════════
           FINAL CTA
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden text-center py-16 lg:py-[100px]" style={{ background: `linear-gradient(155deg,${C.dk} 0%,${C.dk2} 50%,#3D1600 100%)` }}>
+      <section className="relative overflow-hidden text-center py-4 sm:py-16 lg:py-[100px]" style={{ background: `linear-gradient(155deg,${C.dk} 0%,${C.dk2} 50%,#3D1600 100%)` }}>
         {/* Hide large rings on mobile if they cause scroll issues, or keep them absolute */}
         <div className="fr-ring-1" /><div className="fr-ring-2" /><div className="fr-ring-3" />
         <StarCanvas id="finalC" style={{ opacity: 1 }} />
