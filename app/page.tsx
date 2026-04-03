@@ -838,7 +838,7 @@ It's none of those things., your birth report will tell you exactly why this is 
                 </div>
               ))}
             </div>
-            <a href="#offer" target="_blank" rel="noopener noreferrer" className="mt-4 btn-auto-shine oc-cta-btn flex items-center justify-center w-full p-4 lg:p-[17px] rounded-full font-bold text-[0.9rem] lg:text-[0.98rem] tracking-[0.02em] no-underline mb-2.5 lg:mb-[10px]"style={{
+            <a href="#offer" className="mt-4 btn-auto-shine oc-cta-btn flex items-center justify-center w-full p-4 lg:p-[17px] rounded-full font-bold text-[0.9rem] lg:text-[0.98rem] tracking-[0.02em] no-underline mb-2.5 lg:mb-[10px]"style={{
               fontFamily: "'Nunito Sans',sans-serif",
               background: `linear-gradient(135deg,${C.g} 0%,${C.g2} 55%,${C.g} 100%)`, // Gold button pops perfectly on red
               color: C.dk, // Dark text on gold button for readability
