@@ -402,7 +402,7 @@ export default function KundaliPage() {
           <img 
             src="/logo.svg" 
             alt="Surbhi Gupta" 
-            className="h-8 sm:h-12 lg:h-14 w-auto object-cover"
+            className="h-14 sm:h-16 lg:h-16 w-auto object-cover"
             onError={(e) => {
               // Fallback to text if the SVG is missing or fails to load
               e.currentTarget.style.display = 'none';
