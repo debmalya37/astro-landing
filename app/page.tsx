@@ -526,7 +526,7 @@ export default function KundaliPage() {
 
                 <a
                   href="#what"
-                  className="w-full sm:w-auto border border-white/20 px-6 py-3.5 lg:py-3 rounded-full text-sm hover:bg-white/10 transition text-center"
+                  className="btn-auto-shine w-full sm:w-auto border border-white/20 px-6 py-3.5 lg:py-3 rounded-full text-sm hover:bg-white/10 transition text-center"
                 >
                   What's inside ↓
                 </a>
