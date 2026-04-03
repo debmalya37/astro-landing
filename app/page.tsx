@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 /* ─── COLOUR TOKENS (mirrors :root CSS vars) ─── */
@@ -386,7 +387,7 @@ export default function KundaliPage() {
         </a>
       </div>
 
-      {/* ════════════════════════════════
+     {/* ════════════════════════════════
           NAV
       ════════════════════════════════ */}
       <nav 
@@ -396,10 +397,23 @@ export default function KundaliPage() {
           borderColor: C.iv3 
         }}
       >
-        {/* Logo */}
-        <div className="fraunces text-[1.15rem] sm:text-[1.35rem] font-bold flex-shrink-0" style={{ color: C.t1 }}>
-          Surbhi <em style={{ fontStyle: "italic", color: C.g }}>Gupta</em>
-        </div>
+        {/* Logo (Responsive Image) */}
+        <Link href="/" className="flex-shrink-0 flex items-center">
+          <img 
+            src="/logo.svg" 
+            alt="Surbhi Gupta" 
+            className="h-8 sm:h-12 lg:h-14 w-auto object-cover"
+            onError={(e) => {
+              // Fallback to text if the SVG is missing or fails to load
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+          {/* Fallback text just in case the image path is wrong */}
+          <div className="hidden fraunces text-[1.15rem] sm:text-[1.35rem] font-bold" style={{ color: C.t1 }}>
+            Surbhi <em style={{ fontStyle: "italic", color: C.g }}>Gupta</em>
+          </div>
+        </Link>
         
         {/* Reviews (Hidden on Mobile to save space) */}
         <div className="hidden md:flex items-center gap-1.5 text-[0.74rem]" style={{ color: C.t4 }}>
@@ -433,7 +447,7 @@ export default function KundaliPage() {
       {/* ════════════════════════════════
          HERO
       ════════════════════════════════ */}
-      <section className="relative bg-[#2A0E00] text-white min-h-screen flex items-center overflow-hidden py-4 sm:py-16 lg:py-20">
+      <section className="relative bg-[#2A0E00] text-white min-h-screen flex items-center overflow-hidden py-4 sm:py-8 lg:py-20">
         
         {/* Background gradients */}
         <div className="absolute w-[400px] lg:w-[600px] h-[300px] lg:h-[400px] bg-[radial-gradient(ellipse,rgba(130,55,0,.35),transparent)] top-[-80px] lg:top-[-120px] right-[-50px] lg:right-[-100px] rounded-full pointer-events-none" />
@@ -447,7 +461,7 @@ export default function KundaliPage() {
             <div className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left mt-10 lg:mt-0">
 
               {/* Tag */}
-              <p className="text-[10px] sm:text-xs tracking-[0.2em] uppercase text-[#E2C06A] font-bold mb-4 lg:mb-6">
+              <p className="text-[10px] sm:text-xs tracking-[0.2em] uppercase text-[#E2C06A] font-bold mb-4 lg:mb-4">
                 ✦ India's Most Trusted Vedic Astrologer ✦
               </p>
 
@@ -712,15 +726,16 @@ export default function KundaliPage() {
         </div>
       </div>
 
-    {/* ════════════════════════════════
+ {/* ════════════════════════════════
           PROBLEM — EDITORIAL
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden py-4 sm:py-16 lg:py-[100px]" style={{ background: C.iv }}>
+      <section className="relative overflow-hidden py-4 sm:py-8 " style={{ background: C.iv }}>
         {/* Hide giant background moon on mobile to prevent overflow */}
-        <div className="hidden lg:block absolute right-[-60px] top-1/2 -translate-y-1/2 text-[32rem] pointer-events-none select-none leading-none" style={{ color: C.g, opacity: .018 }}>☽</div>
+        <div className="hidden lg:block absolute right-[-60px] top-[20%] -translate-y-1/2 text-[32rem] pointer-events-none select-none leading-none" style={{ color: C.g, opacity: .018 }}>☽</div>
         
         <div className="max-w-[1100px] mx-auto px-5 lg:px-7">
-          {/* Responsive Grid: 1 column on mobile, 1fr + 380px on desktop */}
+          
+          {/* TOP SECTION: 2-Column Grid (Editorial Text + Sticky Letter) */}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 lg:gap-[80px] items-start">
 
             {/* Left editorial */}
@@ -751,34 +766,17 @@ It's none of those things., your birth report will tell you exactly why this is 
               <p className="reveal d3 text-[1rem] lg:text-[1.04rem] leading-[1.8] lg:leading-[1.88] mb-5 lg:mb-6 font-light" style={{ color: C.t2 }}>
                 Vedic astrology offers a specific, 5,000-year-old answer: <strong style={{ color: C.t1 }}>you were born into a pattern.</strong> Every planet, every house, every dasha period — together they form a blueprint of who you are, what you're here to do, and what's holding you back.
               </p>
-              <p className="reveal d3 text-[1rem] lg:text-[1.04rem] leading-[1.8] lg:leading-[1.88] mb-5 lg:mb-6 font-light" style={{ color: C.t2 }}>
+              <p className="reveal d3 text-[1rem] lg:text-[1.04rem] leading-[1.8] lg:leading-[1.88] font-light" style={{ color: C.t2 }}>
                 The reason you've felt unresolved isn't a personal failure. It's that nobody has read <em>your specific chart</em> with depth. Generic online Kundalis give you a software printout. Sun-sign horoscopes are written for one-twelfth of humanity. Neither knows you.
               </p>
-
-              {/* Pain points */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 my-7 lg:my-8">
-                {[
-                  { icon:"😰", title:"I work very hard, still not able to get that promotion", text:"There's a Kundali explanation — and a specific dasha window — for why this keeps happening and when it finally breaks open." },
-                  { icon:"💔", title:"You attract the same person who doesn't deserve you", text:"Your 7th house and Venus placement explain why, precisely. And exactly what kind of connection would actually work for you." },
-                  { icon:"⏳", title:"You feel scared, everyone around you is making progress", text:"Your Mahadasha sequence has an answer. The current weight might be the end of a difficult period — not the beginning.", isWide: true },
-                ].map((p,i)=>(
-                  <div key={i} className={`pi-card reveal${i>0?" d"+i:""} ${p.isWide ? 'sm:col-span-2 sm:flex-row sm:items-center' : 'flex-col items-start'} flex gap-4 p-5 lg:p-6 bg-white rounded-xl`} style={{ border: `1px solid ${C.iv3}`, boxShadow: "0 2px 14px rgba(42,14,0,.09)" }}>
-                    <span className="text-3xl lg:text-[2.2rem] flex-shrink-0">{p.icon}</span>
-                    <div>
-                      <h4 className="text-[0.9rem] lg:text-[1rem] font-bold mb-2 leading-snug" style={{ color: C.t1 }}>{p.title}</h4>
-                      <p className="text-[0.8rem] lg:text-[0.85rem] leading-[1.65] m-0" style={{ color: C.t2 }}>{p.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Right letter card */}
             <div>
               <div className="reveal d2 bg-white rounded-2xl lg:rounded-[26px] p-6 lg:p-7 shadow-[0_8px_36px_rgba(42,14,0,.13)] sticky top-20 lg:top-[88px]" style={{ border: `1px solid ${C.iv3}` }}>
                 <div className="w-[70px] h-[70px] lg:w-[90px] lg:h-[90px] rounded-full mx-auto mb-3 lg:mb-4 overflow-hidden relative" style={{ border: "2.5px solid rgba(200,168,75,.45)", boxShadow: "0 0 0 6px rgba(200,168,75,.07)", background: C.dk2 }}>
-  <img src="/news/surbhi-gupta.JPG" alt="Surbhi Gupta" className="w-full h-full object-cover object-center" />
-</div>
+                  <img src="/news/surbhi-gupta.JPG" alt="Surbhi Gupta" className="w-full h-full object-cover object-center" />
+                </div>
                 <div className="fraunces text-lg lg:text-[1.15rem] text-center mb-0.5" style={{ color: C.t1 }}>Surbhi Gupta</div>
                 <div className="text-[10px] lg:text-[0.66rem] font-bold tracking-[0.14em] uppercase text-center mb-4 lg:mb-5" style={{ color: C.g }}>Vedic Jyotish Expert · 35 years</div>
                 
@@ -806,13 +804,57 @@ It's none of those things., your birth report will tell you exactly why this is 
             </div>
 
           </div>
+
+          {/* BOTTOM SECTION: Full-width Pain Point Cards */}
+          <div className="mt-4 lg:mt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+              {[
+                { 
+                  icon: "😰", 
+                  title: "I work very hard, still not able to get that promotion", 
+                  text: "There's a Kundali explanation — and a specific dasha window — for why this keeps happening and when it finally breaks open." 
+                },
+                { 
+                  icon: "💔", 
+                  title: "You attract the same person who doesn't deserve you", 
+                  text: "Your 7th house and Venus placement explain why, precisely. And exactly what kind of connection would actually work for you." 
+                },
+                { 
+                  icon: "⏳", 
+                  title: "You feel scared, everyone around you is making progress", 
+                  text: "Your Mahadasha sequence has an answer. The current weight might be the end of a difficult period — not the beginning." 
+                },
+              ].map((p, i) => (
+                <div 
+                  key={i} 
+                  className={`pi-card reveal${i>0?" d"+i:""} flex flex-col items-center text-center p-6 lg:p-8 bg-white rounded-2xl`} 
+                  style={{ border: `1px solid ${C.iv3}`, boxShadow: "0 6px 24px rgba(42,14,0,.06)" }}
+                >
+                  <span className="text-4xl lg:text-5xl flex-shrink-0 mb-4">{p.icon}</span>
+                  <div>
+                    <h4 className="text-[1rem] lg:text-[1.1rem] font-bold mb-3 leading-snug" style={{ color: C.t1 }}>{p.title}</h4>
+                    <p className="text-[0.85rem] lg:text-[0.9rem] leading-[1.65] m-0" style={{ color: C.t2 }}>{p.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <a href="#offer" target="_blank" rel="noopener noreferrer" className="mt-4 btn-auto-shine oc-cta-btn flex items-center justify-center w-full p-4 lg:p-[17px] rounded-full font-bold text-[0.9rem] lg:text-[0.98rem] tracking-[0.02em] no-underline mb-2.5 lg:mb-[10px]"style={{
+              fontFamily: "'Nunito Sans',sans-serif",
+              background: `linear-gradient(135deg,${C.g} 0%,${C.g2} 55%,${C.g} 100%)`, // Gold button pops perfectly on red
+              color: C.dk, // Dark text on gold button for readability
+              boxShadow: `0 12px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,.3)`,
+            }}>
+                  ✨ Want to view full report ? 
+                </a>
+          </div>
+
         </div>
       </section>
 
       {/* ════════════════════════════════
           AUTHORITY — DARK
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden py-16 lg:py-[100px]" style={{ background: `linear-gradient(158deg,${C.dk} 0%,${C.dk2} 100%)` }}>
+      <section className="relative overflow-hidden py-8 lg:py-[50px]" style={{ background: `linear-gradient(158deg,${C.dk} 0%,${C.dk2} 100%)` }}>
         <StarCanvas id="authC" />
         {/* Hide background symbols on mobile */}
         <div className="hidden lg:block absolute right-[-40px] top-[10%] text-[18rem] pointer-events-none leading-none font-serif" style={{ opacity: .03, color: C.g }}>♃</div>
@@ -891,7 +933,7 @@ It's none of those things., your birth report will tell you exactly why this is 
 {/* ════════════════════════════════
           FREE CONSULTATION — DARK
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden py-4 sm:py-16 lg:py-[100px]" style={{ background: `linear-gradient(155deg,${C.dk2} 0%,#3D1600 50%,${C.dk} 100%)` }}>
+      <section className="relative overflow-hidden py-4 sm:py-8 " style={{ background: `linear-gradient(155deg,${C.dk2} 0%,#3D1600 50%,${C.dk} 100%)` }}>
         {/* Hide large background blobs on mobile to prevent clipping/overflow issues */}
         <div className="hidden lg:block absolute top-[-100px] left-[-80px] w-[500px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse,rgba(26,106,64,.1) 0%,transparent 65%)" }}/>
         <div className="hidden lg:block absolute bottom-[-60px] right-[-40px] w-[400px] h-[300px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse,rgba(200,168,75,.06) 0%,transparent 65%)" }}/>
@@ -979,7 +1021,7 @@ It's none of those things., your birth report will tell you exactly why this is 
       {/* ════════════════════════════════
           WHAT YOU GET
       ════════════════════════════════ */}
-      <section className="relative bg-[#FCF7EE] py-4 sm:py-16 lg:py-24 overflow-hidden" id="what">
+      <section className="relative bg-[#FCF7EE] py-4 sm:py-8 lg:py-8 overflow-hidden" id="what">
         
         {/* Background Symbol hidden on mobile to prevent horizontal scrolling */}
         <div className="hidden lg:block absolute -left-20 -bottom-20 text-[30rem] opacity-[0.02] pointer-events-none text-[#C8A84B]">
@@ -1118,7 +1160,7 @@ It's none of those things., your birth report will tell you exactly why this is 
     {/* ════════════════════════════════
           TESTIMONIALS
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden py-4 sm:py-16 lg:py-[100px]" style={{ background: C.dk }}>
+      <section className="relative overflow-hidden py-4 sm:py-8" style={{ background: C.dk }}>
         <StarCanvas id="proofC" style={{ opacity: .5 }} />
         {/* Hide large floating symbols on mobile to prevent overflow/distraction */}
         <div className="hidden lg:block absolute right-[-30px] top-[20%] text-[24rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♀</div>
@@ -1374,7 +1416,7 @@ It's none of those things., your birth report will tell you exactly why this is 
       {/* ════════════════════════════════
           OFFER — DARK
       ════════════════════════════════ */}
-      <section id="offer" className="relative overflow-hidden py-4 sm:py-16 lg:py-[100px]" style={{ background: `linear-gradient(150deg,${C.dk} 0%,${C.dk2} 50%,#2A0E00 100%)` }}>
+      <section id="offer" className="relative overflow-hidden py-4 sm:py-8" style={{ background: `linear-gradient(150deg,${C.dk} 0%,${C.dk2} 50%,#2A0E00 100%)` }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 55% 45% at 50% 0%,rgba(200,168,75,.07) 0%,transparent 55%)" }} />
         <StarCanvas id="offerC" />
         
@@ -1507,7 +1549,7 @@ It's none of those things., your birth report will tell you exactly why this is 
       {/* ════════════════════════════════
           FAQ
       ════════════════════════════════ */}
-      <section className="py-4 sm:py-16 lg:py-[100px]" style={{ background: C.iv }}>
+      <section className="py-4 sm:py-8 " style={{ background: C.iv }}>
         <div className="max-w-[1100px] mx-auto px-5 lg:px-7">
           <div className="reveal text-center mb-10 lg:mb-[52px]">
             <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-bold tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4 lg:mb-[16px]" style={{ color: C.g, background: "rgba(200,168,75,.1)", border: "1px solid rgba(200,168,75,.28)" }}>✦ Honest Answers</div>
@@ -1531,7 +1573,7 @@ It's none of those things., your birth report will tell you exactly why this is 
       {/* ════════════════════════════════
           FINAL CTA
       ════════════════════════════════ */}
-      <section className="relative overflow-hidden text-center py-4 sm:py-16 lg:py-[100px]" style={{ background: `linear-gradient(155deg,${C.dk} 0%,${C.dk2} 50%,#3D1600 100%)` }}>
+      <section className="relative overflow-hidden text-center py-4 sm:py-8 " style={{ background: `linear-gradient(155deg,${C.dk} 0%,${C.dk2} 50%,#3D1600 100%)` }}>
         {/* Hide large rings on mobile if they cause scroll issues, or keep them absolute */}
         <div className="fr-ring-1" /><div className="fr-ring-2" /><div className="fr-ring-3" />
         <StarCanvas id="finalC" style={{ opacity: 1 }} />
