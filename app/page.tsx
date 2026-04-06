@@ -411,7 +411,7 @@ export default function KundaliPage() {
           />
           {/* Fallback text just in case the image path is wrong */}
           <div className="hidden fraunces text-[1.15rem] sm:text-[1.35rem] font-bold" style={{ color: C.t1 }}>
-            Surbhi <em style={{ fontStyle: "italic", color: C.g }}>Gupta</em>
+            Celebrity Astrologer Surbhi <em style={{ fontStyle: "italic", color: C.g }}>Gupta</em>
           </div>
         </Link>
         

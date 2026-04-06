@@ -1,14 +1,30 @@
-// app/checkout/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function CheckoutPage() {
+// Reusable Input Label Component
+const Label = ({ children }: { children: React.ReactNode }) => (
+  <label className="block text-xs font-bold text-[#4A2E10] mb-1.5 uppercase tracking-wider">
+    {children} <span className="text-[#8B1E1E]">*</span>
+  </label>
+);
+
+function CheckoutContent() {
+  const searchParams = useSearchParams();
+  
+  // Read and decode URL parameters
+  const urlService = searchParams.get("service");
+  const urlPrice = searchParams.get("price");
+  
+  const serviceName = urlService ? decodeURIComponent(urlService) : "Premium Personalized Kundali";
+  const basePrice = urlPrice ? parseInt(urlPrice, 10) : 999;
+
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
-    reportType: "Fortune Report",
+    reportType: serviceName, // Dynamically set from URL
     dob: "",
     tob: "",
     city: "",
@@ -18,24 +34,10 @@ export default function CheckoutPage() {
     challenge: "No Issue",
   });
 
-  // State for the exclusive offers
-  const [offers, setOffers] = useState({
-    expressDelivery: false,
-    consultation: false,
-  });
-
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Calculate dynamic pricing
-  const basePrice = 999;
-  // const expressPrice = 149;
-  // const consultationPrice = 1100;
-  
-  const finalAmount = basePrice 
-    // + 
-    // (offers.expressDelivery ? expressPrice : 0) + 
-    // (offers.consultation ? consultationPrice : 0);
+  const finalAmount = basePrice; // You can add offer logic here later if needed
 
   // Load Razorpay script
   useEffect(() => {
@@ -49,13 +51,15 @@ export default function CheckoutPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleOfferChange = (e: any) => {
-    setOffers({ ...offers, [e.target.name]: e.target.checked });
-  };
-
   const handlePayment = async () => {
     if (!agreedToTerms) {
-      alert("Please agree to the Terms and Conditions.");
+      alert("Please agree to the Terms and Conditions to proceed.");
+      return;
+    }
+
+    // Basic Validation
+    if (!form.name || !form.email || !form.phone || !form.dob) {
+      alert("Please fill in all required fields.");
       return;
     }
 
@@ -74,7 +78,7 @@ export default function CheckoutPage() {
         amount: order.amount,
         currency: "INR",
         name: "Astro Surbhi Gupta",
-        description: "Fortune Report Order",
+        description: form.reportType, // Dynamic description
         order_id: order.id,
 
         handler: async function (response: any) {
@@ -83,7 +87,6 @@ export default function CheckoutPage() {
             body: JSON.stringify({
               ...response,
               form,
-              offers,
               finalAmount
             }),
           });
@@ -103,7 +106,7 @@ export default function CheckoutPage() {
           contact: form.phone,
         },
         theme: {
-          color: "#882333", // Matched to the maroon theme
+          color: "#8B1E1E", // Premium Burgundy
         },
       };
 
@@ -111,191 +114,219 @@ export default function CheckoutPage() {
       rzp.open();
     } catch (error) {
       console.error("Payment initiation failed:", error);
+      alert("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Reusable Input Label Component
-  const Label = ({ children }: { children: React.ReactNode }) => (
-    <label className="block text-[13px] font-bold text-gray-800 mb-1.5">
-      {children} <span className="text-red-500">*</span>
-    </label>
-  );
+  // Shared Input Styles
+  const inputClass = "w-full bg-[#FCF7EE] border border-[#E8D8B8] rounded-xl p-3.5 text-sm text-[#2A1400] focus:outline-none focus:ring-2 focus:ring-[#C8A84B]/50 focus:border-[#C8A84B] transition-all placeholder-gray-400";
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] py-10 px-4 font-sans text-gray-800">
-      {/* Header */}
-      <div className="text-center mb-10">
-        {/* Replace with your actual logo path */}
-        <img 
-          src="/logo.svg" 
-          alt="Astro Surbhi Gupta" 
-          className="h-16 mx-auto mb-4 object-contain"
-          onError={(e) => { e.currentTarget.style.display = 'none' }} // Hides broken image if logo doesn't exist yet
-        />
-        <h1 className="text-2xl font-bold text-[#882333]">Order Your Fortune Report</h1>
-      </div>
-
-      <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_1.3fr] gap-8">
+    <div className="max-w-6xl mx-auto grid lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-12 items-start">
+      
+      {/* ================= LEFT/TOP: PRODUCT SUMMARY ================= */}
+      <div className="bg-white rounded-3xl p-8 lg:p-10 shadow-[0_15px_40px_rgba(61,22,0,0.06)] border border-[#E8D8B8]/50 lg:sticky lg:top-8">
         
-        {/* ================= LEFT PRODUCT COLUMN ================= */}
-        <div className="bg-white rounded-xl p-8 shadow-[0_4px_20px_rgba(0,0,0,0.05)] h-fit">
+        {/* Product Image */}
+        <div className="w-full aspect-[4/3] bg-[#FCF7EE] rounded-2xl flex items-center justify-center border border-[#E8D8B8] mb-8 overflow-hidden relative">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(200,168,75,0.1)_0%,transparent_70%)]"></div>
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjFOIp4TI3nRU3pQBCJuC5iP7w6aEYmK5BXw&s" // Ensure you have the 2 books image here
-            alt="Fortune Report Book"
-            className="w-56 mx-auto mb-8"
+            src="https://reports.adityakundali.com/wp-content/uploads/2025/04/4aa56f11d45-scaled.webp"
+            alt={serviceName}
+            className="h-full object-cover mix-blend-multiply drop-shadow-2xl z-10 hover:scale-105 transition-transform duration-700"
+            onError={(e) => { e.currentTarget.style.display = 'none' }}
           />
-
-          <h2 className="text-[22px] font-bold text-gray-900">Fortune Report</h2>
-<div className="flex items-center gap-3 mt-1">
-  <p className="text-[#882333] text-[26px] font-extrabold leading-none">₹999</p>
-  <p className="text-gray-400 text-[16px] line-through font-medium leading-none">₹2999</p>
-  <span className="bg-[#fdecea] text-[#c0392b] text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide">67% OFF</span>
-</div>
-<p className="text-[#c0392b] text-[12.5px] font-bold mt-2.5 flex items-center gap-1.5">
-  🔥 Limited Launch Price — Only 200 seats left!
-</p>
-
-          <p className="text-[15px] text-gray-600 mt-4 leading-relaxed">
-            Your Personalized Roadmap to Life's Big Questions
-          </p>
-
-          <h3 className="font-bold text-[15px] text-gray-900 mt-6 mb-3">What's Included:</h3>
-          <ul className="text-[14px] text-gray-600 space-y-3">
-            {[
-              "Insights on career, love, health & wealth",
-              "Easy remedies like gemstones, mantras & yantras",
-              "Written in clear, simple language by expert numerologists"
-            ].map((item, idx) => (
-              <li key={idx} className="flex items-start gap-3">
-                {/* Custom Maroon Check Icon */}
-                <svg className="w-5 h-5 text-[#882333] flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                {item}
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-8 text-[13px] text-gray-500 leading-relaxed border-t pt-6">
-            Perfect for anyone who wants clear answers & direction for the next chapter of life.
-          </p>
         </div>
 
-        {/* ================= RIGHT FORM COLUMN ================= */}
-        <div className="bg-white rounded-xl p-8 shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-          <div className="space-y-5">
-            
-            {/* Name */}
-            <div>
-              <Label>Name</Label>
-              <input name="name" placeholder="Enter your name" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333]" onChange={handleChange} />
-            </div>
+        <div className="inline-block bg-[#8B1E1E]/10 text-[#8B1E1E] text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-md mb-3">
+          Order Summary
+        </div>
+        
+        <h2 className="text-2xl lg:text-3xl font-bold text-[#2A1400] font-serif leading-tight mb-4">
+          {serviceName}
+        </h2>
 
-            {/* Email */}
-            <div>
-              <Label>Email</Label>
-              <input name="email" type="email" placeholder="Enter your email" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333]" onChange={handleChange} />
-            </div>
+        {/* Pricing Block */}
+        <div className="flex items-center gap-3 mb-6 pb-6 border-b border-[#E8D8B8]">
+          <p className="text-[#8B1E1E] text-4xl font-extrabold leading-none">₹{basePrice}</p>
+          <p className="text-gray-400 text-lg line-through font-medium leading-none">₹{Math.round(basePrice * 3)}</p>
+          <span className="bg-[#E6F5EE] border border-[#1B4D30]/20 text-[#1B4D30] text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest ml-2">
+            Save 67%
+          </span>
+        </div>
 
-            {/* WhatsApp */}
+        <h3 className="font-bold text-sm text-[#4A2E10] uppercase tracking-wider mb-4">What's Included:</h3>
+        <ul className="text-sm text-[#6B4423] space-y-3">
+          {[
+            "Detailed life predictions & cosmic roadmap",
+            "Personalized remedies (Gemstones, Pujas)",
+            "FREE 1-on-1 WhatsApp Consultation"
+          ].map((item, idx) => (
+            <li key={idx} className="flex items-start gap-3 font-medium">
+              <div className="w-5 h-5 rounded-full bg-[#C8A84B]/20 text-[#8B1E1E] flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-8 bg-[#FFFBF0] border border-[#C8A84B]/30 rounded-xl p-4 flex items-center gap-3">
+          <span className="text-2xl">🔒</span>
+          <p className="text-xs text-[#4A2E10] leading-relaxed font-medium">
+            <strong>100% Secure Checkout.</strong> Your personal details are encrypted and kept strictly confidential.
+          </p>
+        </div>
+      </div>
+
+      {/* ================= RIGHT/BOTTOM: CHECKOUT FORM ================= */}
+      <div className="bg-white rounded-3xl p-8 lg:p-10 shadow-[0_15px_40px_rgba(61,22,0,0.06)] border border-[#E8D8B8]/50">
+        
+        <h3 className="text-xl font-bold text-[#2A1400] mb-6 font-serif border-b border-[#E8D8B8] pb-4">
+          Birth Details & Delivery Info
+        </h3>
+
+        <div className="space-y-6">
+          
+          {/* Row 1: Name & Email */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <Label>Full Name</Label>
+              <input name="name" placeholder="John Doe" className={inputClass} onChange={handleChange} />
+            </div>
+            <div>
+              <Label>Email Address</Label>
+              <input name="email" type="email" placeholder="john@example.com" className={inputClass} onChange={handleChange} />
+            </div>
+          </div>
+
+          {/* Row 2: WhatsApp & Report Type */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <Label>WhatsApp Number</Label>
-              <input name="phone" placeholder="Enter your WhatsApp number" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333]" onChange={handleChange} />
+              <input name="phone" placeholder="+91 98765 43210" className={inputClass} onChange={handleChange} />
             </div>
-
-            {/* Report Type */}
             <div>
-              <Label>Select Report Type</Label>
-              <input name="reportType" value={form.reportType} readOnly className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] bg-gray-50 text-gray-500 outline-none" />
-              <p className="text-[11px] text-gray-400 mt-1">Report type pre-selected based on your selection</p>
+              <Label>Selected Service</Label>
+              <input name="reportType" value={form.reportType} readOnly className={`${inputClass} bg-[#F4EAD6] text-[#6B4423] cursor-not-allowed border-transparent`} />
             </div>
+          </div>
 
-            {/* Grid for 2-column inputs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <Label>Date of Birth</Label>
-                <input name="dob" type="date" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333] text-gray-600" onChange={handleChange} />
-              </div>
-              <div>
-                <Label>Time of Birth</Label>
-                <input name="tob" type="time" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333] text-gray-600" onChange={handleChange} />
-              </div>
-
-              <div>
-                <Label>Birth City</Label>
-                <input name="city" placeholder="Enter a location" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333]" onChange={handleChange} />
-              </div>
-              <div>
-                <Label>Birth Place Pin Code</Label>
-                <input name="pinCode" placeholder="Your Pin Code" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333]" onChange={handleChange} />
-              </div>
-
-              <div>
-                <Label>Gender</Label>
-                <select name="gender" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333] bg-white" onChange={handleChange} defaultValue="">
-                  <option value="" disabled>-- Select Gender --</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-              <div>
-                <Label>Report Language</Label>
-                <select name="language" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333] bg-white" onChange={handleChange} defaultValue="">
-                  <option value="" disabled>--Select--</option>
-                  <option value="english">English</option>
-                  <option value="hindi">Hindi</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Current Challenge */}
+          {/* Row 3: Birth Details */}
+          <div className="bg-[#FFFBF0] border border-[#E8D8B8]/50 p-5 rounded-2xl grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <Label>Current Challenge</Label>
-              <select name="challenge" className="w-full border border-gray-200 rounded-md p-2.5 text-[14px] focus:outline-none focus:border-[#882333] bg-white" onChange={handleChange} defaultValue="No Issue">
-                <option value="No Issue">No Issue</option>
-                <option value="Career">Career</option>
-                <option value="Marriage">Marriage</option>
-                <option value="Health">Health</option>
+              <Label>Date of Birth</Label>
+              <input name="dob" type="date" className={inputClass} onChange={handleChange} />
+            </div>
+            <div>
+              <Label>Time of Birth</Label>
+              <input name="tob" type="time" className={inputClass} onChange={handleChange} />
+            </div>
+            <div>
+              <Label>Birth City</Label>
+              <input name="city" placeholder="e.g. New Delhi" className={inputClass} onChange={handleChange} />
+            </div>
+            <div>
+              <Label>Pin Code</Label>
+              <input name="pinCode" placeholder="e.g. 110001" className={inputClass} onChange={handleChange} />
+            </div>
+          </div>
+
+          {/* Row 4: Preferences */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div>
+              <Label>Gender</Label>
+              <select name="gender" className={inputClass} onChange={handleChange} defaultValue="">
+                <option value="" disabled>Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
               </select>
             </div>
-
-           
-           
-
-            {/* Terms and Conditions */}
-            <div className="flex items-center gap-2 mt-4">
-              <input type="checkbox" id="terms" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} className="w-4 h-4 accent-[#882333] cursor-pointer" />
-              <label htmlFor="terms" className="text-[13px] text-gray-600 cursor-pointer">
-                I agree to the <span className="text-blue-600 hover:underline">Terms and Conditions</span>.
-              </label>
+            <div>
+              <Label>Language</Label>
+              <select name="language" className={inputClass} onChange={handleChange} defaultValue="">
+                <option value="" disabled>Select</option>
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+              </select>
             </div>
-
-            {/* Final Amount */}
-            <div className="bg-[#f8f9fa] border border-gray-200 p-4 rounded-lg flex justify-between items-center mt-6">
-              <span className="font-bold text-gray-800 text-[16px]">Final Amount:</span>
-              <span className="font-bold text-[#882333] text-[20px]">₹{finalAmount}</span>
+            <div>
+              <Label>Current Challenge</Label>
+              <select name="challenge" className={inputClass} onChange={handleChange} defaultValue="No Issue">
+                <option value="No Issue">None</option>
+                <option value="Career">Career / Job</option>
+                <option value="Marriage">Marriage / Love</option>
+                <option value="Health">Health</option>
+                <option value="Wealth">Finance / Wealth</option>
+              </select>
             </div>
+          </div>
 
-            {/* Submit Button */}
-            <button
-              onClick={handlePayment}
-              disabled={loading}
-              className="w-full bg-[#659bf5] hover:bg-[#5289e6] transition-colors text-white py-3.5 rounded-md font-semibold text-[15px] flex justify-center items-center gap-2 mt-4"
-            >
-              {loading ? "Processing..." : (
-                <>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                  Pay with Razorpay
-                </>
-              )}
-            </button>
+          {/* Terms and Conditions */}
+          <div className="flex items-start gap-3 mt-8 p-4 bg-[#FCF7EE] rounded-xl border border-[#E8D8B8]/50">
+            <input 
+              type="checkbox" 
+              id="terms" 
+              checked={agreedToTerms} 
+              onChange={(e) => setAgreedToTerms(e.target.checked)} 
+              className="w-5 h-5 mt-0.5 accent-[#8B1E1E] cursor-pointer rounded border-[#E8D8B8]" 
+            />
+            <label htmlFor="terms" className="text-sm text-[#6B4423] cursor-pointer leading-tight">
+              I verify that the birth details provided are accurate. I agree to the <a href="#" className="text-[#8B1E1E] font-bold hover:underline">Terms of Service</a> and <a href="#" className="text-[#8B1E1E] font-bold hover:underline">Privacy Policy</a>.
+            </label>
+          </div>
 
+          {/* Submit Button */}
+          <button
+            onClick={handlePayment}
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-[#8B1E1E] to-[#5C1414] hover:from-[#A32A2A] hover:to-[#6B1717] transition-all text-white py-5 rounded-xl font-bold text-lg shadow-[0_10px_20px_rgba(139,30,30,0.2)] hover:shadow-[0_15px_30px_rgba(139,30,30,0.3)] hover:-translate-y-0.5 flex justify-center items-center gap-3 mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {loading ? "Processing Securely..." : (
+              <>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Pay ₹{finalAmount} Securely
+              </>
+            )}
+          </button>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <div className="min-h-screen bg-[#FCF7EE] font-sans text-[#2A1400] pb-20">
+      
+      {/* Simple Elegant Header */}
+      <header className="bg-white border-b border-[#E8D8B8] py-5 px-4 mb-8 lg:mb-12 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <a href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full border border-[#C8A84B] flex items-center justify-center text-lg bg-[#F5D98A]/20 text-[#2A1400]">ॐ</div>
+            <div className="font-serif text-xl font-bold text-[#2A1400]">
+              Surbhi <em className="text-[#C8A84B]">Gupta</em>
+            </div>
+          </a>
+          <div className="flex items-center gap-2 text-[#1B4D30] font-bold text-xs uppercase tracking-widest bg-[#E6F5EE] px-3 py-1.5 rounded-full border border-[#1B4D30]/20">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            Secure Checkout
           </div>
         </div>
+      </header>
 
-      </div>
+      {/* Wrap the content in a Suspense boundary so Next.js App Router 
+        doesn't throw build errors when using useSearchParams.
+      */}
+      <Suspense fallback={
+        <div className="flex justify-center items-center h-[50vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B1E1E]"></div>
+        </div>
+      }>
+        <CheckoutContent />
+      </Suspense>
+
     </div>
   );
 }
