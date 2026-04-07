@@ -1220,7 +1220,7 @@ const time = useCountdown();
               {
                 badge: "SPECIAL", badgeColor: "text-[#E2C06A] bg-[#E2C06A]/10 border-[#E2C06A]/30",
                 icon: "🔢",
-                title: "Ank Jyotish Report",
+                title: "Remedies",
                 desc: "Numerology — personality, nature & behaviors",
                 bg: "from-[#2A103A] to-[#10051A]", // Deep Indigo/Purple
                 glow: "rgba(200, 100, 255, 0.15)"
