@@ -47,7 +47,7 @@ function ComparisonSlider2() {
       <div className="absolute inset-0 bg-[#0A1A10]">
         {/* Happy/Prosperous Background Image */}
         <img 
-          src="/life-after.JPEG" 
+          src="/life-after.jpeg" 
           alt="Life After Kundali" 
           className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-screen"
           onError={(e) => {
@@ -100,7 +100,7 @@ function ComparisonSlider2() {
       <div className="absolute inset-0 bg-[#1A0505] clip-before border-r-[3px] border-[#C8A84B] z-20 shadow-[5px_0_15px_rgba(0,0,0,0.5)]">
         {/* Stressed/Gloomy Background Image */}
         <img 
-          src="/life-before.JPEG" 
+          src="/life-before.jpeg" 
           alt="Life Before Kundali" 
           className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-luminosity grayscale"
           onError={(e) => {

@@ -529,10 +529,20 @@ const time = useCountdown();
           NAVBAR
       ════════════════════════════════ */}
       <nav className="sticky top-0 z-[99] flex items-center justify-between px-4 lg:px-8 h-[70px] border-b backdrop-blur-xl" style={{ background: "rgba(252,247,238,0.9)", borderColor: C.iv2 }}>
-        <Link href="/" className="flex-shrink-0 flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full border border-[#C8A84B] flex items-center justify-center text-xl bg-[#F5D98A]/20">ॐ</div>
-          <div className="fraunces text-xl sm:text-2xl font-medium" style={{ color: C.t1 }}>
-            Surbhi <em style={{ color: C.g }}>Gupta</em>
+        <Link href="/" className="flex-shrink-0 flex items-center">
+          <img 
+            src="/logo.svg" 
+            alt="Surbhi Gupta" 
+            className="h-14 sm:h-16 lg:h-16 w-auto object-cover"
+            onError={(e) => {
+              // Fallback to text if the SVG is missing or fails to load
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+          {/* Fallback text just in case the image path is wrong */}
+          <div className="hidden fraunces text-[1.15rem] sm:text-[1.35rem] font-bold" style={{ color: C.t1 }}>
+            Celebrity Astrologer Surbhi <em style={{ fontStyle: "italic", color: C.g }}>Gupta</em>
           </div>
         </Link>
         
@@ -661,7 +671,7 @@ const time = useCountdown();
                 {/* Fallback color while image loads */}
                 <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
                 <img 
-                  src="/surbhi-gupta-portrait.JPG" 
+                  src="/surbhi-gupta-portrait.jpg" 
                   alt="Surbhi Gupta - Trusted Astrologer" 
                   className="absolute inset-0 w-full h-full object-cover z-10"
                   onError={(e) => {
