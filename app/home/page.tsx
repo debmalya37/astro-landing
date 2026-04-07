@@ -6,7 +6,7 @@ import HowItWorksSection from "@/components/Simplesteps";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from 'three';
-import { time } from "three/src/nodes/utils/Timer.js";
+
 import { FaWhatsapp } from 'react-icons/fa6'
 
 /* ─── PREMIUM COLOUR TOKENS ─── */
@@ -466,6 +466,7 @@ export default function NewLandingPage() {
   const [stickyVisible, setStickyVisible] = useState(false);
 const [reportImgError, setReportImgError] = useState(false);
 const countdown = useCountdown();
+const time = useCountdown();
   const spots = useLiveCounter();
   useEffect(() => {
     const onScroll = () => setStickyVisible(window.scrollY > 600);
