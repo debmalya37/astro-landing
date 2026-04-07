@@ -2,7 +2,7 @@
 
 import ComparisonSlider2 from "@/components/Comparisonslider2";
 import HowItWorksSection from "@/components/Simplesteps";
-import StarCanvas from "@/components/StarCanvas";
+
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from 'three';
@@ -95,6 +95,52 @@ const GlobalStyles = () => (
   `}</style>
 );
 
+
+/* ─── STAR CANVAS ─── */
+function StarCanvas({ id, style }: { id: string; style?: React.CSSProperties }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const c = ref.current;
+    if (!c) return;
+    const parent = c.parentElement!;
+    const ctx = c.getContext("2d")!;
+    type Star = { x: number; y: number; r: number; o: number; s: number };
+    let stars: Star[] = [], W = 0, H = 0, frame = 0, raf = 0;
+    const resize = () => {
+      W = c.width = parent.offsetWidth;
+      H = c.height = parent.offsetHeight;
+      stars = Array.from({ length: Math.floor((W * H) / 5500) }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.25,
+        o: Math.random() * 0.5 + 0.15,
+        s: Math.random() * 0.4 + 0.08,
+      }));
+    };
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      frame++;
+      stars.forEach((s, i) => {
+        const fl = 0.5 + 0.5 * Math.sin(frame * s.s + i * 1.4);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,168,75,${s.o * fl})`;
+        ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    resize();
+    draw();
+    window.addEventListener("resize", resize, { passive: true });
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
+  }, []);
+  return (
+    <canvas
+      ref={ref}
+      id={id}
+      style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0, opacity: 0.55, ...style }}
+    />
+  );
+}
 
 /* ─── COUNTDOWN ─── */
 function useCountdown() {
