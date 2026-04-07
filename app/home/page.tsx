@@ -1289,14 +1289,14 @@ const time = useCountdown();
           {/* News Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
             {[
-              { id: 1, publisher: "The Times of India", date: "Oct 2024", img: "/news/001.jpg" },
+              // { id: 1, publisher: "The Times of India", date: "Oct 2024", img: "/news/001.jpg" },
               { id: 2, publisher: "Hindustan Times", date: "Sep 2024", img: "/news/002.jpg" },
               { id: 3, publisher: "Mid-Day", date: "Aug 2024", img: "/news/003.jpg" },
               { id: 4, publisher: "Zee News", date: "Jul 2024", img: "/news/004.jpg" },
-              { id: 5, publisher: "Deccan Chronicle", date: "Jun 2024", img: "/news/005.jpg" },
+              // { id: 5, publisher: "Deccan Chronicle", date: "Jun 2024", img: "/news/005.jpg" },
               { id: 6, publisher: "India Today", date: "May 2024", img: "/news/006.jpg" },
               { id: 7, publisher: "The Tribune", date: "Apr 2024", img: "/news/007.jpg" },
-              { id: 8, publisher: "NDTV", date: "Mar 2024", img: "/news/008.jpg" },
+              // { id: 8, publisher: "NDTV", date: "Mar 2024", img: "/news/008.jpg" },
               { id: 9, publisher: "Firstpost", date: "Feb 2024", img: "/news/009.png" },
               // { id: 5, publisher: "Deccan Chronicle", date: "Jun 2024", img: "/news/010.jpg" },
               // { id: 6, publisher: "India Today", date: "May 2024", img: "/news/011.jpg" },
