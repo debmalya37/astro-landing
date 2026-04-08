@@ -1286,7 +1286,7 @@ const time = useCountdown();
               {
                 badge: "FREE", badgeColor: "text-[#8B1E1E] bg-[#8B1E1E]/10",
                 icon: "👥",
-                title: "Exclusive Astro Community",
+                title: "Free 1 personalised question on whatsapp",
                 desc: "Lifetime access to private astrology group"
               }
             ].map((card, i) => (
@@ -1467,7 +1467,7 @@ const time = useCountdown();
                <img src="/surbhi-gupta-new.JPG" alt="celebrity astrologer Surbhi Gupta Astrologer" className="absolute inset-0 w-full h-full object-cover object-center" 
                     onError={(e) => e.currentTarget.src = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800&h=800"}/>
                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#F5D98A] to-transparent h-32 flex items-end justify-center pb-6">
-                 <h3 className="fraunces text-3xl font-medium text-[#2A1400] drop-shadow-md italic">celebrity astrologer Surbhi Gupta!</h3>
+                 <h3 className="fraunces text-3xl font-medium text-[#2A1400] drop-shadow-md italic">Celebrity Astrologer Surbhi Gupta!</h3>
                </div>
             </div>
             
@@ -1552,7 +1552,7 @@ const time = useCountdown();
               { id: 4, publisher: "Zee News", date: "Jul 2024", img: "/news/004.jpg" },
               // { id: 5, publisher: "Deccan Chronicle", date: "Jun 2024", img: "/news/005.jpg" },
               { id: 6, publisher: "India Today", date: "May 2024", img: "/narendra-modi.jpg" },
-              { id: 7, publisher: "The Tribune", date: "Apr 2024", img: "/news/007.jpg" },
+              // { id: 7, publisher: "The Tribune", date: "Apr 2024", img: "/news/007.jpg" },
               // { id: 8, publisher: "NDTV", date: "Mar 2024", img: "/news/008.jpg" },
               { id: 9, publisher: "Firstpost", date: "Feb 2024", img: "/news/009.png" },
               // { id: 5, publisher: "Deccan Chronicle", date: "Jun 2024", img: "/news/010.jpg" },
@@ -1748,7 +1748,6 @@ const time = useCountdown();
                   "Gemstone & Puja Recommendations",
                   "Monthly Predictions for 12 Months",
                   "Astrograph / Bhavbhal Chart",
-                  "Exclusive Astro Community Access"
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-3 text-white/90 font-medium text-sm sm:text-base">
                     <div className="w-5 h-5 rounded-full bg-[#E2C06A] text-[#2A0E00] flex items-center justify-center text-xs flex-shrink-0 shadow-md mt-0.5">✓</div>

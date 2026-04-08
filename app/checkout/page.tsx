@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 // Reusable Input Label Component
 const Label = ({ children }: { children: React.ReactNode }) => (
@@ -303,12 +304,22 @@ export default function CheckoutPage() {
       {/* Simple Elegant Header */}
       <header className="bg-white border-b border-[#E8D8B8] py-5 px-4 mb-8 lg:mb-12 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full border border-[#C8A84B] flex items-center justify-center text-lg bg-[#F5D98A]/20 text-[#2A1400]">ॐ</div>
-            <div className="font-serif text-xl font-bold text-[#2A1400]">
-              Surbhi <em className="text-[#C8A84B]">Gupta</em>
-            </div>
-          </a>
+           <Link href="/" className="flex-shrink-0 flex items-center">
+          <img 
+            src="/logo.svg" 
+            alt="celebrity astrologer Surbhi Gupta" 
+            className="h-14 sm:h-16 lg:h-16 w-auto object-cover"
+            onError={(e) => {
+              // Fallback to text if the SVG is missing or fails to load
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+          {/* Fallback text just in case the image path is wrong */}
+          <div className="hidden fraunces text-[1.15rem] sm:text-[1.35rem] font-bold">
+            Celebrity Astrologer Surbhi <em style={{ fontStyle: "italic",}}>Gupta</em>
+          </div>
+        </Link>
           <div className="flex items-center gap-2 text-[#1B4D30] font-bold text-xs uppercase tracking-widest bg-[#E6F5EE] px-3 py-1.5 rounded-full border border-[#1B4D30]/20">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
             Secure Checkout
