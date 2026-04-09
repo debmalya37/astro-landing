@@ -41,20 +41,20 @@ function getCareerQuestions(isHi: boolean) {
 }
 
 // Helper: Generate Dynamic Plans (Solutions) based on the selected service
-// Note: Meta limits Titles to 24 chars and Descriptions to 72 chars.
+// CRITICAL: Meta limits Titles to 24 chars and Descriptions to 72 chars.
 function getServicePlans(intent: string = "", isHi: boolean) {
   const lower = intent.toLowerCase();
 
-  // 1. Surbhi Consultation
-  if (lower.includes("consultation") || lower.includes("परामर्श") && !lower.includes("couple")) {
+  // 1. Surbhi Consultation (Safeguarded against "Couple Consultation")
+  if ((lower.includes("consultation") || lower.includes("परामर्श")) && !lower.includes("couple")) {
     return [{
       title: isHi ? "परामर्श योजनाएं" : "Consultation Plans",
       rows: isHi ? [
-        { id: "p1", title: "आमने-सामने (₹24,000)", description: "60 मिनट | ज्योतिष, हस्तरेखा, अंकशास्त्र" },
-        { id: "p2", title: "प्राथमिकता कॉल (₹51,000)", description: "इंतजार छोड़ें | तत्काल परामर्श" }
+        { id: "p1", title: "व्यक्तिगत (₹24,000)", description: "60 मिनट | ज्योतिष, हस्तरेखा, अंकशास्त्र" },
+        { id: "p2", title: "तत्काल (₹51,000)", description: "इंतजार छोड़ें | तत्काल परामर्श" }
       ] : [
-        { id: "p1", title: "Face-to-Face (₹24,000)", description: "60 mins | Astrology, Palmistry, Numerology" },
-        { id: "p2", title: "Priority Consult(₹51,000)", description: "Skip the wait | Fast-track your destiny" }
+        { id: "p1", title: "Offline (₹24,000)", description: "60 mins | Astrology, Palmistry, Numerology" },
+        { id: "p2", title: "Priority (₹51,000)", description: "Skip the wait | Fast-track your destiny" }
       ]
     }];
   }
@@ -64,13 +64,13 @@ function getServicePlans(intent: string = "", isHi: boolean) {
     return [{
       title: isHi ? "अंकशास्त्र योजनाएं" : "Numerology Plans",
       rows: isHi ? [
-        { id: "p1", title: "नाम विश्लेषण (₹1,100)", description: "वर्तमान नाम का विस्तृत विश्लेषण" },
-        { id: "p2", title: "विश्लेषण+सुधार (₹5,100)", description: "सुधारे गए नाम सुझावों के साथ रिपोर्ट" },
-        { id: "p3", title: "रिपोर्ट + कॉल (₹11,000)", description: "सुरभि जी के साथ 30 मिनट का कॉल" }
+        { id: "p1", title: "नाम चेक (₹1,100)", description: "वर्तमान नाम का विस्तृत विश्लेषण" },
+        { id: "p2", title: "नाम सुधार (₹5,100)", description: "सुधारे गए नाम सुझावों के साथ रिपोर्ट" },
+        { id: "p3", title: "कॉल सहित (₹11,000)", description: "सुरभि जी के साथ 30 मिनट का कॉल" }
       ] : [
-        { id: "p1", title: "Name Analysis (₹1,100)", description: "Detailed vibration analysis of current name" },
-        { id: "p2", title: "Analys+Correct (₹5,100)", description: "Report + Corrected name suggestions" },
-        { id: "p3", title: "Complete+Call (₹11,000)", description: "Report + 30-Min Call with Surbhi Gupta" }
+        { id: "p1", title: "Basic (₹1,100)", description: "Detailed vibration analysis of current name" },
+        { id: "p2", title: "Correction (₹5,100)", description: "Report + Corrected name suggestions" },
+        { id: "p3", title: "With Call (₹11,000)", description: "Report + 30-Min Call with Surbhi Gupta" }
       ]
     }];
   }
@@ -81,14 +81,14 @@ function getServicePlans(intent: string = "", isHi: boolean) {
       title: isHi ? "कुंडली मिलान योजनाएं" : "Match Making Plans",
       rows: isHi ? [
         { id: "p1", title: "कपल रिपोर्ट (₹1,100)", description: "विस्तृत अनुकूलता रिपोर्ट" },
-        { id: "p2", title: "रिपोर्ट + 1 प्रश्न (₹3,300)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" },
-        { id: "p3", title: "रिपोर्ट + कॉल (₹11,000)", description: "रिपोर्ट + ऑन-कॉल परामर्श" },
+        { id: "p2", title: "रिपोर्ट+Q (₹3,300)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" },
+        { id: "p3", title: "रिपोर्ट+कॉल (₹11k)", description: "रिपोर्ट + ऑन-कॉल परामर्श" },
         { id: "p4", title: "कपल कॉल (₹15,000)", description: "सुरभि जी के साथ 45 मिनट की कॉल" }
       ] : [
-        { id: "p1", title: "Couple Report (₹1,100)", description: "Detailed compatibility report" },
-        { id: "p2", title: "Report + 1 Q (₹3,300)", description: "Report + Ask 1 question on WhatsApp" },
-        { id: "p3", title: "Report + Call (₹11,000)", description: "Report + On-Call Consultation" },
-        { id: "p4", title: "Consult Call (₹15,000)", description: "45-Min direct call with Surbhi Gupta" }
+        { id: "p1", title: "Basic Match (₹1,100)", description: "Detailed compatibility report" },
+        { id: "p2", title: "Match + 1Q (₹3,300)", description: "Report + Ask 1 question on WhatsApp" },
+        { id: "p3", title: "Match+Call (₹11,000)", description: "Report + On-Call Consultation" },
+        { id: "p4", title: "Direct Call (₹15,000)", description: "45-Min direct call with Surbhi Gupta" }
       ]
     }];
   }
@@ -99,12 +99,12 @@ function getServicePlans(intent: string = "", isHi: boolean) {
       title: isHi ? "बेबी नाम योजनाएं" : "Baby Name Plans",
       rows: isHi ? [
         { id: "p1", title: "बेबी रिपोर्ट (₹1,100)", description: "ज्योतिष और अंकशास्त्र रिपोर्ट" },
-        { id: "p2", title: "रिपोर्ट+नाम+चैट (₹5,100)", description: "रिपोर्ट + नाम सुझाव + 1 प्रश्न" },
-        { id: "p3", title: "प्रीमियम कॉल (₹11,000)", description: "रिपोर्ट + नाम + 30 मिनट का कॉल" }
+        { id: "p2", title: "रिपोर्ट+नाम (₹5,100)", description: "रिपोर्ट + नाम सुझाव + 1 प्रश्न" },
+        { id: "p3", title: "कॉल सहित (₹11,000)", description: "रिपोर्ट + नाम + 30 मिनट का कॉल" }
       ] : [
         { id: "p1", title: "Baby Report (₹1,100)", description: "Astrology & Numerology Report" },
-        { id: "p2", title: "Report+Name+Q (₹5,100)", description: "Report + Name Suggestions + 1 Question" },
-        { id: "p3", title: "Premium Call (₹11,000)", description: "Report + Names + 30-Min Consultation" }
+        { id: "p2", title: "Report+Name (₹5,100)", description: "Report + Name Suggestions + 1 Question" },
+        { id: "p3", title: "Premium Call (₹11k)", description: "Report + Names + 30-Min Consultation" }
       ]
     }];
   }
@@ -114,11 +114,11 @@ function getServicePlans(intent: string = "", isHi: boolean) {
     return [{
       title: isHi ? "समाधान चुनें" : "Choose Solution",
       rows: isHi ? [
-        { id: "p1", title: "प्रीमियम रिपोर्ट (₹999)", description: "आपकी समस्या पर विस्तृत पीडीएफ रिपोर्ट" },
-        { id: "p2", title: "1-ऑन-1 कॉल (₹11,000)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
+        { id: "p1", title: "पीडीएफ रिपोर्ट (₹999)", description: "आपकी समस्या पर विस्तृत पीडीएफ रिपोर्ट" },
+        { id: "p2", title: "व्यक्तिगत कॉल (₹11k)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
       ] : [
-        { id: "p1", title: "Premium Report (₹999)", description: "Detailed PDF report on your specific issue" },
-        { id: "p2", title: "1-on-1 Call (₹11,000)", description: "Personal consultation call with Surbhi ji" }
+        { id: "p1", title: "PDF Report (₹999)", description: "Detailed PDF report on your specific issue" },
+        { id: "p2", title: "1-on-1 Call (₹11k)", description: "Personal consultation call with Surbhi ji" }
       ]
     }];
   }
@@ -127,13 +127,13 @@ function getServicePlans(intent: string = "", isHi: boolean) {
   return [{
     title: isHi ? "कुंडली योजनाएं" : "Kundli Plans",
     rows: isHi ? [
-      { id: "p1", title: "10-वर्षीय रिपोर्ट (₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट" },
-      { id: "p2", title: "रिपोर्ट+1 प्रश्न (₹2,999)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" },
-      { id: "p3", title: "संपूर्ण मार्गदर्शन(₹11,000)", description: "रिपोर्ट + 30 मिनट कॉल परामर्श" }
+      { id: "p1", title: "10-साल रिपोर्ट(₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट" },
+      { id: "p2", title: "रिपोर्ट+Q (₹2,999)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" },
+      { id: "p3", title: "कॉल सहित (₹11,000)", description: "रिपोर्ट + 30 मिनट कॉल परामर्श" }
     ] : [
-      { id: "p1", title: "10-Year Report (₹999)", description: "Detailed astrological prediction report" },
-      { id: "p2", title: "Report + 1 Q (₹2,999)", description: "10-Year Report + Ask 1 question via chat" },
-      { id: "p3", title: "Complete Guide (₹11,000)", description: "Report + 1 Q + 30-Min Call Consultation" }
+      { id: "p1", title: "10-Yr Report (₹999)", description: "Detailed astrological prediction report" },
+      { id: "p2", title: "Report + 1Q (₹2,999)", description: "10-Year Report + Ask 1 question via chat" },
+      { id: "p3", title: "With Call (₹11,000)", description: "Report + 1 Q + 30-Min Call Consultation" }
     ]
   }];
 }
