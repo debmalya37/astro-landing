@@ -24,10 +24,10 @@ export async function GET(req: Request) {
       const lastInteractionTime = parseInt(timestampStr, 10);
       const timeDiff = now - lastInteractionTime;
 
-      // If it's been exactly between 24 and 25 hours since their last message
-      if (timeDiff >= TWENTY_FOUR_HOURS && timeDiff < TWENTY_FOUR_HOURS + (60 * 60 * 1000)) {
+      // UPDATED LOGIC: If it's been MORE than 24 hours since their last message
+      if (timeDiff >= TWENTY_FOUR_HOURS) {
         
-        // Ensure we haven't already sent a follow-up to this user today
+        // Ensure we haven't already sent a follow-up to this user
         const alreadyFollowedUp = await redis.get(`followed_up:${phone}`);
         
         if (!alreadyFollowedUp) {
