@@ -55,7 +55,6 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
       action: {
         buttons: buttons.slice(0, 3).map((btnTitle, index) => ({
           type: "reply",
-          // Meta limits button titles to 20 characters!
           reply: { id: `btn_${index}`, title: btnTitle.substring(0, 20) } 
         }))
       }
@@ -110,54 +109,102 @@ export async function POST(req: Request) {
     });
 
     // C. SEND EMAILS (CUSTOMER & ADMIN)
-    try {
-      // 1. Email to Customer
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM || "no-reply@yourdomain.com",
-        to: form.email,
-        subject: `Your ${form.reportType} Order is Confirmed! ✨`,
-        html: `<h2>Radhe Radhe ${form.name} ji,</h2><p>Your payment of ₹${finalAmount} for the <strong>${form.reportType}</strong> is confirmed. Please check your WhatsApp for the next steps!</p>`,
-      });
+    const adminEmail = process.env.ADMIN_EMAIL || "developer.thinqit@gmail.com"; 
+    const senderEmail = process.env.EMAIL_FROM || "surabhiastrology <careers@thinqit.in>";
 
-      // 2. Email to Admin (YOU)
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM || "no-reply@yourdomain.com",
-        to: process.env.ADMIN_EMAIL || "your-email@example.com", // Add your email here or in .env
-        subject: `🚨 NEW ORDER: ${form.reportType}`,
-        html: `
-          <h2>New Order Received! 🚀</h2>
-          <p><strong>Customer:</strong> ${form.name}</p>
-          <p><strong>Phone:</strong> ${form.phone}</p>
-          <p><strong>Email:</strong> ${form.email}</p>
-          <p><strong>Service Ordered:</strong> ${form.reportType}</p>
-          <p><strong>Amount Paid:</strong> ₹${finalAmount}</p>
-        `,
-      });
-    } catch (emailError) {
-      console.error("❌ Failed to send emails:", emailError);
+    // 1. Email to Customer
+    const { error: customerError } = await resend.emails.send({
+      from: senderEmail,
+      to: form.email,
+      subject: `Your ${form.reportType} Order is Confirmed! ✨`,
+      html: `<h2>Radhe Radhe ${form.name} ji,</h2><p>Your payment of ₹${finalAmount} for the <strong>${form.reportType}</strong> is confirmed. Please check your WhatsApp for the next steps!</p>`,
+    });
+
+    if (customerError) {
+      console.error("❌ Failed to send Customer Email:", customerError);
+    } else {
+      console.log("✅ Customer Email sent successfully to:", form.email);
+    }
+
+    // 2. Email to Admin (YOU) - UPDATED WITH FULL DETAILS
+    const { error: adminError } = await resend.emails.send({
+      from: senderEmail,
+      to: adminEmail,
+      subject: `🚨 NEW ORDER: ${form.reportType}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
+          <h2 style="color: #8B1E1E; border-bottom: 2px solid #8B1E1E; padding-bottom: 10px;">New Order Received! 🚀</h2>
+          
+          <h3 style="background-color: #f9f9f9; padding: 8px; margin-top: 20px;">🛒 Order Details</h3>
+          <ul style="list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 8px;"><strong>Package:</strong> ${form.reportType}</li>
+            <li style="margin-bottom: 8px;"><strong>Amount Paid:</strong> ₹${finalAmount}</li>
+            <li style="margin-bottom: 8px;"><strong>Payment ID:</strong> ${razorpay_payment_id}</li>
+          </ul>
+
+          <h3 style="background-color: #f9f9f9; padding: 8px; margin-top: 20px;">👤 Contact Info</h3>
+          <ul style="list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 8px;"><strong>Name:</strong> ${form.name}</li>
+            <li style="margin-bottom: 8px;"><strong>WhatsApp:</strong> ${form.phone}</li>
+            <li style="margin-bottom: 8px;"><strong>Email:</strong> ${form.email}</li>
+          </ul>
+
+          <h3 style="background-color: #f9f9f9; padding: 8px; margin-top: 20px;">✨ Birth & Astrological Details</h3>
+          <ul style="list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 8px;"><strong>Date of Birth:</strong> ${form.dob}</li>
+            <li style="margin-bottom: 8px;"><strong>Time of Birth:</strong> ${form.tob}</li>
+            <li style="margin-bottom: 8px;"><strong>City of Birth:</strong> ${form.city}</li>
+            <li style="margin-bottom: 8px;"><strong>Pin Code:</strong> ${form.pinCode}</li>
+            <li style="margin-bottom: 8px;"><strong>Gender:</strong> <span style="text-transform: capitalize;">${form.gender || "Not specified"}</span></li>
+          </ul>
+
+          <h3 style="background-color: #f9f9f9; padding: 8px; margin-top: 20px;">🎯 Preferences</h3>
+          <ul style="list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 8px;"><strong>Language:</strong> <span style="text-transform: capitalize;">${form.language || "Not specified"}</span></li>
+            <li style="margin-bottom: 8px;"><strong>Current Challenge:</strong> ${form.challenge || "None"}</li>
+          </ul>
+        </div>
+      `,
+    });
+
+    if (adminError) {
+      console.error("❌ Failed to send Admin Email:", adminError);
+    } else {
+      console.log("✅ Admin Email sent successfully to:", adminEmail);
     }
 
     // D. TRIGGER WHATSAPP BOT
+    // D. TRIGGER WHATSAPP BOT
     try {
-      let formattedPhone = form.phone.replace(/\D/g, ""); 
+      let formattedPhone = form.phone.replace(/\D/g, ""); // In webhook file use: order.customer.phone.replace(...)
       if (formattedPhone.length === 10) {
         formattedPhone = `91${formattedPhone}`; 
       }
 
-      // Dynamic Message with Service Name and 72 hours
-      const replyMessage = `✅ *Payment Confirmed!*\n\n🙏 *Radhe Radhe, ${form.name} ji!*\nYour order for the *${form.reportType}* has been successfully confirmed.\n\nSurbhi ji and the team will deliver your detailed analysis right here within *72 hours*. ⏳\n\nBefore we begin, we need your birth details 👇\n\n*1️⃣ Full Date of Birth (DD/MM/YYYY)*\n*2️⃣ Exact Time of Birth*\n*3️⃣ Place of Birth*`;
+      const reportType = form.reportType || "Service"; // In webhook file use: order.reportType
+      const isHi = form.language === "hindi"; // In webhook file use: order.customer.language === "hindi"
+      const isCareer = reportType.toLowerCase().includes("career") || reportType.toLowerCase().includes("करियर");
+
+      let replyMessage = `✅ *Payment Confirmed!*\n\n🙏 *Radhe Radhe, ${form.name || "ji"}!*\nYour order for the *${reportType}* has been successfully confirmed.\n\nSurbhi ji and the team will deliver your detailed analysis right here within *72 hours*. ⏳`;
       
-      // Kept under 20 characters!
-      const buttons = ["Share Details Now", "Don't know time"];
-
-      await sendWhatsAppMessage(formattedPhone, replyMessage, buttons);
-
-      // Update the user's Bot State in Redis
-      const newState = { 
-        step: "F1_AWAITING_DETAILS", 
-        userData: { name: form.name } 
-      };
-      await redis.set(`user_state:${formattedPhone}`, JSON.stringify(newState), "EX", 86400);
+      if (!isCareer) {
+        // Normal Flow (No Free Question)
+        await sendWhatsAppMessage(formattedPhone, replyMessage);
+        
+        // Mark as F1_END since we don't need any more info
+        const newState = { step: "F1_END", userData: { name: form.name } };
+        await redis.set(`user_state:${formattedPhone}`, JSON.stringify(newState), "EX", 86400);
+      } else {
+        // Career Flow (Ask Free Question)
+        replyMessage += `\n\n🎁 *Bonus:* As promised, please click below to choose your 1 FREE career question!`;
+        const buttons = isHi ? ["प्रश्न पूछें"] : ["Ask Question"]; // Meta max 20 chars
+        
+        await sendWhatsAppMessage(formattedPhone, replyMessage, buttons);
+        
+        // Set state to F1_START so when they click the button, waFlow.ts sends the List of questions
+        const newState = { step: "F1_START", userData: { name: form.name, intent: reportType, language: isHi ? "hi" : "en" } };
+        await redis.set(`user_state:${formattedPhone}`, JSON.stringify(newState), "EX", 86400);
+      }
 
     } catch (waError) {
       console.error("❌ Failed to trigger WhatsApp Bot:", waError);
