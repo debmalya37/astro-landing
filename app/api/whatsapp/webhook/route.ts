@@ -8,8 +8,12 @@ const redis = new Redis(process.env.REDIS_URL!, {
   maxRetriesPerRequest: 3
 });
 
-// Exporting this so we can reuse it in the checkout/payment-success route!
-export async function sendWhatsAppMessage(to: string, text: string, options?: { buttons?: string[], list?: any, image?: string }) {
+// ✅ UPDATED: Added urlButton to the options interface
+export async function sendWhatsAppMessage(
+  to: string, 
+  text: string, 
+  options?: { buttons?: string[], list?: any, image?: string, urlButton?: { text: string; url: string } }
+) {
   const phoneNumberId = process.env.WHATSAPP_PHONE_ID!;
   const token = process.env.WHATSAPP_TOKEN!;
   const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
@@ -30,10 +34,28 @@ export async function sendWhatsAppMessage(to: string, text: string, options?: { 
 
   let payload: any = { messaging_product: "whatsapp", recipient_type: "individual", to: to };
 
-  if (options?.list) {
+  // ✅ NEW LOGIC: Handle URL Buttons (cta_url)
+  if (options?.urlButton) {
+    payload.type = "interactive";
+    payload.interactive = {
+      type: "cta_url",
+      body: { text: text },
+      action: {
+        name: "cta_url",
+        parameters: {
+          display_text: options.urlButton.text,
+          url: options.urlButton.url
+        }
+      }
+    };
+  } 
+  // Existing Logic for Lists
+  else if (options?.list) {
     payload.type = "interactive";
     payload.interactive = { type: "list", body: { text: text }, action: options.list };
-  } else if (options?.buttons && options.buttons.length > 0) {
+  } 
+  // Existing Logic for Reply Buttons
+  else if (options?.buttons && options.buttons.length > 0) {
     payload.type = "interactive";
     payload.interactive = {
       type: "button",
@@ -46,10 +68,14 @@ export async function sendWhatsAppMessage(to: string, text: string, options?: { 
       }
     };
     if (options.image) payload.interactive.header = { type: "image", image: { link: options.image } };
-  } else if (options?.image) {
+  } 
+  // Existing Logic for Images
+  else if (options?.image) {
     payload.type = "image";
     payload.image = { link: options.image, caption: text };
-  } else {
+  } 
+  // Existing Logic for Plain Text
+  else {
     payload.type = "text";
     payload.text = { body: text };
   }
@@ -90,9 +116,8 @@ export async function POST(req: NextRequest) {
     await redis.set(`msg_processed:${messageId}`, "1", "EX", 3600); // Store for 1 hour
 
     // 2. TRACK FOR 24-HOUR FOLLOW UP
-    // We store the timestamp of their last message. 
     await redis.hset("wa_last_interaction", from, Date.now().toString());
-    await redis.hset("wa_names", from, waName); // Save their name for the cron job
+    await redis.hset("wa_names", from, waName);
 
     let text = message?.type === "interactive" 
       ? (message?.interactive?.list_reply?.title || message?.interactive?.button_reply?.title || "") 
@@ -104,10 +129,13 @@ export async function POST(req: NextRequest) {
     // Ensure name is always in state
     prev.userData.name = waName;
 
-    const { reply, buttons, list, image, newState } = nextMessage(text, prev);
+    // ✅ UPDATED: Extract urlButton from nextMessage response
+    const { reply, buttons, list, image, urlButton, newState } = nextMessage(text, prev);
 
     await redis.set(`user_state:${from}`, JSON.stringify(newState), "EX", 86400);
-    await sendWhatsAppMessage(from, reply, { buttons, list, image });
+    
+    // ✅ UPDATED: Pass urlButton into sendWhatsAppMessage
+    await sendWhatsAppMessage(from, reply, { buttons, list, image, urlButton });
 
     return new NextResponse("OK", { status: 200 });
   } catch (error) {

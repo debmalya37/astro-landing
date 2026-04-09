@@ -44,7 +44,7 @@ function getServicePlans(intent: string = "", isHi: boolean) {
   const lower = intent.toLowerCase();
 
   // 1. Surbhi Consultation
-if ((lower.includes("consultation") || lower.includes("परामर्श")) && !lower.includes("couple")) {
+  if ((lower.includes("consultation") || lower.includes("परामर्श")) && !lower.includes("couple")) {
     return [{
       title: isHi ? "परामर्श योजनाएं" : "Consultation Plans",
       rows: isHi ? [
@@ -57,7 +57,7 @@ if ((lower.includes("consultation") || lower.includes("परामर्श")) 
     }];
   }
 
-   // 2. Numerology Report
+  // 2. Numerology Report
   if (lower.includes("numerology") || lower.includes("अंकशास्त्र")) {
     return [{
       title: isHi ? "अंकशास्त्र योजनाएं" : "Numerology Plans",
@@ -121,7 +121,7 @@ if ((lower.includes("consultation") || lower.includes("परामर्श")) 
     }];
   }
 
- // 6. Default: Surbhi Kundli
+  // 6. Default: Surbhi Kundli
   return [{
     title: isHi ? "कुंडली योजनाएं" : "Kundli Plans",
     rows: isHi ? [
@@ -136,10 +136,11 @@ if ((lower.includes("consultation") || lower.includes("परामर्श")) 
   }];
 }
 
+// Added urlButton to the return type
 export function nextMessage(
   input: string,
   state: FlowState
-): { reply: string; buttons?: string[]; list?: any; image?: string; newState: FlowState } {
+): { reply: string; buttons?: string[]; list?: any; image?: string; urlButton?: { text: string; url: string }; newState: FlowState } {
   const msg = input.trim();
   const lowerMsg = msg.toLowerCase();
   const currentState = state?.step ? state : { step: "START" as BotStep, userData: {} };
@@ -149,7 +150,6 @@ export function nextMessage(
   const paymentLink = `${baseUrl}/checkout`;
   const imgWelcome = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuTgSGYd_yMRX4jHMgI_Pvfb2bqtVoqZM3eQ&s"; 
   const imgServices = "https://pbs.twimg.com/profile_images/2027040849813721088/X4RajwNP.jpg"; 
-  const imgReport = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuOgvfQs_8khHNveOkNJ59hPKLNmtIA930Kw&s";
 
   const isHi = data.language === "hi";
   const userName = data.name && data.name !== "Seeker" ? data.name : "";
@@ -256,8 +256,8 @@ export function nextMessage(
       const checkoutUrl = `${paymentLink}?service=${encodedService}&plan=${encodedPlan}`;
       
       let checkoutMsg = isHi
-        ? `कृपया आगे बढ़ने के लिए नीचे क्लिक करें 👇\n\n🔗 ${checkoutUrl}`
-        : `Please click below to proceed with your selection 👇\n\n🔗 ${checkoutUrl}`;
+        ? `धन्यवाद! 🌟\n\nकृपया सुरक्षित भुगतान के लिए नीचे दिए गए *'Proceed'* बटन पर क्लिक करें 👇`
+        : `Thank you! 🌟\n\nPlease click the *'Proceed'* button below for secure payment 👇`;
         
       if (isCareerService(data.intent)) {
         checkoutMsg += isHi 
@@ -267,14 +267,15 @@ export function nextMessage(
 
       return {
         reply: checkoutMsg,
+        // ✅ NEW: Added the URL button payload
+        urlButton: {
+          text: "Proceed",
+          url: checkoutUrl
+        },
         newState: { step: "F2_CHECKOUT", userData: data },
       };
 
-    // ==========================================
-    // POST-PAYMENT FLOW (No DOB Collection)
-    // ==========================================
     case "F1_START":
-      // This is triggered when API sets step to F1_START and user clicks "Ask Question" button
       return {
         reply: isHi
           ? "✨ *उत्तम।*\n\nवादे के अनुसार, अब आप अपने करियर से संबंधित अपना 1 मुफ़्त प्रश्न पूछ सकते हैं। कृपया नीचे दिए गए विकल्पों में से चुनें 👇"
