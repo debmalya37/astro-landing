@@ -73,8 +73,8 @@ export default function HowItWorksSection() {
             {/* Desktop Track (Horizontal) */}
             <div className="hidden md:block absolute left-[5%] right-[5%] top-10 h-[2px] bg-white/10 rounded-full"></div>
             
-            {/* Mobile Track (Vertical) */}
-            <div className="block md:hidden absolute left-1/2 -translate-x-1/2 top-[5%] bottom-[5%] w-[2px] bg-white/10 rounded-full"></div>
+            {/* Mobile Track (Vertical - Shifted to left-6 to center behind the 48px circle) */}
+            <div className="block md:hidden absolute left-6 top-[5%] bottom-[5%] w-[2px] bg-white/10 rounded-full"></div>
 
             {/* =========================================
                 THE FILLS (Glowing Golden Lines)
@@ -87,9 +87,9 @@ export default function HowItWorksSection() {
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#FFF] rounded-full shadow-[0_0_20px_10px_rgba(226,192,106,0.6)]"></div>
             </div>
 
-            {/* Mobile Fill (Vertical) */}
+            {/* Mobile Fill (Vertical - Shifted left to match track) */}
             <div 
-              className="block md:hidden absolute left-1/2 -translate-x-1/2 top-[5%] w-[2px] bg-gradient-to-b from-[#C8A84B] to-[#F5D98A] rounded-full shadow-[0_0_15px_#C8A84B] transition-all duration-300 ease-out"
+              className="block md:hidden absolute left-6 top-[5%] w-[2px] bg-gradient-to-b from-[#C8A84B] to-[#F5D98A] rounded-full shadow-[0_0_15px_#C8A84B] transition-all duration-300 ease-out"
               style={{ height: `${scrollProgress * 0.9}%` }}
             >
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#FFF] rounded-full shadow-[0_0_20px_10px_rgba(226,192,106,0.6)]"></div>
@@ -98,17 +98,17 @@ export default function HowItWorksSection() {
             {/* =========================================
                 TIMELINE ITEMS
                 ========================================= */}
-            {/* Flex-col for mobile, Flex-row for desktop */}
-            <div className="flex flex-col md:flex-row justify-between relative z-10 gap-12 md:gap-0">
+            <div className="flex flex-col md:flex-row justify-between relative z-10 gap-8 md:gap-0">
               {steps.map((step, index) => {
                 const activationPoint = (index / (steps.length - 1)) * 100;
                 const isActive = scrollProgress >= activationPoint - 5; 
 
                 return (
-                  <div key={index} className="flex flex-col items-center text-center w-full md:w-48 relative group">
+                  // Mobile: Flex-row (left to right). Desktop: Flex-col (top to bottom)
+                  <div key={index} className="flex flex-row md:flex-col items-start md:items-center text-left md:text-center w-full md:w-48 relative group">
                     
                     {/* Circle Node */}
-                    <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold text-lg transition-all duration-500 delay-75 shadow-lg mb-4 md:mb-6 relative z-10 ${
+                    <div className={`w-12 h-12 flex-shrink-0 rounded-full border-2 flex items-center justify-center font-bold text-lg transition-all duration-500 delay-75 shadow-lg mr-6 md:mr-0 mb-0 md:mb-6 relative z-10 ${
                       isActive 
                         ? "bg-[#D89F3C] border-[#F5D98A] text-[#2A0E00] shadow-[0_0_30px_rgba(226,192,106,0.5)] scale-110" 
                         : "bg-[#2A0E00] border-[#4A2E10] text-white/30 scale-100"
@@ -116,24 +116,27 @@ export default function HowItWorksSection() {
                       {step.num}
                     </div>
 
-                    {/* Step Icon */}
-                    <div className={`text-3xl md:text-4xl mb-3 md:mb-4 transition-all duration-700 transform ${
-                      isActive ? "opacity-100 translate-y-0 scale-110 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" : "opacity-20 translate-y-4 scale-90 grayscale"
-                    }`}>
-                      {step.icon}
-                    </div>
+                    {/* Content Wrapper (Icon + Text side-by-side with circle on mobile) */}
+                    <div className="flex flex-col items-start md:items-center flex-1 pt-1 md:pt-0">
+                      {/* Step Icon */}
+                      <div className={`text-3xl md:text-4xl mb-2 md:mb-4 transition-all duration-700 transform ${
+                        isActive ? "opacity-100 translate-y-0 scale-110 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" : "opacity-20 translate-y-4 scale-90 grayscale"
+                      }`}>
+                        {step.icon}
+                      </div>
 
-                    {/* Text Content */}
-                    <h3 className={`fraunces text-base md:text-lg font-bold mb-1 md:mb-2 transition-colors duration-500 ${
-                      isActive ? "text-[#F5D98A]" : "text-white/40"
-                    }`}>
-                      {step.title}
-                    </h3>
-                    <p className={`text-xs font-medium leading-relaxed transition-colors duration-500 px-2 ${
-                      isActive ? "text-white/80" : "text-white/20"
-                    }`}>
-                      {step.desc}
-                    </p>
+                      {/* Text Content */}
+                      <h3 className={`fraunces text-base md:text-lg font-bold mb-1 md:mb-2 transition-colors duration-500 ${
+                        isActive ? "text-[#F5D98A]" : "text-white/40"
+                      }`}>
+                        {step.title}
+                      </h3>
+                      <p className={`text-xs font-medium leading-relaxed transition-colors duration-500 px-0 md:px-2 ${
+                        isActive ? "text-white/80" : "text-white/20"
+                      }`}>
+                        {step.desc}
+                      </p>
+                    </div>
 
                   </div>
                 );

@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from 'three';
 
 import { FaWhatsapp } from 'react-icons/fa6'
+import TestimonialsSection from "@/components/Testimonials";
 
 /* ─── PREMIUM COLOUR TOKENS ─── */
 const C = {
@@ -970,7 +971,7 @@ const time = useCountdown();
             ].map((item, i) => (
               <div 
                 key={i} 
-                className={`reveal d${(i % 3) + 1} group relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden cursor-pointer bg-[#2A0E00] shadow-xl hover:shadow-[0_30px_60px_rgba(200,168,75,0.25)] transition-all duration-500 hover:-translate-y-3`}
+                className={`reveal d${(i % 3) + 1} group relative w-full aspect-[2/1] md:aspect-[4/5] rounded-[2rem] overflow-hidden cursor-pointer bg-[#2A0E00] shadow-xl hover:shadow-[0_30px_60px_rgba(200,168,75,0.25)] transition-all duration-500 hover:-translate-y-3`}
               >
                 {/* 1. Background Image with 3D Zoom Effect */}
                 <img 
@@ -1055,23 +1056,25 @@ const time = useCountdown();
 {/* ════════════════════════════════
           FEATURED PREDICTION (Modi Section)
       ════════════════════════════════ */}
-      <section className="py-14 md:py-20 bg-[#FCF7EE] px-4 sm:px-5">
+      <section className="py-8 sm:py-12 md:py-20 bg-[#FCF7EE] px-4 sm:px-5">
         <div className="max-w-[1200px] mx-auto reveal">
           
           {/* Main Container - Dark Cinematic Wrapper */}
-          <div className="relative rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(61,22,0,0.2)] bg-[#2A0E00] border border-[#C8A84B]/20 flex flex-col md:flex-row items-center justify-center min-h-[650px] sm:min-h-[700px] md:min-h-[450px] lg:min-h-[500px]">
+          {/* CRITICAL CHANGE: Reduced mobile min-height drastically (from 650px to 460px) */}
+          <div className="relative rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(61,22,0,0.2)] bg-[#2A0E00] border border-[#C8A84B]/20 flex flex-col md:flex-row items-center justify-center min-h-[460px] sm:min-h-[520px] md:min-h-[450px] lg:min-h-[500px]">
             
             {/* ================= BACKGROUND IMAGES & GRADIENT MASKS ================= */}
             
             {/* LEFT / TOP: PM Modi Image */}
-            <div className="absolute top-0 left-0 w-full md:w-1/2 h-[220px] sm:h-[260px] md:h-full opacity-90 md:opacity-80">
+            {/* CRITICAL CHANGE: Reduced mobile image height (h-[180px]) */}
+            <div className="absolute top-0 left-0 w-full md:w-1/2 h-[180px] sm:h-[220px] md:h-full opacity-90 md:opacity-80">
               <img 
                 src="https://archive.siasat.com/wp-content/uploads/2023/07/2023_7img15_Jul_2023_PTI07_15_2023_000054B-scaled-1.jpg" 
                 alt="PM Narendra Modi" 
                 className="w-full h-full object-cover object-[center_top] md:object-[right_top]"
                 onError={(e) => {
                   e.currentTarget.onerror = null; 
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1542360663-8f4023704c71?auto=format&fit=crop&q=80&w=800"; // Fallback placeholder
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1542360663-8f4023704c71?auto=format&fit=crop&q=80&w=800";
                 }}
               />
               {/* Fade to transparent on bottom (Mobile) and right (Desktop) */}
@@ -1079,14 +1082,15 @@ const time = useCountdown();
             </div>
 
             {/* RIGHT / BOTTOM: Celebrity Astrologer Surbhi Gupta Image */}
-            <div className="absolute bottom-0 right-0 w-full md:w-1/2 h-[260px] sm:h-[300px] md:h-full opacity-90 md:opacity-80">
+            {/* CRITICAL CHANGE: Reduced mobile image height (h-[200px]) */}
+            <div className="absolute bottom-0 right-0 w-full md:w-1/2 h-[200px] sm:h-[240px] md:h-full opacity-90 md:opacity-80">
               <img 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuTgSGYd_yMRX4jHMgI_Pvfb2bqtVoqZM3eQ&s" 
+                src="/surbhi-narendra.JPG" 
                 alt="Celebrity Astrologer Surbhi Gupta" 
-                className="w-full h-full object-cover md:object-contain object-[center_top] md:object-right"
+                className="w-full h-full object-cover md:object-left object-[center_top]"
                 onError={(e) => {
                   e.currentTarget.onerror = null; 
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800"; // Fallback placeholder
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800";
                 }}
               />
               {/* Fade to transparent on top (Mobile) and left (Desktop) */}
@@ -1094,31 +1098,33 @@ const time = useCountdown();
             </div>
 
             {/* ================= CENTER: TEXT CONTENT ================= */}
-            <div className="relative z-20 w-full max-w-2xl mx-auto px-4 py-8 md:py-20 flex flex-col items-center text-center my-auto md:my-0">
+            {/* CRITICAL CHANGE: Tightened padding and text sizes for mobile */}
+            <div className="relative z-20 w-full max-w-2xl mx-auto px-4 py-6 sm:py-8 md:py-20 flex flex-col items-center text-center my-auto md:my-0">
               
-              {/* Central Glowing Aura - Reduced vertical spread on mobile so faces are visible */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[110%] md:w-[120%] md:h-[150%] bg-[#2A0E00] blur-xl md:blur-2xl rounded-full opacity-100 -z-10"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[110%] md:h-full bg-[#C8A84B] blur-[50px] md:blur-[100px] rounded-full opacity-15 md:opacity-10 -z-10"></div>
+              {/* Central Glowing Aura - Tighter spread on mobile */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[100%] md:w-[100%] md:h-[150%] bg-[#2A0E00] blur-lg md:blur-2xl rounded-full opacity-100 -z-10"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] md:w-[100%] md:h-full bg-[#C8A84B] blur-[40px] md:blur-[100px] rounded-full opacity-20 md:opacity-10 -z-10"></div>
 
               {/* Tag / Badge */}
-              <div className="inline-flex items-center gap-2 bg-[#F5D98A]/10 border border-[#F5D98A]/30 text-[#F5D98A] text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.2em] px-3 py-1.5 sm:px-4 sm:py-1.5 rounded-full mb-3 sm:mb-4 shadow-[0_0_15px_rgba(245,217,138,0.1)]">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#F5D98A]/10 border border-[#F5D98A]/30 text-[#F5D98A] text-[8px] sm:text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-2 sm:mb-3 md:mb-4 shadow-[0_0_15px_rgba(245,217,138,0.1)]">
                 <span>★</span> Featured Prediction
               </div>
               
               {/* Title */}
-              <h2 className="fraunces text-3xl sm:text-5xl lg:text-6xl font-bold text-[#E2C06A] mb-1 sm:mb-2 drop-shadow-md uppercase tracking-wide">
+              <h2 className="fraunces text-[28px] leading-none sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#E2C06A] mb-1 sm:mb-2 drop-shadow-md uppercase tracking-wide">
                 Narendra Modi
               </h2>
               
               {/* Subtitle */}
-              <h3 className="text-[#E8D8B8] font-serif text-sm sm:text-lg lg:text-xl italic mb-4 sm:mb-6 px-4">
+              <h3 className="text-[#E8D8B8] font-serif text-xs sm:text-sm md:text-lg lg:text-xl italic mb-3 sm:mb-4 md:mb-6 px-2">
                 Prime Ministerial Astrological Insights
               </h3>
               
               {/* Description Line */}
-              <div className="w-12 sm:w-16 h-[1px] bg-[#C8A84B]/40 mb-4 sm:mb-6"></div>
+              <div className="w-10 sm:w-16 h-[1px] bg-[#C8A84B]/40 mb-3 sm:mb-4 md:mb-6"></div>
               
-              <p className="text-white/80 text-xs sm:text-base leading-relaxed font-medium max-w-[280px] sm:max-w-md">
+              {/* Paragraph */}
+              <p className="text-white/80 text-[11px] sm:text-xs md:text-base leading-snug sm:leading-relaxed font-medium max-w-[260px] sm:max-w-[320px] md:max-w-md">
                 Discover the remarkable celestial predictions that accurately foretold India's political transformation and leadership journey.
               </p>
 
@@ -1344,7 +1350,7 @@ const time = useCountdown();
       {/* ════════════════════════════════
           INSIDE THE REPORT (Cinematic Cosmic Layout)
       ════════════════════════════════ */}
-      <section className=" py-8 md:py-14  relative overflow-hidden" style={{ background: C.dk2 }}>
+     <section className="py-8 sm:py-12 md:py-14 relative overflow-hidden" style={{ background: C.dk2 }}>
         
         {/* Cinematic Ambient Background Gradients */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(200,168,75,0.15)_0%,transparent_50%)] pointer-events-none" />
@@ -1352,82 +1358,83 @@ const time = useCountdown();
         {/* Starry noise overlay */}
         <div className="absolute inset-0 opacity-[0.02] mix-blend-screen pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/stardust.png")' }}></div>
         
-        <div className="max-w-7xl mx-auto px-5 relative z-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* Reduced gap on mobile (gap-8 instead of gap-12) */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 relative z-10 grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           
           {/* ================= LEFT: TEXT & FEATURES ================= */}
-          <div className="reveal">
+          <div className="reveal mt-2 sm:mt-0 text-center sm:text-left">
             
-            <div className="inline-block bg-[#C8A84B]/10 text-[#F5D98A] text-[10px] sm:text-xs font-medium tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-6 border border-[#C8A84B]/20">
+            <div className="inline-block bg-[#C8A84B]/10 text-[#F5D98A] text-[9px] sm:text-xs font-medium tracking-[0.2em] uppercase px-3 sm:px-4 py-1.5 rounded-full mb-4 sm:mb-6 border border-[#C8A84B]/20">
               Deep Vedic Analysis
             </div>
             
             {/* Cinematic Gradient Title */}
-            <h2 className="fraunces text-4xl sm:text-5xl lg:text-6xl font-medium mb-6 bg-gradient-to-br from-white via-[#F5D98A] to-[#C8A84B] bg-clip-text text-transparent leading-tight drop-shadow-sm">
-              Get Your Smart <br/>Kundli Online
+            <h2 className="fraunces text-[2.2rem] leading-tight sm:text-5xl lg:text-6xl font-medium mb-4 sm:mb-6 bg-gradient-to-br from-white via-[#F5D98A] to-[#C8A84B] bg-clip-text text-transparent drop-shadow-sm">
+              Get Your Smart <br className="hidden sm:block"/>Kundli Online
             </h2>
             
-            <p className="text-[#E8D8B8]/80 font-light text-base sm:text-lg mb-10 leading-relaxed max-w-lg">
+            {/* Tightened margin (mb-6 on mobile, mb-10 on sm) */}
+            <p className="text-[#E8D8B8]/80 font-light text-sm sm:text-lg mb-6 sm:mb-10 leading-relaxed max-w-lg mx-auto sm:mx-0">
               Apni online kundli banaiye aur apni janampatri ka detailed analysis paiye quickly aur accurately. Smart Kundli ek advanced online kundali making report hai jisme aap apni kundali check karke grahon ki position, life challenges aur unke practical solutions samajh sakte hain.
             </p>
             
-            {/* Upgraded Glassmorphism Feature Grid */}
-            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-10">
+            {/* Upgraded Glassmorphism Feature Grid - Tightened gaps for mobile */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-8 sm:mb-10 text-left">
               {[
                 { icon: "🕉️", text: "Special Mantras & Vedic Chants" },
                 { icon: "💎", text: "Specialized Gem Suggestions" },
                 { icon: "✨", text: "Manifestation + Astrology" },
                 { icon: "📖", text: "Laal Kitab & Nakshatra Guidance" },
               ].map((f, i) => (
-                <div key={i} className="reveal d2 group glass-card flex items-center gap-4 p-4 sm:p-5 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-[#C8A84B]/40 transition-all duration-500 shadow-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#3D1600] to-[#1A0A00] border border-[#C8A84B]/30 flex items-center justify-center text-xl shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                <div key={i} className="reveal d2 group glass-card flex items-center gap-3 sm:gap-4 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-[#C8A84B]/40 transition-all duration-500 shadow-lg">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-[#3D1600] to-[#1A0A00] border border-[#C8A84B]/30 flex items-center justify-center text-base sm:text-xl shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-300">
                     {f.icon}
                   </div>
-                  <div className="font-semibold text-sm text-white/90 group-hover:text-white transition-colors">{f.text}</div>
+                  <div className="font-semibold text-xs sm:text-sm text-white/90 group-hover:text-white transition-colors">{f.text}</div>
                 </div>
               ))}
             </div>
 
             {/* Pricing & CTA */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 reveal d3">
-              <div className="flex flex-col">
-                <span className="text-xs text-white/50 uppercase tracking-widest font-medium mb-1">Total Value</span>
-                <div className="fraunces text-4xl sm:text-5xl font-medium text-white flex items-center gap-3">
-                  ₹999 <del className="text-xl sm:text-2xl text-white/30 font-sans font-medium">₹2999</del>
+            <div className="flex flex-col sm:flex-row items-center sm:items-center gap-5 sm:gap-8 reveal d3">
+              <div className="flex flex-col items-center sm:items-start">
+                <span className="text-[10px] sm:text-xs text-white/50 uppercase tracking-widest font-medium mb-0.5 sm:mb-1">Total Value</span>
+                <div className="fraunces text-3xl sm:text-4xl lg:text-5xl font-medium text-white flex items-center gap-3">
+                  ₹999 <del className="text-lg sm:text-xl lg:text-2xl text-white/30 font-sans font-medium">₹2999</del>
                 </div>
               </div>
               
-              <a href="#offer" className="btn-auto-shine block w-full sm:w-auto bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-10 py-4 sm:py-5 rounded-2xl font-medium text-lg hover:shadow-[0_0_40px_rgba(239,207,122,0.4)] hover:-translate-y-1 transition-all text-center">
+              <a href="#offer" className="btn-auto-shine block w-full sm:w-auto bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-8 sm:px-10 py-3.5 sm:py-5 rounded-full sm:rounded-2xl font-bold text-base sm:text-lg hover:shadow-[0_0_40px_rgba(239,207,122,0.4)] hover:-translate-y-1 transition-all text-center">
                 Get Smart Kundli Now
               </a>
             </div>
           </div>
 
           {/* ================= RIGHT: CINEMATIC SOLAR SYSTEM ================= */}
-          <div className="reveal d2 relative h-[450px] sm:h-[500px] lg:h-[600px] w-full flex items-center justify-center overflow-hidden lg:overflow-visible mt-10 lg:mt-0">
+          {/* Adjusted height for mobile to keep it compact */}
+          <div className="reveal d2 relative h-[380px] sm:h-[500px] lg:h-[600px] w-full flex items-center justify-center overflow-hidden lg:overflow-visible mt-2 sm:mt-10 lg:mt-0">
             
-            {/* The Cinematic Core Aura (God-rays effect behind the book) */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] bg-[#C8A84B] rounded-full blur-[100px] opacity-40 animate-pulse"></div>
+            {/* The Cinematic Core Aura */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150px] h-[150px] sm:w-[300px] sm:h-[300px] bg-[#C8A84B] rounded-full blur-[80px] sm:blur-[100px] opacity-40 animate-pulse"></div>
 
-            {/* Concentric Orbital Rings (Dashed & Glowing for high-tech astro vibe) */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[350px] aspect-square border border-[#C8A84B]/30 rounded-full shadow-[0_0_30px_rgba(200,168,75,0.1)_inset]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] sm:w-[500px] aspect-square border border-dashed border-white/20 rounded-full" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] sm:w-[700px] aspect-square border border-white/5 rounded-full animate-[spin_60s_linear_infinite]" />
+            {/* Concentric Orbital Rings (Scaled down slightly for mobile) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] sm:w-[350px] aspect-square border border-[#C8A84B]/30 rounded-full shadow-[0_0_30px_rgba(200,168,75,0.1)_inset]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[500px] aspect-square border border-dashed border-white/20 rounded-full" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] sm:w-[700px] aspect-square border border-white/5 rounded-full animate-[spin_60s_linear_infinite]" />
             
             {/* Luminous Planets on Rings */}
             <div className="absolute inset-0 animate-[spin_40s_linear_infinite] pointer-events-none">
-               {/* Mystic Blue Planet */}
-               <div className="absolute top-[12%] right-[25%] sm:right-[30%] w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-blue-900 to-cyan-300 shadow-[0_0_25px_rgba(34,211,238,0.7)]" />
-               {/* Fire/Mars Planet */}
-               <div className="absolute bottom-[15%] left-[20%] sm:left-[25%] w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-gradient-to-tr from-red-900 to-orange-400 shadow-[0_0_20px_rgba(249,115,22,0.7)]" />
+               <div className="absolute top-[12%] right-[20%] sm:right-[30%] w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-blue-900 to-cyan-300 shadow-[0_0_25px_rgba(34,211,238,0.7)]" />
+               <div className="absolute bottom-[15%] left-[15%] sm:left-[25%] w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-gradient-to-tr from-red-900 to-orange-400 shadow-[0_0_20px_rgba(249,115,22,0.7)]" />
             </div>
-            {/* Outer Slow Planet */}
             <div className="absolute inset-0 animate-[spin_80s_linear_infinite_reverse] pointer-events-none">
-               <div className="absolute top-[40%] right-[5%] sm:right-[10%] w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-tr from-yellow-700 to-yellow-200 shadow-[0_0_15px_rgba(253,224,71,0.6)]" />
+               <div className="absolute top-[35%] sm:top-[40%] right-[2%] sm:right-[10%] w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-tr from-yellow-700 to-yellow-200 shadow-[0_0_15px_rgba(253,224,71,0.6)]" />
             </div>
 
-            {/* Floating Book in Center */}
-            <div className="w-[160px] sm:w-[200px] lg:w-[240px] aspect-[1/1.4] bg-white rounded-xl rounded-r-2xl shadow-[0_30px_60px_rgba(0,0,0,0.8),_0_0_40px_rgba(200,168,75,0.4)] z-20 flex flex-col items-center justify-center relative animate-float border-r-2 border-[#C8A84B]/50">
+            {/* Floating Book in Center - SIGNIFICANTLY BIGGER ON MOBILE (200px vs old 160px) */}
+            <div className="w-[200px] sm:w-[220px] lg:w-[260px] aspect-[1/1.4] bg-white rounded-xl rounded-r-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8),_0_0_40px_rgba(200,168,75,0.4)] z-20 flex flex-col items-center justify-center relative animate-float border-r-2 border-[#C8A84B]/50">
                
+               {/* Assuming reportImgError and setReportImgError are defined in your component state */}
                {!reportImgError ? (
                  <img 
                    src="/smart-kundli.png" 
@@ -1439,7 +1446,7 @@ const time = useCountdown();
                  <div className="absolute inset-1 border-2 border-[#C8A84B] flex flex-col items-center justify-center p-3 text-center bg-gradient-to-b from-[#FCF7EE] to-[#E8D8B8] rounded-lg rounded-r-xl">
                    <div className="fraunces text-[#3D1600] font-medium text-xs sm:text-sm tracking-widest mb-1">SMART</div>
                    <div className="fraunces text-[#8B1E1E] font-medium text-2xl sm:text-3xl mb-6">KUNDLI</div>
-                   <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 border-[#C8A84B] flex items-center justify-center text-xl sm:text-2xl bg-white shadow-inner">👁️</div>
+                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-[#C8A84B] flex items-center justify-center text-2xl bg-white shadow-inner">👁️</div>
                  </div>
                )}
 
@@ -1451,52 +1458,65 @@ const time = useCountdown();
       {/* ════════════════════════════════
           AUTHORITY (Acharya Style)
       ════════════════════════════════ */}
-      <section className=" py-8 md:py-14  bg-[#FCF7EE]">
-        <div className="max-w-7xl mx-auto px-5">
-          <div className="bg-[#F5D98A] rounded-3xl overflow-hidden shadow-2xl grid lg:grid-cols-2">
+      <section className="py-8 md:py-14 bg-[#FCF7EE]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-5">
+          {/* Changed to flex-col-reverse for mobile so the image shows at the top, switches to grid on desktop */}
+          <div className="bg-[#F5D98A] rounded-[1.5rem] lg:rounded-3xl overflow-hidden shadow-2xl flex flex-col-reverse lg:grid lg:grid-cols-2">
             
             {/* Text Side */}
-            <div className="p-10 lg:p-16 flex flex-col justify-center">
-              <h2 className="fraunces text-3xl lg:text-4xl font-medium text-[#2A1400] mb-2">Trust the Best —</h2>
-              <div className="bg-white inline-block px-4 py-2 mb-6">
-                <h3 className="fraunces text-2xl lg:text-3xl font-medium text-[#8B1E1E] italic">celebrity astrologer Surbhi Gupta!</h3>
+            <div className="p-6 sm:p-10 lg:p-16 flex flex-col justify-center">
+              <h2 className="fraunces text-2xl sm:text-3xl lg:text-4xl font-medium text-[#2A1400] mb-1.5 lg:mb-2">Trust the Best —</h2>
+              <div className="bg-white inline-block px-3 py-1.5 lg:px-4 lg:py-2 mb-4 lg:mb-6 rounded-md lg:rounded-none w-fit">
+                <h3 className="fraunces text-xl sm:text-2xl lg:text-3xl font-medium text-[#8B1E1E] italic">Celebrity Astrologer Surbhi Gupta!</h3>
               </div>
-              <p className="text-[#4A2E10] mb-8 leading-relaxed text-lg">
-                celebrity astrologer Surbhi Gupta, recognized as the Pride of Bharat, is an elite Astrologer in India. She is a highly regarded expert in the fields of Astrology, Vastu, Numerology, and Tantra. She has gained recognition for providing satisfactory, deeply accurate solutions to a wide range of problems, endorsed by top celebrities and business leaders!
+              <p className="text-[#4A2E10] mb-5 lg:mb-8 leading-snug lg:leading-relaxed text-sm sm:text-base lg:text-lg">
+                Celebrity Astrologer Surbhi Gupta, recognized as the Pride of Bharat, is an elite Astrologer in India. She is a highly regarded expert in the fields of Astrology, Vastu, Numerology, and Tantra. She has gained recognition for providing satisfactory, deeply accurate solutions to a wide range of problems, endorsed by top celebrities and business leaders!
               </p>
-              <p className="text-[#2A1400] font-medium italic text-xl mb-10">
+              <p className="text-[#2A1400] font-medium italic text-base sm:text-lg lg:text-xl mb-6 lg:mb-10">
                 Your destiny is precious. Don't leave it to guesswork.
               </p>
 
-              {/* Stats Row */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {/* Stats Row - Compact for Mobile */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
                 {[
                   { i: "✡", t: "35+ Years in Occult Science" },
                   { i: "👥", t: "Trusted by 15,000+ Worldwide" },
                   { i: "📖", t: "Author & Thought Leader" },
                   { i: "🎯", t: "Solution Driven Approach" }
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white p-4 rounded-xl text-center shadow-sm hover:-translate-y-1 transition-transform">
-                    <div className="w-10 h-10 mx-auto bg-[#3D1600] text-[#E2C06A] rounded-lg flex items-center justify-center text-xl mb-3">{stat.i}</div>
-                    <div className="text-xs font-medium text-[#4A2E10]">{stat.t}</div>
+                  <div key={i} className="bg-white p-2.5 sm:p-3 lg:p-4 rounded-xl text-center shadow-sm hover:-translate-y-1 transition-transform flex flex-col items-center justify-center">
+                    <div className="w-8 h-8 lg:w-10 lg:h-10 bg-[#3D1600] text-[#E2C06A] rounded-lg flex items-center justify-center text-lg lg:text-xl mb-1.5 lg:mb-3">
+                      {stat.i}
+                    </div>
+                    <div className="text-[9px] sm:text-[10px] lg:text-xs font-medium text-[#4A2E10] leading-tight">
+                      {stat.t}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Image Side */}
-            <div className="bg-[#E8D8B8] relative min-h-[400px]">
-               <img src="/surbhi-gupta-new.JPG" alt="celebrity astrologer Surbhi Gupta Astrologer" className="absolute inset-0 w-full h-full object-cover object-center" 
-                    onError={(e) => e.currentTarget.src = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800&h=800"}/>
-               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#F5D98A] to-transparent h-32 flex items-end justify-center pb-6">
-                 <h3 className="fraunces text-3xl font-medium text-[#2A1400] drop-shadow-md italic">Celebrity Astrologer Surbhi Gupta!</h3>
+            <div className="bg-[#E8D8B8] relative min-h-[400px] sm:min-h-[400px] w-full">
+               <img 
+                 src="/surbhi-gupta-new.JPG" 
+                 alt="Celebrity Astrologer Surbhi Gupta Astrologer" 
+                 className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-center" 
+                 onError={(e) => e.currentTarget.src = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800&h=800"}
+               />
+               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#F5D98A] to-transparent h-24 lg:h-32 flex items-end justify-center pb-4 lg:pb-6">
+                 {/* Hidden on mobile to save space since it's already in the text box below it */}
+                 <h3 className="hidden lg:block fraunces text-3xl font-medium text-[#2A1400] drop-shadow-md italic">
+                   Celebrity Astrologer Surbhi Gupta!
+                 </h3>
                </div>
             </div>
             
           </div>
 
-          <div className="mt-12 text-center reveal">
-             <a href="#offer" className="btn-auto-shine inline-block bg-[#3D1600] text-white px-12 py-5 rounded-xl font-medium text-xl shadow-xl hover:scale-105 transition-transform">
+          {/* Full width button on mobile */}
+          <div className="mt-8 lg:mt-12 text-center reveal">
+             <a href="#offer" className="btn-auto-shine block w-full sm:inline-block sm:w-auto bg-[#3D1600] text-white px-6 py-4 lg:px-12 lg:py-5 rounded-xl lg:rounded-2xl font-medium text-base sm:text-lg lg:text-xl shadow-xl hover:scale-105 transition-transform">
                 Get Your Report From the Best!
              </a>
           </div>
@@ -1632,107 +1652,7 @@ const time = useCountdown();
       {/* ════════════════════════════════
           TESTIMONIALS (Real Transformations)
       ════════════════════════════════ */}
-      <section className=" py-8 md:py-14  bg-white relative overflow-hidden">
-        {/* Subtle background element */}
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#E8D8B8] to-transparent opacity-50"></div>
-
-        <div className="max-w-[1200px] mx-auto px-5 relative z-10">
-          
-          {/* Section Header */}
-          <div className="text-center mb-16 reveal">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="w-10 h-[1px] bg-[#C8A84B]"></div>
-              <span className="text-[#C8A84B] text-[10px] sm:text-xs font-medium tracking-[0.2em] uppercase">
-                Our Happy Customers
-              </span>
-              <div className="w-10 h-[1px] bg-[#C8A84B]"></div>
-            </div>
-            <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400]">
-              Real People. <span className="italic text-[#8B1E1E]">Real Transformations.</span>
-            </h2>
-          </div>
-
-          {/* Testimonials Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-            {[
-              {
-                name: "Nisha Sharma",
-                loc: "Mumbai, Maharashtra",
-                text: "I wasn't sure what to expect, but this report nailed things I've never told anyone. Finally found direction after years of confusion. Surbhi Ji's predictions about my marriage were exact to the month!"
-              },
-              {
-                name: "Suresh Patel",
-                loc: "Ahmedabad, Gujarat",
-                text: "Tried so many apps — nothing worked. Got this Kundali, followed the remedies for 6 months and landed my dream job! The WhatsApp question feature is unbelievably accurate. Worth 10x the price."
-              },
-              {
-                name: "Priya Mehta",
-                loc: "Delhi, NCR",
-                text: "Asked about my marriage timing on WhatsApp and Surbhi Ji's answer gave me goosebumps — it was that precise! My relationship has improved so much after following her guidance. Forever grateful!"
-              },
-              {
-                name: "Rajiv Khanna",
-                loc: "Bangalore, Karnataka",
-                text: "My financial situation has turned around completely. The gemstone recommendation and specific puja guidance changed everything. Best ₹999 I've ever spent — I got back lakhs in return!"
-              }
-            ].map((testimonial, i) => (
-              <div 
-                key={i} 
-                className={`reveal d${(i % 4) + 1} relative bg-[#FFFBF0] rounded-[2rem] p-8 lg:p-10 border border-[#E8D8B8]/60 shadow-[0_10px_40px_rgba(61,22,0,0.03)] hover:shadow-[0_20px_50px_rgba(61,22,0,0.08)] transition-all duration-500 group flex flex-col justify-between`}
-              >
-                {/* Giant Decorative Quote Mark */}
-                <div className="absolute top-4 left-6 text-8xl text-[#E2C06A] opacity-15 font-serif leading-none select-none pointer-events-none group-hover:scale-110 transition-transform duration-500">
-                  &ldquo;
-                </div>
-
-                <div className="relative z-10">
-                  {/* Top Row: Stars & Verified Badge */}
-                  <div className="flex justify-between items-start mb-8">
-                    <div className="flex gap-1 text-[#C8A84B] text-lg sm:text-xl drop-shadow-sm">
-                      ★★★★★
-                    </div>
-                    <div className="bg-[#E6F5EE] border border-[#1B4D30]/20 text-[#1B4D30] text-[9px] sm:text-[10px] font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5 uppercase tracking-wider">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      Verified Purchase
-                    </div>
-                  </div>
-
-                  {/* Testimonial Text */}
-                  <p className="text-[#4A2E10] text-[15px] sm:text-base lg:text-lg leading-relaxed font-medium italic mb-10">
-                    "{testimonial.text}"
-                  </p>
-                </div>
-
-                {/* Bottom Row: Customer Profile */}
-                <div className="relative z-10 flex items-center gap-4 pt-6 border-t border-[#E8D8B8]/40">
-                  {/* Premium Initial Avatar */}
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#3D1600] to-[#1A0A00] flex items-center justify-center text-[#F5D98A] fraunces font-medium text-xl shadow-inner shrink-0 border-2 border-[#FFFBF0] outline outline-1 outline-[#D8C49A]">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="fraunces font-medium text-[#2A1400] text-lg leading-tight mb-0.5">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-[#6B4423]/70 text-[10px] sm:text-xs font-medium uppercase tracking-widest">
-                      {testimonial.loc}
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-16 text-center reveal">
-            <a href="#offer" className="inline-flex items-center justify-center font-medium text-[#8B1E1E] text-lg border-b-2 border-[#8B1E1E]/30 pb-1 hover:text-[#C8A84B] hover:border-[#C8A84B] transition-colors duration-300">
-              Read thousands more on Google →
-            </a>
-          </div>
-          
-        </div>
-      </section>
+      <TestimonialsSection />
 
      
       {/* ════════════════════════════════
