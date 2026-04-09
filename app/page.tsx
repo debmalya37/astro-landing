@@ -1768,22 +1768,40 @@ const time = useCountdown();
           STICKY BOTTOM BAR
       ════════════════════════════════ */}
       <div className={`fixed bottom-0 left-0 right-0 z-[200] transition-transform duration-500 ${stickyVisible ? "translate-y-0" : "translate-y-full"}`}>
-        <div className="ann-bar-shimmer flex items-center justify-between px-4 py-4 sm:px-8 backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.6)]"
-             style={{ background: C.red, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
-          <div className="flex flex-col text-white">
-            <div className="font-medium text-sm sm:text-lg">Premium Kundali Report</div>
-            <div className="text-[10px] sm:text-sm text-[#F5D98A] font-medium">🎁 + Free WhatsApp Consultation</div>
-          </div>
-          <div className="flex items-center gap-3 sm:gap-8">
-            <div className="hidden sm:block text-white fraunces text-2xl font-medium">
-              <del className="text-white/50 text-base font-sans mr-2">₹2999</del>₹999
-            </div>
-            <a href="#offer" className="bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-8 py-3 rounded-full font-medium text-base shadow-lg whitespace-nowrap btn-auto-shine hover:scale-105 transition-transform">
-              Get Now
-            </a>
-          </div>
+  <div className="ann-bar-shimmer flex items-center justify-between px-3 py-2.5 sm:px-8 sm:py-4 backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.6)]"
+       style={{ background: C.red, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+    
+    {/* Left Side: Product Name & Bonus */}
+    <div className="flex flex-col justify-center min-w-0 pr-2">
+      <div className="font-semibold text-[13px] sm:text-lg text-white leading-tight truncate">
+        Premium Kundali <span className="hidden sm:inline">Report</span>
+      </div>
+      <div className="text-[10px] sm:text-sm text-[#F5D98A] font-medium leading-tight mt-0.5 truncate">
+        🎁 <span className="hidden sm:inline">+ Free WhatsApp Consultation</span><span className="sm:hidden">Free WA Consult</span>
+      </div>
+    </div>
+    
+    {/* Right Side: Price & CTA Button */}
+    <div className="flex items-center gap-3 sm:gap-6 shrink-0">
+      
+      {/* Price Section: Stacked for compact mobile view */}
+      <div className="flex flex-col items-end justify-center pt-0.5">
+        <del className="text-white/60 text-[10px] sm:text-sm font-sans font-medium leading-none mb-1 decoration-[#EFCF7A]">
+          ₹2999
+        </del>
+        <div className="text-white fraunces text-[18px] sm:text-2xl font-bold leading-none">
+          ₹999
         </div>
       </div>
+
+      {/* Action Button */}
+      <a href="#offer" className="flex items-center justify-center bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-5 py-2 sm:px-8 sm:py-3 rounded-full font-bold text-[13px] sm:text-base shadow-lg whitespace-nowrap btn-auto-shine hover:scale-105 active:scale-95 transition-transform">
+        Get Now
+      </a>
+      
+    </div>
+  </div>
+</div>
 
     </>
   );
