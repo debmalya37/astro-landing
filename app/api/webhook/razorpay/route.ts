@@ -8,24 +8,15 @@ import Redis from "ioredis";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const redis = new Redis(process.env.REDIS_URL!);
 
-// Helper: Connect DB
 async function connectDB() {
   if (mongoose.connection.readyState >= 1) return;
   await mongoose.connect(process.env.MONGODB_URI!);
 }
 
-// Order Schema
 const Order = mongoose.models.Order || mongoose.model("Order", new mongoose.Schema({
-  paymentId: String,
-  orderId: String,
-  amount: Number,
-  reportType: String,
-  customer: Object,
-  offers: Object,
-  status: String,
+  paymentId: String, orderId: String, amount: Number, reportType: String, customer: Object, offers: Object, status: String,
 }));
 
-// Helper: Send Meta WhatsApp Message
 async function sendWhatsAppMessage(to: string, text: string, buttons?: string[]) {
   const url = `https://graph.facebook.com/v22.0/${process.env.WHATSAPP_PHONE_ID}/messages`;
   let payload: any = { messaging_product: "whatsapp", to };
@@ -50,11 +41,9 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
 
 export async function POST(req: Request) {
   try {
-    const rawBody = await req.text(); // Razorpay webhooks require raw text for verification
+    const rawBody = await req.text(); 
     const signature = req.headers.get("x-razorpay-signature");
 
-    // 1. Verify Webhook Signature
-    // NOTE: You must generate a Webhook Secret in Razorpay Dashboard and add it to your .env
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET!)
       .update(rawBody)
@@ -66,7 +55,6 @@ export async function POST(req: Request) {
 
     const event = JSON.parse(rawBody);
 
-    // 2. Only process successful payments
     if (event.event === "payment.captured") {
       const paymentData = event.payload.payment.entity;
       const razorpayOrderId = paymentData.order_id;
@@ -74,36 +62,42 @@ export async function POST(req: Request) {
 
       await connectDB();
       
-      // 3. Find the pending order we saved earlier
       const order = await Order.findOne({ orderId: razorpayOrderId });
       
+      // Prevent duplicates: If payment-success already did this, skip it!
       if (!order || order.status === "Paid") {
-        return NextResponse.json({ status: "ok" }); // Already processed
+        return NextResponse.json({ status: "ok" }); 
       }
 
-      // 4. Mark as Paid!
+      // Mark as Paid
       order.status = "Paid";
       order.paymentId = paymentId;
       await order.save();
 
-      // 5. Send Email
+      // Send Emails
       await resend.emails.send({
         from: process.env.EMAIL_FROM || "no-reply@yourdomain.com",
         to: order.customer.email,
-        subject: "Your Kundali Report Order is Confirmed! ✨",
-        html: `<h2>Hi ${order.customer.name},</h2><p>Payment of ₹${order.amount} confirmed.</p>`,
+        subject: `Your ${order.reportType} Order is Confirmed! ✨`,
+        html: `<h2>Radhe Radhe ${order.customer.name} ji,</h2><p>Payment of ₹${order.amount} for the ${order.reportType} is confirmed.</p>`,
       });
 
-      // 6. Send WhatsApp Flow 1 Message
+      await resend.emails.send({
+        from: process.env.EMAIL_FROM || "no-reply@yourdomain.com",
+        to: process.env.ADMIN_EMAIL || "your-email@example.com",
+        subject: `🚨 NEW ORDER via Webhook: ${order.reportType}`,
+        html: `<h2>New Order! 🚀</h2><p>${order.customer.name} paid ₹${order.amount} for ${order.reportType}.</p><p>Phone: ${order.customer.phone}</p>`,
+      });
+
+      // Send WhatsApp Message
       let formattedPhone = order.customer.phone.replace(/\D/g, ""); 
       if (formattedPhone.length === 10) formattedPhone = `91${formattedPhone}`;
 
-      const replyMessage = `✅ *Payment Confirmed!*\n\n🙏 *Radhe Radhe, ${order.customer.name} ji!*\nYour order for the Complete Kundali Report has been confirmed.\n\nBefore Surbhi ji begins, we need one thing from you 👇\n\n*Please share your exact birth details:*\n1️⃣ Full Date of Birth (DD/MM/YYYY)\n2️⃣ Exact Time of Birth\n3️⃣ Place of Birth`;
-      const buttons = ["I'll share details now", "I don't know my time"];
+      const replyMessage = `✅ *Payment Confirmed!*\n\n🙏 *Radhe Radhe, ${order.customer.name} ji!*\nYour order for the *${order.reportType}* has been successfully confirmed.\n\nSurbhi ji and the team will deliver your detailed analysis right here within *72 hours*. ⏳\n\nBefore we begin, we need your birth details 👇\n\n*1️⃣ Full Date of Birth (DD/MM/YYYY)*\n*2️⃣ Exact Time of Birth*\n*3️⃣ Place of Birth*`;
+      const buttons = ["Share Details Now", "Don't know time"];
 
       await sendWhatsAppMessage(formattedPhone, replyMessage, buttons);
 
-      // Update Redis State
       await redis.set(`user_state:${formattedPhone}`, JSON.stringify({ step: "F1_AWAITING_DETAILS", userData: { name: order.customer.name } }), "EX", 86400);
     }
 

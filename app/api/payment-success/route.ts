@@ -8,42 +8,29 @@ import Redis from "ioredis";
 // ==========================================
 // 1. INITIALIZE SERVICES
 // ==========================================
-
-// Resend (Email)
 const resend = new Resend(process.env.RESEND_API_KEY);
+const redis = new Redis(process.env.REDIS_URL!, {
+  lazyConnect: true,
+  maxRetriesPerRequest: 3
+});
 
-// Redis (For WhatsApp Bot State)
-const redis = new Redis(process.env.REDIS_URL!);
-
-// MongoDB Connection Helper
 async function connectDB() {
   if (mongoose.connection.readyState >= 1) return;
   if (!process.env.MONGODB_URI) throw new Error("Missing MONGODB_URI in env");
   await mongoose.connect(process.env.MONGODB_URI);
 }
 
-// MongoDB Order Schema
 const OrderSchema = new mongoose.Schema({
   paymentId: { type: String, required: true },
   orderId: { type: String, required: true },
   amount: { type: Number, required: true },
   reportType: { type: String },
   customer: {
-    name: String,
-    email: String,
-    phone: String,
-    dob: String,
-    tob: String,
-    city: String,
-    pinCode: String,
-    gender: String,
-    language: String,
-    challenge: String,
+    name: String, email: String, phone: String,
+    dob: String, tob: String, city: String,
+    pinCode: String, gender: String, language: String, challenge: String,
   },
-  offers: {
-    expressDelivery: Boolean,
-    consultation: Boolean,
-  },
+  offers: { expressDelivery: Boolean, consultation: Boolean },
   status: { type: String, default: "Paid" },
   createdAt: { type: Date, default: Date.now },
 });
@@ -58,11 +45,7 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
   const token = process.env.WHATSAPP_TOKEN!;
   const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
 
-  let payload: any = {
-    messaging_product: "whatsapp",
-    recipient_type: "individual",
-    to: to,
-  };
+  let payload: any = { messaging_product: "whatsapp", recipient_type: "individual", to: to };
 
   if (buttons && buttons.length > 0) {
     payload.type = "interactive";
@@ -72,7 +55,8 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
       action: {
         buttons: buttons.slice(0, 3).map((btnTitle, index) => ({
           type: "reply",
-          reply: { id: `btn_${index}`, title: btnTitle.substring(0, 20) }
+          // Meta limits button titles to 20 characters!
+          reply: { id: `btn_${index}`, title: btnTitle.substring(0, 20) } 
         }))
       }
     };
@@ -83,10 +67,7 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
 
   await fetch(url, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 }
@@ -94,13 +75,12 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
 // ==========================================
 // 2. MAIN POST HANDLER
 // ==========================================
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature, form, offers, finalAmount } = body;
 
-    // A. VERIFY SIGNATURE (SECURITY)
+    // A. VERIFY SIGNATURE
     const secret = process.env.RAZORPAY_KEY_SECRET as string;
     const generatedSignature = crypto
       .createHmac("sha256", secret)
@@ -113,6 +93,13 @@ export async function POST(req: Request) {
 
     // B. SAVE TO MONGODB
     await connectDB();
+    
+    // Check if webhook already processed this to prevent duplicate messages
+    const existingOrder = await Order.findOne({ orderId: razorpay_order_id });
+    if (existingOrder && existingOrder.status === "Paid") {
+       return NextResponse.json({ success: true, message: "Already processed by webhook" }, { status: 200 });
+    }
+
     const newOrder = await Order.create({
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
@@ -121,37 +108,51 @@ export async function POST(req: Request) {
       customer: form,
       offers: offers,
     });
-    console.log("✅ Order saved to DB:", newOrder._id);
 
-    // C. SEND CONFIRMATION EMAIL (RESEND)
+    // C. SEND EMAILS (CUSTOMER & ADMIN)
     try {
+      // 1. Email to Customer
       await resend.emails.send({
         from: process.env.EMAIL_FROM || "no-reply@yourdomain.com",
         to: form.email,
-        subject: "Your Fortune Report Order is Confirmed! ✨",
-        html: `<h2>Hi ${form.name},</h2><p>We received your payment of ₹${finalAmount}.</p>`,
+        subject: `Your ${form.reportType} Order is Confirmed! ✨`,
+        html: `<h2>Radhe Radhe ${form.name} ji,</h2><p>Your payment of ₹${finalAmount} for the <strong>${form.reportType}</strong> is confirmed. Please check your WhatsApp for the next steps!</p>`,
+      });
+
+      // 2. Email to Admin (YOU)
+      await resend.emails.send({
+        from: process.env.EMAIL_FROM || "no-reply@yourdomain.com",
+        to: process.env.ADMIN_EMAIL || "your-email@example.com", // Add your email here or in .env
+        subject: `🚨 NEW ORDER: ${form.reportType}`,
+        html: `
+          <h2>New Order Received! 🚀</h2>
+          <p><strong>Customer:</strong> ${form.name}</p>
+          <p><strong>Phone:</strong> ${form.phone}</p>
+          <p><strong>Email:</strong> ${form.email}</p>
+          <p><strong>Service Ordered:</strong> ${form.reportType}</p>
+          <p><strong>Amount Paid:</strong> ₹${finalAmount}</p>
+        `,
       });
     } catch (emailError) {
-      console.error("❌ Failed to send email:", emailError);
+      console.error("❌ Failed to send emails:", emailError);
     }
 
-    // D. TRIGGER WHATSAPP BOT (META API + REDIS)
+    // D. TRIGGER WHATSAPP BOT
     try {
-      // Meta requires phone numbers to have country code but NO '+' sign
       let formattedPhone = form.phone.replace(/\D/g, ""); 
       if (formattedPhone.length === 10) {
-        formattedPhone = `91${formattedPhone}`; // Add India code if missing
+        formattedPhone = `91${formattedPhone}`; 
       }
 
-      // 1. Prepare the Flow 1 Start Message
-      const replyMessage = `✅ *Payment Confirmed!*\n\n🙏 *Radhe Radhe, ${form.name} ji!*\nYour order for the Complete Kundali Report has been confirmed.\n\nBefore Surbhi ji begins, we need one thing from you 👇\n\n*Please share your exact birth details:*\n1️⃣ Full Date of Birth (DD/MM/YYYY)\n2️⃣ Exact Time of Birth\n3️⃣ Place of Birth`;
-      const buttons = ["I'll share details now", "I don't know my time"];
+      // Dynamic Message with Service Name and 72 hours
+      const replyMessage = `✅ *Payment Confirmed!*\n\n🙏 *Radhe Radhe, ${form.name} ji!*\nYour order for the *${form.reportType}* has been successfully confirmed.\n\nSurbhi ji and the team will deliver your detailed analysis right here within *72 hours*. ⏳\n\nBefore we begin, we need your birth details 👇\n\n*1️⃣ Full Date of Birth (DD/MM/YYYY)*\n*2️⃣ Exact Time of Birth*\n*3️⃣ Place of Birth*`;
+      
+      // Kept under 20 characters!
+      const buttons = ["Share Details Now", "Don't know time"];
 
-      // 2. Send the message via Meta
       await sendWhatsAppMessage(formattedPhone, replyMessage, buttons);
-      console.log("✅ WhatsApp confirmation sent to:", formattedPhone);
 
-      // 3. Update the user's Bot State in Redis so it expects their birth details next!
+      // Update the user's Bot State in Redis
       const newState = { 
         step: "F1_AWAITING_DETAILS", 
         userData: { name: form.name } 
@@ -162,7 +163,6 @@ export async function POST(req: Request) {
       console.error("❌ Failed to trigger WhatsApp Bot:", waError);
     }
 
-    // E. RETURN SUCCESS TO FRONTEND
     return NextResponse.json({ success: true, message: "Payment verified successfully" }, { status: 200 });
 
   } catch (error: any) {

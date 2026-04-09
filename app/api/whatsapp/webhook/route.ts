@@ -3,9 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { nextMessage } from "@/lib/waFlow";
 import Redis from "ioredis";
 
-const redis = new Redis(process.env.REDIS_URL!);
+const redis = new Redis(process.env.REDIS_URL!, {
+  lazyConnect: true,
+  maxRetriesPerRequest: 3
+});
 
-async function sendWhatsAppMessage(to: string, text: string, options?: { buttons?: string[], list?: any, image?: string }) {
+// Exporting this so we can reuse it in the checkout/payment-success route!
+export async function sendWhatsAppMessage(to: string, text: string, options?: { buttons?: string[], list?: any, image?: string }) {
   const phoneNumberId = process.env.WHATSAPP_PHONE_ID!;
   const token = process.env.WHATSAPP_TOKEN!;
   const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
@@ -20,21 +24,11 @@ async function sendWhatsAppMessage(to: string, text: string, options?: { buttons
     await fetch(url, {
       method: "POST",
       headers,
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        to: to,
-        type: "image",
-        image: { link: options.image }
-      }),
+      body: JSON.stringify({ messaging_product: "whatsapp", to: to, type: "image", image: { link: options.image } }),
     });
   }
 
-  // Build the main payload
-  let payload: any = {
-    messaging_product: "whatsapp",
-    recipient_type: "individual",
-    to: to,
-  };
+  let payload: any = { messaging_product: "whatsapp", recipient_type: "individual", to: to };
 
   if (options?.list) {
     payload.type = "interactive";
@@ -51,10 +45,7 @@ async function sendWhatsAppMessage(to: string, text: string, options?: { buttons
         }))
       }
     };
-    // Safe to embed image in button message headers
-    if (options.image) {
-      payload.interactive.header = { type: "image", image: { link: options.image } };
-    }
+    if (options.image) payload.interactive.header = { type: "image", image: { link: options.image } };
   } else if (options?.image) {
     payload.type = "image";
     payload.image = { link: options.image, caption: text };
@@ -66,11 +57,10 @@ async function sendWhatsAppMessage(to: string, text: string, options?: { buttons
   try {
     const response = await fetch(url, { method: "POST", headers, body: JSON.stringify(payload) });
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Meta API Error:", JSON.stringify(errorData, null, 2));
+      console.error("Meta API Error:", await response.json());
     }
   } catch (error) {
-    console.error("Failed to send WhatsApp message:", error);
+    console.error("Failed to send WA message:", error);
   }
 }
 
@@ -86,20 +76,33 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const message = body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+    const contact = body?.entry?.[0]?.changes?.[0]?.value?.contacts?.[0];
     
     if (!message) return new NextResponse("OK", { status: 200 });
 
     const from = message.from as string;
-    
-    let text = "";
-    if (message?.type === "interactive") {
-      text = message?.interactive?.list_reply?.title || message?.interactive?.button_reply?.title || "";
-    } else {
-      text = message?.text?.body || "";
-    }
+    const messageId = message.id as string;
+    const waName = contact?.profile?.name || "Seeker";
+
+    // 1. PREVENT DUPLICATES (Idempotency check)
+    const isDuplicate = await redis.get(`msg_processed:${messageId}`);
+    if (isDuplicate) return new NextResponse("OK", { status: 200 });
+    await redis.set(`msg_processed:${messageId}`, "1", "EX", 3600); // Store for 1 hour
+
+    // 2. TRACK FOR 24-HOUR FOLLOW UP
+    // We store the timestamp of their last message. 
+    await redis.hset("wa_last_interaction", from, Date.now().toString());
+    await redis.hset("wa_names", from, waName); // Save their name for the cron job
+
+    let text = message?.type === "interactive" 
+      ? (message?.interactive?.list_reply?.title || message?.interactive?.button_reply?.title || "") 
+      : (message?.text?.body || "");
 
     const rawPrevState = await redis.get(`user_state:${from}`);
-    const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START" };
+    const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START", userData: { name: waName } };
+    
+    // Ensure name is always in state
+    prev.userData.name = waName;
 
     const { reply, buttons, list, image, newState } = nextMessage(text, prev);
 

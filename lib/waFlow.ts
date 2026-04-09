@@ -2,7 +2,7 @@
 
 export type BotStep =
   | "START" | "F2_INTENT" | "F2_HOOK" | "F2_AUTHORITY" | "F2_OFFER" | "F2_CHECKOUT"
-  | "F1_START" | "F1_AWAITING_DETAILS" | "F1_CONFIRM_DETAILS" | "F1_FOCUS_AREA" | "F1_END";
+  | "F1_START" | "F1_AWAITING_DETAILS" | "F1_CONFIRM_DETAILS" | "F1_FREE_QUESTION" | "F1_END";
 
 export type UserData = {
   name?: string;
@@ -15,6 +15,29 @@ export type FlowState = {
   step: BotStep;
   userData: UserData;
 };
+
+// Helper: Check if the selected service is Career related
+function isCareerService(intent: string = "") {
+  const lowerIntent = intent.toLowerCase();
+  return lowerIntent.includes("career") || lowerIntent.includes("करियर");
+}
+
+// Helper function to return strictly Career-related questions in the correct language
+function getCareerQuestions(isHi: boolean) {
+  if (isHi) {
+    return [
+      { id: "c_q1", title: "नौकरी कब मिलेगी?", description: "नई नौकरी या प्रमोशन का समय" },
+      { id: "c_q2", title: "नौकरी या व्यापार?", description: "मेरे लिए क्या बेहतर है?" },
+      { id: "c_q3", title: "आर्थिक स्थिति", description: "धन लाभ और करियर स्थिरता" }
+    ];
+  } else {
+    return [
+      { id: "c_q1", title: "When will I get a job?", description: "Timing for job or promotion" },
+      { id: "c_q2", title: "Job or Business?", description: "Which path is better for me?" },
+      { id: "c_q3", title: "Financial Stability", description: "When will wealth & career improve?" }
+    ];
+  }
+}
 
 export function nextMessage(
   input: string,
@@ -29,23 +52,21 @@ export function nextMessage(
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const paymentLink = `${baseUrl}/checkout`;
   
-  // ==========================================
-  // BYPASS NGROK: Using live public images for testing
-  // (Change these back to your local files when you deploy to production!)
-  // ==========================================
+  // Images
   const imgWelcome = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuTgSGYd_yMRX4jHMgI_Pvfb2bqtVoqZM3eQ&s"; 
   const imgServices = "https://pbs.twimg.com/profile_images/2027040849813721088/X4RajwNP.jpg"; 
   const imgReport = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuOgvfQs_8khHNveOkNJ59hPKLNmtIA930Kw&s";
 
   const isHi = data.language === "hi";
+  const userName = data.name && data.name !== "Seeker" ? data.name : "";
 
-  // GLOBAL COMMANDS: Added "hi surbhi" to the reset list!
+  // GLOBAL COMMANDS
   if (lowerMsg === "restart" || lowerMsg === "hi" || lowerMsg === "hello" || lowerMsg === "hi surbhi") {
     return {
-      reply: "🙏 *Radhe Radhe Pranam!*\n\nWelcome to *Surbhi Gupta Astrology* — India's most trusted Vedic Jyotish practice.\n\nPlease select your preferred language / कृपया अपनी भाषा चुनें 👇",
+      reply: `Radhe Radhe ${userName} ji 🙏 🙏\n\nPlease select your language / कृपया अपनी भाषा चुनें |`,
       buttons: ["English 🇬🇧", "हिंदी 🇮🇳"],
       image: imgWelcome,
-      newState: { step: "F2_INTENT", userData: {} },
+      newState: { step: "F2_INTENT", userData: data },
     };
   }
 
@@ -63,7 +84,7 @@ export function nextMessage(
   switch (currentState.step) {
     case "START":
       return {
-        reply: "🙏 *Radhe Radhe Pranam!*\n\nWelcome to *Surbhi Gupta Astrology* — India's most trusted Vedic Jyotish practice.\n\nPlease select your preferred language / कृपया अपनी भाषा चुनें 👇",
+        reply: `Radhe Radhe ${userName} ji 🙏 🙏\n\nPlease select your language / कृपया अपनी भाषा चुनें |`,
         buttons: ["English 🇬🇧", "हिंदी 🇮🇳"],
         image: imgWelcome,
         newState: { step: "F2_INTENT", userData: data },
@@ -80,27 +101,45 @@ export function nextMessage(
 
       return {
         reply: isHindi
-          ? "🙏 राधे राधे प्रणाम जी!\n\nमैं सुरभि गुप्ता जी का आधिकारिक सहायक हूँ। आप किस विषय में मार्गदर्शन चाहते हैं? 👇"
-          : "🙏 Radhe Radhe Pranam ji!\n\nI'm the official assistant of *Surbhi Gupta ji*. What brings you here today? 👇",
+          ? `राधे राधे ${userName} जी 🙏\n\nमैं ज्योतिषी सुरभि गुप्ता जी का आधिकारिक सहायक हूँ।\n\nकृपया मुझे बताएं - आज आप किस विषय में मार्गदर्शन चाहते हैं?`
+          : `Radhe Radhe ${userName} ji 🙏\n\nI’m the official assistant of Astrologer Surabhi Gupta Ji.\n\nPlease tell me - what would you like guidance about today?`,
         image: imgServices,
         list: {
           button: isHindi ? "यहाँ चुनें" : "Select Here",
-          sections: [{
-            title: isHindi ? "एक क्षेत्र चुनें" : "Choose an area",
-            rows: isHindi ? [
-              { id: "career", title: "करियर और वृद्धि", description: "पेशेवर जीवन के लिए" },
-              { id: "love", title: "प्रेम और रिश्ते", description: "प्रेम समस्याओं का समाधान" },
-              { id: "marriage", title: "विवाह में देरी", description: "आपके और परिवार के लिए" },
-              { id: "health", title: "स्वास्थ्य समस्याएं", description: "उपाय सहित" },
-              { id: "all", title: "सभी सेवाएं देखें", description: "संपूर्ण जीवन रिपोर्ट" }
-            ] : [
-              { id: "career", title: "Overall Career Growth", description: "Insights for your profession" },
-              { id: "love", title: "Relationship Problems", description: "Navigating love & breakups" },
-              { id: "marriage", title: "Marriage Delays", description: "For you and your family" },
-              { id: "health", title: "Health Issues", description: "Including remedies" },
-              { id: "all", title: "Explore All Services", description: "Complete Life Reading" }
-            ]
-          }]
+          sections: [
+            {
+              title: isHindi ? "प्रीमियम सेवाएं" : "Premium Services",
+              rows: isHindi ? [
+                { id: "surbhi_consultation", title: "सुरभि गुप्ता परामर्श", description: "व्यक्तिगत मार्गदर्शन" },
+                { id: "surbhi_kundli", title: "सुरभि कुंडली", description: "आपकी व्यक्तिगत कुंडली" },
+                { id: "numerology_report", title: "अंकशास्त्र रिपोर्ट", description: "नाम सुझाव और व्याख्या" },
+                { id: "couple_match_making", title: "कुंडली मिलान", description: "सफल विवाह के लिए" },
+                { id: "kundli_pathshala", title: "कुंडली पाठशाला", description: "लाइव ज़ूम वेबिनार" },
+                { id: "buy_gemstones", title: "रत्न खरीदें", description: "सकारात्मक ऊर्जा के लिए" },
+                { id: "baby_name_report", title: "बच्चों के नाम की रिपोर्ट", description: "सार्थक नामों के सुझाव" }
+              ] : [
+                { id: "surbhi_consultation", title: "Surbhi Consultation", description: "Personalized guidance" },
+                { id: "surbhi_kundli", title: "Surbhi Kundli", description: "Your cosmic blueprint" },
+                { id: "numerology_report", title: "Numerology Report", description: "Name suggestions & meaning" },
+                { id: "couple_match_making", title: "Couple Match Making", description: "Kundali Milan for marriage" },
+                { id: "kundli_pathshala", title: "Kundli Pathshala", description: "Live Zoom webinar" },
+                { id: "buy_gemstones", title: "Buy Gemstones", description: "Astrological gemstones" },
+                { id: "baby_name_report", title: "Baby Name Report", description: "Meaningful baby names" }
+              ]
+            },
+            {
+              title: isHindi ? "विशिष्ट समस्याएं" : "Specific Problems",
+              rows: isHindi ? [
+                { id: "career", title: "करियर और वृद्धि", description: "पेशेवर जीवन के लिए" },
+                { id: "love", title: "प्रेम और रिश्ते", description: "प्रेम समस्याओं का समाधान" },
+                { id: "health", title: "स्वास्थ्य समस्याएं", description: "उपाय सहित" }
+              ] : [
+                { id: "career", title: "Overall Career Growth", description: "Insights for your profession" },
+                { id: "love", title: "Relationship Problems", description: "Navigating love & breakups" },
+                { id: "health", title: "Health Issues", description: "Including remedies" }
+              ]
+            }
+          ]
         },
         newState: { step: "F2_HOOK", userData: data },
       };
@@ -109,60 +148,36 @@ export function nextMessage(
       data.intent = msg;
       return {
         reply: isHi
-          ? `आपने चुना है: *${msg}*.\n\nकई लोग फंसा हुआ महसूस करते हैं। ज्यादातर मामलों में, उपाय सिर्फ मेहनत नहीं बल्कि *सही समय और दिशा* है। क्या आप चाहते हैं कि सुरभि जी आपकी संपूर्ण रिपोर्ट तैयार करें?`
-          : `You selected *${msg}*.\n\nMany people feel stuck. In most cases, the answer isn't just more effort — it's *timing and direction*. Would you like Surbhi ji to prepare your complete reading?`,
-        buttons: isHi ? ["हाँ, और बताएं", "फीस क्या है?"] : ["Yes, tell me more", "What does it cost?"],
-        newState: { step: "F2_AUTHORITY", userData: data },
-      };
-
-    case "F2_AUTHORITY":
-      return {
-        reply: isHi
-          ? "बिल्कुल जी। सुरभि जी भारत की प्रमुख वैदिक ज्योतिषियों में से एक हैं:\n🏛️ *पीएम नरेंद्र मोदी* जी की कुंडली बनाई\n🎬 बॉलीवुड हस्तियों का भरोसा\n⭐ Google पर 4.9/5 रेटिंग\n\nक्या मैं रिपोर्ट की पूरी जानकारी साझा करूँ? 🙏"
-          : "Of course. Surbhi ji is a foremost Vedic Jyotish practitioner:\n🏛️ Prepared Kundali for *PM Narendra Modi*\n🎬 Trusted by Bollywood celebrities\n⭐ 4.9/5 on Google\n\nShall I share the full details? 🙏",
-        buttons: isHi ? ["हाँ, दिखाएं", "यह अलग कैसे है?"] : ["Yes, show me", "How is it different?"],
-        newState: { step: "F2_OFFER", userData: data },
-      };
-
-    case "F2_OFFER":
-      return {
-        reply: isHi
-          ? "🔮 *सम्पूर्ण कुंडली रिपोर्ट*\n\n📖 100+ पेज व्यक्तिगत रिपोर्ट\n✨ करियर, प्रेम, धन और स्वास्थ्य\n📅 10-वर्षीय भविष्यवाणियां\n🎁 *मुफ्त WhatsApp कंसल्टेशन*\n\n*फीस:*\n~₹2,999~ ➡️ *केवल ₹999* (लॉन्च ऑफर)\n\nडिलिवरी: 72 घंटे में 🙏"
-          : "🔮 *Complete Kundali Report*\n\n📖 100+ page personalised report\n✨ Career, Love, Finance & Health\n📅 10-Year Predictions\n🎁 *FREE 1:1 WhatsApp Consultation*\n\n*Investment:*\n~₹2,999~ ➡️ *₹999 only* (Launch Offer)\n\nDelivery: PDF within 72 hours 🙏",
-        image: imgReport,
-        list: {
-          button: isHi ? "समाधान देखें" : "View Solutions",
-          sections: [{
-            title: isHi ? "अगले कदम" : "Next Steps",
-            rows: isHi ? [
-              { id: "buy", title: "रिपोर्ट प्राप्त करें", description: "₹999 लॉन्च ऑफर" },
-              { id: "consult", title: "ज्योतिषी से बात करें", description: "व्यक्तिगत रणनीति प्राप्त करें" }
-            ] : [
-              { id: "buy", title: "Get Kundali Report", description: "₹999 Launch Offer" },
-              { id: "consult", title: "Speak to Astrologer", description: "Get a personal strategy roadmap" }
-            ]
-          }]
-        },
+          ? `अपने *${msg}* पर विस्तृत स्पष्टीकरण प्राप्त करें।\n\nयहाँ आपके लिए कुछ समाधान हैं 👇`
+          : `Get a detailed clarity on your *${msg}*.\n\nHere are a few solutions for you 👇`,
+        buttons: isHi ? ["समाधान देखें"] : ["View Solutions"],
         newState: { step: "F2_CHECKOUT", userData: data },
       };
 
     case "F2_CHECKOUT":
-      if (lowerMsg.includes("speak") || lowerMsg.includes("expensive") || lowerMsg.includes("cost") || lowerMsg.includes("बात") || lowerMsg.includes("फीस")) {
-        return {
-          reply: isHi
-            ? "बिल्कुल जी 🙏\nएक 1-घंटे के व्यक्तिगत सत्र की फीस ₹3,000–₹10,000 होती है। सुरभि जी ने यह रिपोर्ट ₹999 में उपलब्ध कराई है ताकि सभी वैदिक ज्योतिष का अनुभव कर सकें। क्या मैं भुगतान लिंक भेजूं? 🙏"
-            : "Completely fair, ji 🙏\nA 1-hour session costs ₹3,000–₹10,000. Surbhi ji made this reading available for ₹999 to experience authentic Jyotish first.\n\nShall I send the payment link? 🙏",
-          buttons: isHi ? ["हाँ, लिंक भेजें"] : ["Yes, send the link"],
-          newState: { step: "F2_CHECKOUT", userData: data },
-        };
+      const encodedService = encodeURIComponent(data.intent || "Surbhi Kundli");
+      const checkoutUrl = `${paymentLink}?service=${encodedService}`;
+      const isCareer = isCareerService(data.intent);
+      
+      let checkoutMsg = isHi
+        ? `कृपया अपने चयन के साथ आगे बढ़ने के लिए नीचे क्लिक करें 👇\n\n🔗 ${checkoutUrl}`
+        : `Please click below to proceed with your selection 👇\n\n🔗 ${checkoutUrl}`;
+        
+      // Append the bonus ONLY if it's the career service
+      if (isCareer) {
+        checkoutMsg += isHi 
+          ? `\n\n🎁 *बोनस:* भुगतान के बाद आपको सुरभि जी से 1 मुफ़्त प्रश्न पूछने का अवसर मिलेगा!` 
+          : `\n\n🎁 *Bonus:* You will also get 1 FREE question answered by Surbhi ji after payment!`;
       }
+
       return {
-        reply: isHi
-          ? `🙏 बहुत बढ़िया जी!\n\n💳 *सुरक्षित भुगतान लिंक:*\n${paymentLink}\n\n*राशि: केवल ₹999*\n\nवेबसाइट पर भुगतान पूरा होने पर, सिस्टम अपने आप यहां ऑर्डर कन्फर्म कर देगा! ⏳`
-          : `🙏 Wonderful, ji!\n\n💳 *Secure Payment Link:*\n${paymentLink}\n\n*Amount: ₹999 only*\n\nOnce paid on the website, our system will automatically confirm your order right here! ⏳`,
+        reply: checkoutMsg,
         newState: { step: "F2_CHECKOUT", userData: data },
       };
 
+    // ==========================================
+    // POST-PAYMENT FLOW (Triggered via API)
+    // ==========================================
     case "F1_START":
       return {
         reply: isHi
@@ -200,36 +215,56 @@ export function nextMessage(
           newState: { step: "F1_AWAITING_DETAILS", userData: data },
         };
       }
+      
+      // If it's a Career Service, offer the free question
+      if (isCareerService(data.intent)) {
+        return {
+          reply: isHi
+            ? "✨ *उत्तम। आपकी रिपोर्ट 72 घंटे में तैयार हो जाएगी।*\n\nवादे के अनुसार, अब आप अपने करियर से संबंधित अपना 1 मुफ़्त प्रश्न पूछ सकते हैं। कृपया नीचे दिए गए विकल्पों में से चुनें 👇"
+            : "✨ *Perfect. Your report will be ready within 72 hours.*\n\nAs promised, you can now ask your 1 FREE question related to your career. Please select an option below 👇",
+          list: {
+            button: isHi ? "प्रश्न चुनें" : "Select Question",
+            sections: [
+              {
+                title: isHi ? "मुफ़्त प्रश्न" : "Free Question",
+                rows: getCareerQuestions(isHi)
+              }
+            ]
+          },
+          newState: { step: "F1_FREE_QUESTION", userData: data },
+        };
+      } 
+      
+      // If it's NOT a Career Service, skip the question and end the flow
       return {
         reply: isHi
-          ? "✨ *उत्तम। सुरभि जी को सूचित कर दिया गया है।*\n\nआपकी 100+ पेज की रिपोर्ट 72 घंटे में तैयार हो जाएगी। आप जीवन के किस क्षेत्र के बारे में सबसे अधिक जानना चाहते हैं?"
-          : "✨ *Perfect. Surbhi ji has been notified.*\n\nYour 100+ page report will be ready within 72 hours.\n\n*Which area of life are you most curious about?*",
-        buttons: isHi ? ["💼 करियर", "❤️ प्रेम व विवाह", "💰 धन व संपत्ति"] : ["💼 Career", "❤️ Love & Marriage", "💰 Finance"],
-        newState: { step: "F1_FOCUS_AREA", userData: data },
+          ? "✨ *उत्तम। सुरभि जी को सूचित कर दिया गया है।*\n\nआपकी रिपोर्ट 72 घंटे में तैयार हो जाएगी और हम आपको यहीं भेजेंगे। 🙏"
+          : "✨ *Perfect. Surbhi ji has been notified.*\n\nYour report will be ready within 72 hours and will be delivered right here. 🙏",
+        newState: { step: "F1_END", userData: data },
       };
 
-    case "F1_FOCUS_AREA":
+    case "F1_FREE_QUESTION":
       return {
         reply: isHi
-          ? "🙏 नोट कर लिया गया है। रिपोर्ट तैयार होते ही हम आपको यहीं भेजेंगे। 72 घंटे में मिलते हैं! ✨"
-          : "🙏 Noted. We will message you right here the moment your PDF is ready. See you in 72 hours! ✨",
+          ? `🙏 धन्यवाद। सुरभि जी आपके चार्ट की समीक्षा करेंगी और जल्द ही इस प्रश्न का उत्तर देंगी!`
+          : `🙏 Thank you. Surbhi ji will review your chart and answer this question shortly!`,
         newState: { step: "F1_END", userData: data },
       };
 
     case "F1_END":
       return {
         reply: isHi
-          ? "सुरभि जी अभी आपकी कुंडली का विश्लेषण कर रही हैं! ⏳ आपकी रिपोर्ट जल्द ही यहाँ भेजी जाएगी।"
-          : "Surbhi ji is analyzing your chart! ⏳ Your report will be delivered here shortly.",
+          ? "सुरभि जी अभी आपके चार्ट का विश्लेषण कर रही हैं! ⏳ आपका अपडेट जल्द ही यहाँ भेजा जाएगा।"
+          : "Surbhi ji is analyzing your chart! ⏳ Your update will be delivered here shortly.",
         buttons: ["Restart 🔄"],
         newState: { step: "F1_END", userData: data },
       };
 
     default:
       return {
-        reply: "🙏 Radhe Radhe Pranam! Reply *Restart* to begin.",
+        reply: `🙏 Radhe Radhe Pranam ${userName} ji! Reply *Restart* to begin.`,
         buttons: ["Restart 🔄"],
-        newState: { step: "START", userData: {} },
+        newState: { step: "START", userData: data },
       };
   }
 }
