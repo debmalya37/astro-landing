@@ -739,78 +739,67 @@ const time = useCountdown();
         </div>
       </nav>
 
-      {/* ════════════════════════════════
-          HERO SECTION (Warm Gold Aesthetic)
-      ════════════════════════════════ */}
-      {/* ════════════════════════════════
-          HERO SECTION (Warm Gold Aesthetic)
-      ════════════════════════════════ */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-16" 
+      {/* HERO SECTION */}
+      
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-10 lg:py-16" 
                style={{ background: `linear-gradient(135deg, #fdf3da 0%, #fce8c0 40%, #f9d89a 100%)` }}>
         
         {/* Interactive 3D Cosmic Earth */}
         {/* <CosmicEarthBackground /> */}
 
-        <div className="max-w-7xl mx-auto px-5 w-full relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 w-full relative z-10 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           
           {/* Left Text */}
           <div className="text-center lg:text-left">
-            <div className="reveal inline-flex items-center gap-2 text-[10px] sm:text-xs font-medium tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-6" 
+            <div className="reveal inline-flex items-center gap-2 text-[9px] sm:text-xs font-medium tracking-[0.2em] uppercase px-3 sm:px-4 py-1.5 rounded-full mb-4 lg:mb-6" 
                  style={{ color: C.t1, background: "rgba(255,255,255,0.3)", border: `1px solid rgba(42,14,0,0.2)` }}>
               ✦ India's Most Trusted Vedic Astrologer
             </div>
             
-            <h1 className="reveal d1 fraunces text-4xl sm:text-5xl lg:text-6xl leading-[1.1] font-medium text-[#2A0E00] mb-6">
+            <h1 className="reveal d1 fraunces text-4xl sm:text-5xl lg:text-6xl leading-[1.1] font-medium text-[#2A0E00] mb-4 lg:mb-6">
               Accurate Predictions For <br />
               <em className="font-light italic text-[#4A2E10]">Love, Career & Wealth!</em>
             </h1>
             
-            <p className="reveal d2 text-base sm:text-lg text-[#3D1600] font-medium max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed">
-              Feeling stuck in life or lost about your future? celebrity astrologer Surbhi Gupta's Accurate Vedic Kundli Report reveals the answers hidden in your birth chart and exact timing for success.
+            <p className="reveal d2 text-sm sm:text-lg text-[#3D1600] font-medium max-w-lg mx-auto lg:mx-0 mb-6 lg:mb-8 leading-relaxed px-2 lg:px-0">
+              Feeling stuck in life or lost about your future? Celebrity astrologer Surbhi Gupta's Accurate Vedic Kundli Report reveals the answers hidden in your birth chart and exact timing for success.
             </p>
 
             <div className="reveal d3 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <a href="#offer" className="btn-auto-shine w-full sm:w-auto px-8 py-4 rounded-full font-medium text-lg text-white shadow-[0_15px_30px_rgba(42,14,0,0.3)] hover:scale-105 transition-transform"
+              <a href="#offer" className="btn-auto-shine w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg text-white shadow-[0_15px_30px_rgba(42,14,0,0.3)] hover:scale-105 transition-transform"
                  style={{ background: C.dk2 }}>
                 Get Your Personalized Kundali
               </a>
-              <div className="flex items-center gap-3 text-[#2A0E00] font-semibold text-sm">
-                <span className="text-2xl">🎁</span> 
+              <div className="flex items-center gap-2 sm:gap-3 text-[#2A0E00] font-semibold text-xs sm:text-sm">
+                <span className="text-xl sm:text-2xl">🎁</span> 
                 <span className="text-left leading-tight">Includes 1 Free<br/>WhatsApp Question</span>
               </div>
             </div>
 
             {/* Trust Badges */}
-            <div className="reveal d4 grid grid-cols-3 gap-4 mt-12 border-t border-[#4A2E10]/20 pt-8 max-w-lg mx-auto lg:mx-0">
+            <div className="reveal d4 grid grid-cols-3 gap-2 sm:gap-4 mt-8 lg:mt-12 border-t border-[#4A2E10]/20 pt-6 lg:pt-8 max-w-lg mx-auto lg:mx-0">
               {[
                 ["10 Lakh+", "Reports Delivered"],
                 ["4.9/5 ★", "Average Rating"],
                 ["Personalized", "Deep Analysis"]
               ].map(([top, bot], i) => (
                 <div key={i} className="text-center lg:text-left">
-                  <div className="fraunces text-xl lg:text-2xl font-medium text-[#2A0E00]">{top}</div>
-                  <div className="text-[10px] sm:text-xs text-[#4A2E10] uppercase tracking-widest mt-1">{bot}</div>
+                  <div className="fraunces text-lg sm:text-xl lg:text-2xl font-medium text-[#2A0E00]">{top}</div>
+                  <div className="text-[8px] sm:text-[10px] lg:text-xs text-[#4A2E10] uppercase tracking-widest mt-1">{bot}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right Visual (Open Book) */}
-          {/* Right Visual (Open Book) */}
-          {/* Right Visual (Premium Closed Book & Badges) */}
           {/* ========================================================
               RIGHT VISUAL: Cosmic Wheel + Portrait + Floating Book 
               ======================================================== */}
-          {/* ========================================================
-              RIGHT VISUAL: Cosmic Wheel + Portrait + Floating Book 
-              ======================================================== */}
-          <div className="reveal d2 relative flex justify-center lg:justify-end items-center h-[550px] lg:h-[700px] mt-12 lg:mt-0 w-full overflow-hidden lg:overflow-visible perspective-1000">
+          <div className="reveal d2 relative flex justify-center lg:justify-end items-center h-[420px] sm:h-[550px] lg:h-[700px] mt-10 lg:mt-0 w-full overflow-hidden lg:overflow-visible perspective-1000">
             
-            {/* 1. BACKGROUND: Massive Cosmic Wheel (Shifted left slightly, DARK CORE / BRIGHTER EDGES) */}
-            <div className="absolute right-[-35%] lg:right-[-25%] top-1/2 -translate-y-1/2 w-[450px] sm:w-[550px] lg:w-[750px] aspect-square z-0 pointer-events-none opacity-90 lg:opacity-100">
+            {/* 1. BACKGROUND: Massive Cosmic Wheel */}
+            <div className="absolute right-[-25%] lg:right-[-25%] top-1/2 -translate-y-1/2 w-[380px] sm:w-[550px] lg:w-[750px] aspect-square z-0 pointer-events-none opacity-90 lg:opacity-100">
               <svg className="w-full h-full drop-shadow-[0_0_40px_rgba(200,168,75,0.2)] animate-[spin_120s_linear_infinite]" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  {/* Updated Gradient: Darkest in center, richer/brighter at edges */}
                   <radialGradient id="wbg" cx="50%" cy="50%" r="50%">
                     <stop offset="0%" stopColor="#1A0500" stopOpacity="0.8"/>
                     <stop offset="70%" stopColor="#3D1600" stopOpacity="0.7"/>
@@ -818,8 +807,6 @@ const time = useCountdown();
                   </radialGradient>
                 </defs>
                 <circle cx="230" cy="230" r="220" fill="url(#wbg)" stroke="rgba(200,168,75,0.6)" strokeWidth="1.5"/>
-                
-                {/* Outer Ring with Zodiac Fills (Brightened for visibility against dark edge) */}
                 <g className="wheel-outer-ring">
                   <circle cx="230" cy="230" r="215" fill="none" stroke="rgba(200,168,75,0.3)" strokeWidth="0.5" strokeDasharray="4 8"/>
                   <g fill="rgba(226,192,106,0.9)" fontSize="16" fontFamily="serif" textAnchor="middle">
@@ -831,12 +818,8 @@ const time = useCountdown();
                     <text x="58"  y="164">♒</text><text x="128" y="86">♓</text>
                   </g>
                 </g>
-                
-                {/* Inner Rings (Lighter to pop against dark center) */}
                 <circle cx="230" cy="230" r="185" fill="none" stroke="rgba(200,168,75,0.2)" strokeWidth="1"/>
                 <circle cx="230" cy="230" r="155" fill="none" stroke="rgba(200,168,75,0.15)" strokeWidth="0.5"/>
-                
-                {/* Connecting Lines */}
                 <g stroke="rgba(200,168,75,0.2)" strokeWidth="1">
                   <line x1="230" y1="45" x2="230" y2="415"/>
                   <line x1="45"  y1="230" x2="415" y2="230"/>
@@ -846,76 +829,75 @@ const time = useCountdown();
               </svg>
             </div>
 
-            {/* 2. CENTER: celebrity astrologer Surbhi Gupta Portrait (Shifted rightish) */}
-            <div className="relative z-10 w-[240px] sm:w-[300px] lg:w-[360px] lg:mr-[0%]">
-              <div className="relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden border-[4px] border-[#C8A84B]/40 shadow-[0_25px_60px_rgba(42,14,0,0.6)] bg-[#2A0E00]">
-                {/* Fallback color while image loads */}
+            {/* 2. CENTER: Celebrity Astrologer Surbhi Gupta Portrait */}
+            <div className="relative z-10 w-[200px] sm:w-[300px] lg:w-[360px] lg:mr-[0%]">
+              <div className="relative w-full aspect-[4/5] rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-[3px] lg:border-[4px] border-[#C8A84B]/40 shadow-[0_15px_40px_rgba(42,14,0,0.6)] lg:shadow-[0_25px_60px_rgba(42,14,0,0.6)] bg-[#2A0E00]">
                 <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
                 <img 
                   src="/surbhi-gupta-portrait.jpg" 
-                  alt="celebrity astrologer Surbhi Gupta - Trusted Astrologer" 
+                  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer" 
                   className="absolute inset-0 w-full h-full object-cover z-10"
                   onError={(e) => {
                     e.currentTarget.onerror = null;
-                    e.currentTarget.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600&h=800"; // Elegant fallback portrait
+                    e.currentTarget.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600&h=800";
                   }}
                 />
                 <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
-                <div className="absolute bottom-5 inset-x-0 text-center z-30">
-                  <div className="text-[#F5D98A] font-bold text-xl lg:text-2xl drop-shadow-lg">celebrity astrologer Surbhi Gupta</div>
-                  <div className="text-white/80 text-[10px] lg:text-xs uppercase tracking-widest font-bold mt-1">Vedic Astrologer</div>
+                <div className="absolute bottom-3 lg:bottom-5 inset-x-0 text-center z-30">
+                  <div className="text-[#F5D98A] font-bold text-sm sm:text-xl lg:text-2xl drop-shadow-lg px-2 leading-tight">Celebrity Astrologer<br/>Surbhi Gupta</div>
+                  <div className="text-white/80 text-[8px] lg:text-xs uppercase tracking-widest font-bold mt-1">Vedic Astrologer</div>
                 </div>
               </div>
 
               {/* Floating Badge (Attached to Portrait) */}
-              <div className="absolute -top-5 right-4 lg:-right-6 bg-white rounded-xl py-2 px-4 lg:px-5 shadow-[0_15px_30px_rgba(0,0,0,0.2)] flex items-center gap-2 border border-[#E8D8B8] z-30 animate-[float_5s_ease-in-out_infinite_0.5s]">
-                <div className="text-base lg:text-xl drop-shadow-sm">⭐</div>
+              <div className="absolute -top-3 lg:-top-5 -right-2 sm:right-4 lg:-right-6 bg-white rounded-lg lg:rounded-xl py-1.5 px-3 lg:py-2 lg:px-5 shadow-[0_10px_20px_rgba(0,0,0,0.2)] flex items-center gap-1.5 lg:gap-2 border border-[#E8D8B8] z-30 animate-[float_5s_ease-in-out_infinite_0.5s]">
+                <div className="text-sm lg:text-xl drop-shadow-sm">⭐</div>
                 <div className="text-left">
-                  <div className="text-[#4A2E10] text-[9px] lg:text-[10px] font-bold uppercase tracking-widest leading-none">Trusted by</div>
-                  <div className="text-[#2A1400] text-xs lg:text-sm font-extrabold mt-0.5">1.5 Lakh+</div>
+                  <div className="text-[#4A2E10] text-[7px] lg:text-[10px] font-bold uppercase tracking-widest leading-none">Trusted by</div>
+                  <div className="text-[#2A1400] text-[10px] sm:text-xs lg:text-sm font-extrabold mt-0.5">1.5 Lakh+</div>
                 </div>
               </div>
               
               {/* 🔥 Floating "Spots Left" Notification */}
-              <div className="absolute -top-10 left-0 lg:-left-12 z-30 animate-[float_4s_ease-in-out_infinite_1s]">
-                <div className="bg-gradient-to-r from-[#A82020] to-[#8B1E1E] text-white text-[10px] lg:text-xs font-bold tracking-widest px-4 py-2 lg:px-5 lg:py-2.5 rounded-full shadow-[0_10px_20px_rgba(168,32,32,0.4)] border border-[#FF8080]/30 flex items-center gap-2">
+              <div className="absolute -top-6 lg:-top-10 -left-2 sm:left-0 lg:-left-12 z-30 animate-[float_4s_ease-in-out_infinite_1s]">
+                <div className="bg-gradient-to-r from-[#A82020] to-[#8B1E1E] text-white text-[8px] sm:text-[10px] lg:text-xs font-bold tracking-widest px-3 py-1.5 lg:px-5 lg:py-2.5 rounded-full shadow-[0_10px_20px_rgba(168,32,32,0.4)] border border-[#FF8080]/30 flex items-center gap-1.5 lg:gap-2 whitespace-nowrap">
                   <span className="animate-pulse">🔥</span> ONLY 17 SPOTS LEFT
                 </div>
               </div>
 
               {/* 3. FOREGROUND: Floating Premium Book */}
-              <div className="absolute -bottom-8 -left-12 sm:-left-20 lg:-left-24 z-40 animate-float transform -rotate-6 hover:rotate-0 transition-transform duration-700">
+              <div className="absolute -bottom-4 -left-4 sm:-bottom-8 sm:-left-20 lg:-bottom-8 lg:-left-24 z-40 animate-float transform -rotate-6 hover:rotate-0 transition-transform duration-700">
                 
-                <div className="w-[160px] sm:w-[200px] lg:w-[220px] aspect-[1/1.6] rounded-xl rounded-l-md shadow-[10px_25px_50px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden border-r-[2px] border-y border-[#D8C49A]/30 border-l-[6px] border-l-[#1A0505]"
+                <div className="w-[140px] sm:w-[200px] lg:w-[220px] aspect-[1/1.6] rounded-xl rounded-l-md shadow-[10px_15px_30px_rgba(0,0,0,0.8)] lg:shadow-[10px_25px_50px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden border-r-[2px] border-y border-[#D8C49A]/30 border-l-[4px] lg:border-l-[6px] border-l-[#1A0505]"
                      style={{ background: 'linear-gradient(160deg, #4A0E1A 0%, #1A0505 100%)' }}>
                   
                   {/* Book Spine Highlight/Crease */}
-                  <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-transparent via-white/10 to-transparent mix-blend-overlay"></div>
+                  <div className="absolute left-0 top-0 bottom-0 w-2 lg:w-3 bg-gradient-to-r from-transparent via-white/10 to-transparent mix-blend-overlay"></div>
                   
                   {/* Top Text Section */}
-                  <div className="p-4 pt-5 lg:p-5 lg:pt-6 text-center z-10 relative">
-                    <div className="text-[#C8A84B] text-[7px] lg:text-[8px] font-bold tracking-[0.2em] uppercase mb-2">
+                  <div className="p-3 pt-4 sm:p-4 sm:pt-5 lg:p-5 lg:pt-6 text-center z-10 relative">
+                    <div className="text-[#C8A84B] text-[6px] sm:text-[7px] lg:text-[8px] font-bold tracking-[0.2em] uppercase mb-1.5 lg:mb-2">
                       Premium<br/>Personalized
                     </div>
-                    <h3 className="fraunces text-xl lg:text-2xl font-bold text-white leading-tight">
+                    <h3 className="fraunces text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
                       Kundali <br/><span className="text-[#E2C06A]">Report</span>
                     </h3>
                   </div>
 
                   {/* Center 3D Icon Area */}
                   <div className="flex-1 flex items-center justify-center relative z-10">
-                    <div className="absolute w-12 h-12 lg:w-16 lg:h-16 bg-[#7B42F6] rounded-full blur-2xl opacity-40"></div>
-                    <div className="relative w-10 h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-[#8B5CF6] to-[#5B21B6] transform rotate-45 rounded-xl shadow-[inset_0_4px_10px_rgba(255,255,255,0.4),0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center border border-[#A78BFA]/50">
-                      <div className="transform -rotate-45 text-white/90 text-lg lg:text-xl font-light">✡</div>
+                    <div className="absolute w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-[#7B42F6] rounded-full blur-xl lg:blur-2xl opacity-40"></div>
+                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-[#8B5CF6] to-[#5B21B6] transform rotate-45 rounded-lg lg:rounded-xl shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_5px_10px_rgba(0,0,0,0.5)] lg:shadow-[inset_0_4px_10px_rgba(255,255,255,0.4),0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center border border-[#A78BFA]/50">
+                      <div className="transform -rotate-45 text-white/90 text-sm sm:text-lg lg:text-xl font-light">✡</div>
                     </div>
                   </div>
 
                   {/* Bottom Pricing Section */}
-                  <div className="p-4 pb-5 lg:p-5 lg:pb-6 text-center z-10 relative">
-                    <div className="text-white/40 line-through text-[9px] lg:text-[10px] font-medium mb-0.5">₹2,999</div>
+                  <div className="p-3 pb-4 sm:p-4 sm:pb-5 lg:p-5 lg:pb-6 text-center z-10 relative">
+                    <div className="text-white/40 line-through text-[8px] sm:text-[9px] lg:text-[10px] font-medium mb-0.5">₹2,999</div>
                     <div className="flex items-center justify-center">
-                      <span className="text-[#E2C06A] text-xs lg:text-sm font-bold mr-0.5">₹</span>
-                      <span className="text-[#E2C06A] fraunces text-xl lg:text-2xl font-bold tracking-tight">999</span>
+                      <span className="text-[#E2C06A] text-[10px] sm:text-xs lg:text-sm font-bold mr-0.5">₹</span>
+                      <span className="text-[#E2C06A] fraunces text-lg sm:text-xl lg:text-2xl font-bold tracking-tight">999</span>
                     </div>
                   </div>
 
