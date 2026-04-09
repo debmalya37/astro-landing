@@ -662,16 +662,29 @@ const time = useCountdown();
 
       
 {/* ── WA FLOAT ── */}
-      <a href="https://wa.me/919251151330" target="_blank" rel="noopener noreferrer"
-        className="wa-float"
-        style={{
-          position: "fixed", right: 22, bottom: 88, zIndex: 199,
-          width: 54, height: 54, borderRadius: "50%", background: "#25D366",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "1.4rem", textDecoration: "none",
-        }}>
-        <FaWhatsapp className="text-green-500 w-8 h-8" />
-      </a>
+      <a 
+  href="https://wa.me/919251151330?text=Hi" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  className="wa-float"
+  style={{
+    position: "fixed", 
+    right: 22, 
+    bottom: 88, 
+    zIndex: 199,
+    width: 54, 
+    height: 54, 
+    borderRadius: "50%", 
+    background: "#25D366",
+    display: "flex", 
+    alignItems: "center", 
+    justifyContent: "center",
+    fontSize: "1.4rem", 
+    textDecoration: "none",
+  }}
+>
+  <FaWhatsapp className="text-white w-8 h-8" />
+</a>
 
     {/* ════════════════════════════════
           ANNOUNCEMENT BAR — PREMIUM RED
