@@ -339,7 +339,7 @@ function CosmicEarthBackground() {
 // Make sure to add the 'Fraunces' font family in your tailwind config or global CSS.
 const CelebrityEndorsementSection = () => {
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-16" 
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-14" 
                style={{ background: `linear-gradient(135deg, #fdf3da 0%, #fce8c0 40%, #f9d89a 100%)` }}>
         
         {/* Interactive 3D Cosmic Earth */}
@@ -745,63 +745,73 @@ const time = useCountdown();
   {/* ════════════════════════════════
           HERO SECTION (Warm Gold Aesthetic)
       ════════════════════════════════ */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-10 lg:py-16" 
+      {/* ════════════════════════════════
+          HERO SECTION (Warm Gold Aesthetic)
+      ════════════════════════════════ */}
+      {/* ════════════════════════════════
+          HERO SECTION (Warm Gold Aesthetic)
+      ════════════════════════════════ */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-6 sm:py-10 lg:py-14" 
                style={{ background: `linear-gradient(135deg, #fdf3da 0%, #fce8c0 40%, #f9d89a 100%)` }}>
         
         {/* Interactive 3D Cosmic Earth */}
         {/* <CosmicEarthBackground /> */}
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-5 w-full relative z-10 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 w-full relative z-10 grid lg:grid-cols-2 gap-2 sm:gap-8 lg:gap-12 items-center">
           
-          {/* Left Text */}
+          {/* ========================================================
+              LEFT TEXT (Headings & Subheadings)
+              ======================================================== */}
           <div className="text-center lg:text-left">
-            <div className="reveal inline-flex items-center gap-2 text-[9px] sm:text-xs font-medium tracking-[0.2em] uppercase px-3 sm:px-4 py-1.5 rounded-full mb-4 lg:mb-6" 
+            <div className="inline-flex items-center gap-2 text-[9px] sm:text-xs font-medium tracking-[0.2em] uppercase px-3 sm:px-4 py-1.5 rounded-full mb-3 lg:mb-6" 
                  style={{ color: C.t1, background: "rgba(255,255,255,0.3)", border: `1px solid rgba(42,14,0,0.2)` }}>
               ✦ India's Most Trusted Vedic Astrologer
             </div>
             
-            <h1 className="reveal d1 fraunces text-4xl sm:text-5xl lg:text-6xl leading-[1.1] font-medium text-[#2A0E00] mb-4 lg:mb-6">
+            <h1 className="fraunces text-4xl sm:text-5xl lg:text-6xl leading-[1.1] font-medium text-[#2A0E00] mb-3 lg:mb-6">
               Accurate Predictions For <br />
               <em className="font-light italic text-[#4A2E10]">Love, Career & Wealth!</em>
             </h1>
             
-            <p className="reveal d2 text-sm sm:text-lg text-[#3D1600] font-medium max-w-lg mx-auto lg:mx-0 mb-6 lg:mb-8 leading-relaxed px-2 lg:px-0">
+            <p className="text-sm sm:text-lg text-[#3D1600] font-medium max-w-lg mx-auto lg:mx-0 mb-0 lg:mb-8 leading-relaxed px-2 lg:px-0">
               Feeling stuck in life or lost about your future? Celebrity astrologer Surbhi Gupta's Accurate Vedic Kundli Report reveals the answers hidden in your birth chart and exact timing for success.
             </p>
 
-            <div className="reveal d3 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <a href="#offer" className="btn-auto-shine w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg text-white shadow-[0_15px_30px_rgba(42,14,0,0.3)] hover:scale-105 transition-transform"
-                 style={{ background: C.dk2 }}>
-                Get Your Personalized Kundali
-              </a>
-              <div className="flex items-center gap-2 sm:gap-3 text-[#2A0E00] font-semibold text-xs sm:text-sm">
-                <span className="text-xl sm:text-2xl">🎁</span> 
-                <span className="text-left leading-tight">Includes 1 Free<br/>WhatsApp Question</span>
-              </div>
-            </div>
-
-            {/* Trust Badges */}
-            <div className="reveal d4 grid grid-cols-3 gap-2 sm:gap-4 mt-8 lg:mt-12 border-t border-[#4A2E10]/20 pt-6 lg:pt-8 max-w-lg mx-auto lg:mx-0">
-              {[
-                ["10 Lakh+", "Reports Delivered"],
-                ["4.9/5 ★", "Average Rating"],
-                ["Personalized", "Deep Analysis"]
-              ].map(([top, bot], i) => (
-                <div key={i} className="text-center lg:text-left">
-                  <div className="fraunces text-lg sm:text-xl lg:text-2xl font-medium text-[#2A0E00]">{top}</div>
-                  <div className="text-[8px] sm:text-[10px] lg:text-xs text-[#4A2E10] uppercase tracking-widest mt-1">{bot}</div>
+            {/* DESKTOP CTA & BADGES (Hidden on Mobile) */}
+            <div className="hidden lg:block">
+              <div className="flex flex-col sm:flex-row items-center justify-start gap-4">
+                <a href="#offer" className="btn-auto-shine w-auto px-8 py-4 rounded-full font-medium text-lg text-white shadow-[0_15px_30px_rgba(42,14,0,0.3)] hover:scale-105 transition-transform"
+                   style={{ background: C.dk2 }}>
+                  Get Your Personalized Kundali
+                </a>
+                <div className="flex items-center gap-3 text-[#2A0E00] font-semibold text-sm">
+                  <span className="text-2xl">🎁</span> 
+                  <span className="text-left leading-tight">Includes 1 Free<br/>WhatsApp Question</span>
                 </div>
-              ))}
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 mt-12 border-t border-[#4A2E10]/20 pt-8 max-w-lg mx-0">
+                {[
+                  ["10 Lakh+", "Reports Delivered"],
+                  ["4.9/5 ★", "Average Rating"],
+                  ["Personalized", "Deep Analysis"]
+                ].map(([top, bot], i) => (
+                  <div key={i} className="text-left">
+                    <div className="fraunces text-xl lg:text-2xl font-medium text-[#2A0E00]">{top}</div>
+                    <div className="text-[10px] lg:text-xs text-[#4A2E10] uppercase tracking-widest mt-1">{bot}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* ========================================================
               RIGHT VISUAL: Cosmic Wheel + Portrait + Floating Book 
               ======================================================== */}
-          <div className="reveal d2 relative flex justify-center lg:justify-end items-center h-[480px] sm:h-[550px] lg:h-[700px] mt-12 sm:mt-10 lg:mt-0 w-full overflow-hidden lg:overflow-visible perspective-1000">
+          <div className="relative flex justify-center lg:justify-end items-center h-[400px] sm:h-[480px] lg:h-[700px] mt-0 sm:mt-6 lg:mt-0 w-full overflow-hidden lg:overflow-visible perspective-1000 z-10">
             
             {/* 1. BACKGROUND: Massive Cosmic Wheel */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-[-25%] w-[420px] sm:w-[550px] lg:w-[750px] aspect-square z-0 pointer-events-none opacity-90 lg:opacity-100">
+            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-[-25%] w-[400px] sm:w-[500px] lg:w-[750px] aspect-square z-0 pointer-events-none opacity-90 lg:opacity-100">
               <svg className="w-full h-full drop-shadow-[0_0_40px_rgba(200,168,75,0.2)] animate-[spin_120s_linear_infinite]" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <radialGradient id="wbg" cx="50%" cy="50%" r="50%">
@@ -833,8 +843,8 @@ const time = useCountdown();
               </svg>
             </div>
 
-            {/* 2. CENTER: Celebrity Astrologer Surbhi Gupta Portrait */}
-            <div className="relative z-10 w-[220px] sm:w-[300px] lg:w-[360px] ml-6 sm:ml-10 lg:ml-0 lg:mr-0">
+            {/* 2. CENTER: Portrait */}
+            <div className="relative z-10 w-[200px] sm:w-[280px] lg:w-[360px] ml-6 sm:ml-10 lg:ml-0 lg:mr-0">
               <div className="relative w-full aspect-[4/5] rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-[3px] lg:border-[4px] border-[#C8A84B]/40 shadow-[0_15px_40px_rgba(42,14,0,0.6)] lg:shadow-[0_25px_60px_rgba(42,14,0,0.6)] bg-[#2A0E00]">
                 <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
                 <img 
@@ -862,46 +872,41 @@ const time = useCountdown();
                 </div>
               </div>
               
-              {/* 🔥 Floating "Spots Left" Notification */}
-              <div className="absolute -top-8 -left-6 sm:-top-10 sm:-left-4 lg:-top-10 lg:-left-12 z-30 animate-[float_4s_ease-in-out_infinite_1s]">
+              {/* Floating "Spots Left" Notification */}
+              <div className="absolute -top-6 -left-4 sm:-top-8 sm:-left-4 lg:-top-10 lg:-left-12 z-30 animate-[float_4s_ease-in-out_infinite_1s]">
                 <div className="bg-gradient-to-r from-[#A82020] to-[#8B1E1E] text-white text-[8px] sm:text-[10px] lg:text-xs font-bold tracking-widest px-3 py-1.5 lg:px-5 lg:py-2.5 rounded-full shadow-[0_10px_20px_rgba(168,32,32,0.4)] border border-[#FF8080]/30 flex items-center gap-1.5 lg:gap-2 whitespace-nowrap">
                   <span className="animate-pulse">🔥</span> ONLY 17 SPOTS LEFT
                 </div>
               </div>
 
               {/* 3. FOREGROUND: Floating Premium Book */}
-              {/* Adjusted scale and position specifically for mobile to prevent portrait overlap */}
-              <div className="absolute -bottom-12 -left-20 sm:-bottom-10 sm:-left-16 lg:-bottom-8 lg:-left-24 z-40 animate-float transform -rotate-6 hover:rotate-0 transition-transform duration-700">
-                <div className="w-[120px] sm:w-[180px] lg:w-[220px] aspect-[1/1.6] rounded-xl rounded-l-md shadow-[10px_15px_30px_rgba(0,0,0,0.8)] lg:shadow-[10px_25px_50px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden border-r-[2px] border-y border-[#D8C49A]/30 border-l-[4px] lg:border-l-[6px] border-l-[#1A0505]"
+              <div className="absolute -bottom-10 -left-20 sm:-bottom-10 sm:-left-16 lg:-bottom-8 lg:-left-40 z-40 animate-float transform -rotate-6 hover:rotate-0 transition-transform duration-700">
+                <div className="w-[110px] sm:w-[160px] lg:w-[220px] aspect-[1/1.6] rounded-xl rounded-l-md shadow-[10px_15px_30px_rgba(0,0,0,0.8)] lg:shadow-[10px_25px_50px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden border-r-[2px] border-y border-[#D8C49A]/30 border-l-[4px] lg:border-l-[6px] border-l-[#1A0505]"
                      style={{ background: 'linear-gradient(160deg, #4A0E1A 0%, #1A0505 100%)' }}>
                   
-                  {/* Book Spine Highlight/Crease */}
                   <div className="absolute left-0 top-0 bottom-0 w-2 lg:w-3 bg-gradient-to-r from-transparent via-white/10 to-transparent mix-blend-overlay"></div>
                   
-                  {/* Top Text Section */}
                   <div className="p-2 pt-3 sm:p-4 sm:pt-5 lg:p-5 lg:pt-6 text-center z-10 relative">
                     <div className="text-[#C8A84B] text-[5px] sm:text-[7px] lg:text-[8px] font-bold tracking-[0.2em] uppercase mb-1 sm:mb-1.5 lg:mb-2">
                       Premium<br/>Personalized
                     </div>
-                    <h3 className="fraunces text-base sm:text-xl lg:text-2xl font-bold text-white leading-tight">
+                    <h3 className="fraunces text-sm sm:text-lg lg:text-2xl font-bold text-white leading-tight">
                       Kundali <br/><span className="text-[#E2C06A]">Report</span>
                     </h3>
                   </div>
 
-                  {/* Center 3D Icon Area */}
                   <div className="flex-1 flex items-center justify-center relative z-10">
-                    <div className="absolute w-6 h-6 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-[#7B42F6] rounded-full blur-xl lg:blur-2xl opacity-40"></div>
-                    <div className="relative w-8 h-8 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-[#8B5CF6] to-[#5B21B6] transform rotate-45 rounded-lg lg:rounded-xl shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_5px_10px_rgba(0,0,0,0.5)] lg:shadow-[inset_0_4px_10px_rgba(255,255,255,0.4),0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center border border-[#A78BFA]/50">
-                      <div className="transform -rotate-45 text-white/90 text-xs sm:text-lg lg:text-xl font-light">✡</div>
+                    <div className="absolute w-6 h-6 sm:w-10 sm:h-10 lg:w-16 lg:h-16 bg-[#7B42F6] rounded-full blur-xl lg:blur-2xl opacity-40"></div>
+                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-[#8B5CF6] to-[#5B21B6] transform rotate-45 rounded-lg lg:rounded-xl shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_5px_10px_rgba(0,0,0,0.5)] flex items-center justify-center border border-[#A78BFA]/50">
+                      <div className="transform -rotate-45 text-white/90 text-xs sm:text-base lg:text-xl font-light">✡</div>
                     </div>
                   </div>
 
-                  {/* Bottom Pricing Section */}
                   <div className="p-2 pb-3 sm:p-4 sm:pb-5 lg:p-5 lg:pb-6 text-center z-10 relative">
-                    <div className="text-white/40 line-through text-[7px] sm:text-[9px] lg:text-[10px] font-medium mb-0.5">₹2,999</div>
+                    <div className="text-white/40 line-through text-[6px] sm:text-[8px] lg:text-[10px] font-medium mb-0.5">₹2,999</div>
                     <div className="flex items-center justify-center">
-                      <span className="text-[#E2C06A] text-[9px] sm:text-xs lg:text-sm font-bold mr-0.5">₹</span>
-                      <span className="text-[#E2C06A] fraunces text-base sm:text-xl lg:text-2xl font-bold tracking-tight">999</span>
+                      <span className="text-[#E2C06A] text-[8px] sm:text-[10px] lg:text-sm font-bold mr-0.5">₹</span>
+                      <span className="text-[#E2C06A] fraunces text-sm sm:text-lg lg:text-2xl font-bold tracking-tight">999</span>
                     </div>
                   </div>
 
@@ -910,13 +915,44 @@ const time = useCountdown();
 
             </div>
           </div>
+
+          {/* ========================================================
+              MOBILE CTA & BADGES (Hidden on Desktop)
+              ======================================================== */}
+          <div className="block lg:hidden w-full pt-4 sm:pt-6 relative z-20">
+            <div className="flex flex-col items-center justify-center gap-3">
+              <a href="#offer" className="btn-auto-shine w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg text-white shadow-[0_10px_20px_rgba(42,14,0,0.3)] active:scale-95 transition-transform text-center"
+                 style={{ background: C.dk2 }}>
+                Get Your Personalized Kundali
+              </a>
+              <div className="flex items-center justify-center gap-2 text-[#2A0E00] font-semibold text-xs">
+                <span className="text-xl">🎁</span> 
+                <span className="text-left leading-tight">Includes 1 Free<br/>WhatsApp Question</span>
+              </div>
+            </div>
+
+            {/* Mobile Trust Badges */}
+            <div className="grid grid-cols-3 gap-2 mt-6 border-t border-[#4A2E10]/20 pt-4 max-w-lg mx-auto">
+              {[
+                ["10 Lakh+", "Reports Delivered"],
+                ["4.9/5 ★", "Average Rating"],
+                ["Personalized", "Deep Analysis"]
+              ].map(([top, bot], i) => (
+                <div key={i} className="text-center">
+                  <div className="fraunces text-base sm:text-lg font-medium text-[#2A0E00]">{top}</div>
+                  <div className="text-[7px] sm:text-[9px] text-[#4A2E10] uppercase tracking-widest mt-0.5">{bot}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </section>
 
      {/* ════════════════════════════════
           WHAT CAN IT SOLVE? (Interactive 3D Hover Cards)
       ════════════════════════════════ */}
-      <section className="py-24 bg-[#FCF7EE]">
+      <section className=" py-8 md:py-14  bg-[#FCF7EE]">
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-16 reveal">
             <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400] mb-4">What Can Smart Kundli Solve for You?</h2>
@@ -995,7 +1031,7 @@ const time = useCountdown();
           BEFORE VS AFTER (Interactive Image Slider)
       ════════════════════════════════ */}
 
-    <section className="py-24" style={{ background: '#1A0A00' }}>
+    <section className=" py-8 md:py-14 " style={{ background: '#1A0A00' }}>
       <div className="max-w-[1400px] mx-auto px-4 sm:px-5">
         <div className="text-center mb-12 reveal">
           <div className="inline-block bg-white/5 text-[#E2C06A] text-[10px] sm:text-xs font-medium tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-6 border border-[#E2C06A]/30">
@@ -1019,7 +1055,7 @@ const time = useCountdown();
 {/* ════════════════════════════════
           FEATURED PREDICTION (Modi Section)
       ════════════════════════════════ */}
-      <section className="py-16 md:py-20 bg-[#FCF7EE] px-4 sm:px-5">
+      <section className="py-14 md:py-20 bg-[#FCF7EE] px-4 sm:px-5">
         <div className="max-w-[1200px] mx-auto reveal">
           
           {/* Main Container - Dark Cinematic Wrapper */}
@@ -1095,7 +1131,7 @@ const time = useCountdown();
       {/* ════════════════════════════════
           WHO IS THIS FOR? (Split Layout with Image)
       ════════════════════════════════ */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className=" py-8 md:py-14  bg-white relative overflow-hidden">
         {/* Subtle background astrolabe */}
         <div className="absolute -right-[20%] top-[20%] text-[40rem] text-[#F5D98A] opacity-5 pointer-events-none select-none font-serif leading-none">☸</div>
 
@@ -1151,7 +1187,7 @@ const time = useCountdown();
       {/* ════════════════════════════════
           WHAT'S INSIDE (Premium Features Grid)
       ════════════════════════════════ */}
-      <section className="py-24 bg-[#FCF7EE] relative overflow-hidden">
+      <section className=" py-8 md:py-14  bg-[#FCF7EE] relative overflow-hidden">
         <div className="max-w-[1300px] mx-auto px-5 relative z-10">
           
           {/* Section Header */}
@@ -1308,7 +1344,7 @@ const time = useCountdown();
       {/* ════════════════════════════════
           INSIDE THE REPORT (Cinematic Cosmic Layout)
       ════════════════════════════════ */}
-      <section className="py-24 relative overflow-hidden" style={{ background: C.dk2 }}>
+      <section className=" py-8 md:py-14  relative overflow-hidden" style={{ background: C.dk2 }}>
         
         {/* Cinematic Ambient Background Gradients */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(200,168,75,0.15)_0%,transparent_50%)] pointer-events-none" />
@@ -1415,7 +1451,7 @@ const time = useCountdown();
       {/* ════════════════════════════════
           AUTHORITY (Acharya Style)
       ════════════════════════════════ */}
-      <section className="py-24 bg-[#FCF7EE]">
+      <section className=" py-8 md:py-14  bg-[#FCF7EE]">
         <div className="max-w-7xl mx-auto px-5">
           <div className="bg-[#F5D98A] rounded-3xl overflow-hidden shadow-2xl grid lg:grid-cols-2">
             
@@ -1596,7 +1632,7 @@ const time = useCountdown();
       {/* ════════════════════════════════
           TESTIMONIALS (Real Transformations)
       ════════════════════════════════ */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className=" py-8 md:py-14  bg-white relative overflow-hidden">
         {/* Subtle background element */}
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#E8D8B8] to-transparent opacity-50"></div>
 
