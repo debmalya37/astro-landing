@@ -198,7 +198,7 @@ export function nextMessage(
       return {
         reply: isHindi
           ? `राधे राधे ${userName} जी 🙏\n\nमैं ज्योतिषी सुरभि गुप्ता जी का आधिकारिक सहायक हूँ। आज आप किस विषय में मार्गदर्शन चाहते हैं?`
-          : `Radhe Radhe ${userName} ji 🙏\n\nI’m the official assistant of Astrologer Surabhi Gupta Ji. What would you like guidance about today?`,
+          : `Radhe Radhe ${userName} ji 🙏\n\nI’m the official assistant of Astrologer Surbhi Gupta Ji. What would you like guidance about today?`,
         image: imgServices,
         list: {
           button: isHindi ? "यहाँ चुनें" : "Select Here",
