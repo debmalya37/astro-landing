@@ -292,7 +292,7 @@ function CheckoutContent() {
               className="w-5 h-5 mt-0.5 accent-[#8B1E1E] cursor-pointer rounded border-[#E8D8B8]" 
             />
             <label htmlFor="terms" className="text-sm text-[#6B4423] cursor-pointer leading-tight">
-              I verify that the birth details provided are accurate. I agree to the <a href="#" className="text-[#8B1E1E] font-bold hover:underline">Terms of Service</a> and <a href="#" className="text-[#8B1E1E] font-bold hover:underline">Privacy Policy</a>.
+              I verify that the birth details provided are accurate. I agree to the <a href="/terms-and-conditions" className="text-[#8B1E1E] font-bold hover:underline">Terms of Service</a> and <a href="/terms-and-conditions" className="text-[#8B1E1E] font-bold hover:underline">Privacy Policy</a>.
             </label>
           </div>
 
