@@ -14,18 +14,31 @@ const Label = ({ children }: { children: React.ReactNode }) => (
 function CheckoutContent() {
   const searchParams = useSearchParams();
   
-  // Read and decode URL parameters
+  // 1. Read URL parameters sent from the WhatsApp bot
   const urlService = searchParams.get("service");
-  const urlPrice = searchParams.get("price");
+  const urlPlan = searchParams.get("plan");
   
   const serviceName = urlService ? decodeURIComponent(urlService) : "Premium Personalized Kundali";
-  const basePrice = urlPrice ? parseInt(urlPrice, 10) : 999;
+  const planName = urlPlan ? decodeURIComponent(urlPlan) : "10-Year Report (₹999)";
+
+  // 2. Smart Price Extraction: Find the price inside the plan string (e.g., "Report + Call (₹11,000)")
+  let basePrice = 999;
+  const priceMatch = planName.match(/₹([\d,]+)/);
+  if (priceMatch && priceMatch[1]) {
+    // Remove commas and parse to integer
+    basePrice = parseInt(priceMatch[1].replace(/,/g, ""), 10);
+  }
+
+  // Clean the plan name for the database (removes the price tag from the string)
+  const cleanPlanName = planName.replace(/\s*\(₹[\d,]+\)/, "");
+  // Combine them so the backend API knows exactly what was ordered
+  const fullReportType = `${serviceName} - ${cleanPlanName}`;
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
-    reportType: serviceName, // Dynamically set from URL
+    reportType: fullReportType, 
     dob: "",
     tob: "",
     city: "",
@@ -38,7 +51,7 @@ function CheckoutContent() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const finalAmount = basePrice; // You can add offer logic here later if needed
+  const finalAmount = basePrice; 
 
   // Load Razorpay script
   useEffect(() => {
@@ -79,7 +92,7 @@ function CheckoutContent() {
         amount: order.amount,
         currency: "INR",
         name: "Astro Surbhi Gupta",
-        description: form.reportType, // Dynamic description
+        description: form.reportType, 
         order_id: order.id,
 
         handler: async function (response: any) {
@@ -145,25 +158,24 @@ function CheckoutContent() {
           Order Summary
         </div>
         
-        <h2 className="text-2xl lg:text-3xl font-bold text-[#2A1400] font-serif leading-tight mb-4">
+        <h2 className="text-2xl lg:text-3xl font-bold text-[#2A1400] font-serif leading-tight mb-2">
           {serviceName}
         </h2>
+        <h3 className="text-lg text-[#C8A84B] font-bold mb-4 uppercase tracking-wide">
+          Plan: {cleanPlanName}
+        </h3>
 
         {/* Pricing Block */}
         <div className="flex items-center gap-3 mb-6 pb-6 border-b border-[#E8D8B8]">
           <p className="text-[#8B1E1E] text-4xl font-extrabold leading-none">₹{basePrice}</p>
-          <p className="text-gray-400 text-lg line-through font-medium leading-none">₹{Math.round(basePrice * 3)}</p>
-          <span className="bg-[#E6F5EE] border border-[#1B4D30]/20 text-[#1B4D30] text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest ml-2">
-            Save 67%
-          </span>
         </div>
 
-        <h3 className="font-bold text-sm text-[#4A2E10] uppercase tracking-wider mb-4">What's Included:</h3>
+        <h3 className="font-bold text-sm text-[#4A2E10] uppercase tracking-wider mb-4">Service Guarantee:</h3>
         <ul className="text-sm text-[#6B4423] space-y-3">
           {[
-            "Detailed life predictions & cosmic roadmap",
-            "Personalized remedies (Gemstones, Pujas)",
-            "FREE 1-on-1 WhatsApp Consultation"
+            "Authentic Vedic Astrological Analysis",
+            "100% Confidential & Secure Process",
+            "Direct processing by Surbhi Gupta's Team"
           ].map((item, idx) => (
             <li key={idx} className="flex items-start gap-3 font-medium">
               <div className="w-5 h-5 rounded-full bg-[#C8A84B]/20 text-[#8B1E1E] flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
@@ -208,8 +220,15 @@ function CheckoutContent() {
               <input name="phone" placeholder="+91 98765 43210" className={inputClass} onChange={handleChange} />
             </div>
             <div>
-              <Label>Selected Service</Label>
-              <input name="reportType" value={form.reportType} readOnly className={`${inputClass} bg-[#F4EAD6] text-[#6B4423] cursor-not-allowed border-transparent`} />
+              <Label>Selected Package</Label>
+              {/* Using native title attribute to show full text on hover if it gets cut off */}
+              <input 
+                name="reportType" 
+                value={form.reportType} 
+                title={form.reportType}
+                readOnly 
+                className={`${inputClass} bg-[#F4EAD6] text-[#6B4423] cursor-not-allowed border-transparent text-ellipsis overflow-hidden`} 
+              />
             </div>
           </div>
 
@@ -307,15 +326,13 @@ export default function CheckoutPage() {
            <Link href="/" className="flex-shrink-0 flex items-center">
           <img 
             src="/logo.svg" 
-            alt="celebrity astrologer Surbhi Gupta" 
+            alt="Celebrity Astrologer Surbhi Gupta" 
             className="h-14 sm:h-16 lg:h-16 w-auto object-cover"
             onError={(e) => {
-              // Fallback to text if the SVG is missing or fails to load
               e.currentTarget.style.display = 'none';
               e.currentTarget.nextElementSibling?.classList.remove('hidden');
             }}
           />
-          {/* Fallback text just in case the image path is wrong */}
           <div className="hidden fraunces text-[1.15rem] sm:text-[1.35rem] font-bold">
             Celebrity Astrologer Surbhi <em style={{ fontStyle: "italic",}}>Gupta</em>
           </div>
