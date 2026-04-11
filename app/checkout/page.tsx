@@ -147,7 +147,7 @@ function CheckoutContent() {
         <div className="w-full aspect-[4/3] bg-[#FCF7EE] rounded-2xl flex items-center justify-center border border-[#E8D8B8] mb-8 overflow-hidden relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(200,168,75,0.1)_0%,transparent_70%)]"></div>
           <img
-            src="https://ind.5bestincity.com/profileimages/india/surbhi-gupta-numerologists-jaipur-rajasthan/20464-53b2d-1.jpg"
+            src="/surbhi-narendra.JPG"
             alt={serviceName}
             className="h-full object-cover  object-left mix-blend-multiply drop-shadow-2xl z-10 hover:scale-105 transition-transform duration-700"
             onError={(e) => { e.currentTarget.style.display = 'none' }}
