@@ -2,13 +2,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { nextMessage } from "@/lib/waFlow";
 import Redis from "ioredis";
+import mongoose from "mongoose";
 
+// ==========================================
+// 1. DATABASE & REDIS SETUP
+// ==========================================
 const redis = new Redis(process.env.REDIS_URL!, {
   lazyConnect: true,
   maxRetriesPerRequest: 3
 });
 
-// ✅ UPDATED: Added urlButton to the options interface
+async function connectDB() {
+  if (mongoose.connection.readyState >= 1) return;
+  await mongoose.connect(process.env.MONGODB_URI!);
+}
+
+// Defining the Chat Schema to store history
+const ChatSchema = new mongoose.Schema({
+  phoneNumber: String,
+  waName: String,
+  message: String,
+  step: String, // Step they moved to after this message
+  type: String, // 'text' or 'button_click' or 'list_selection'
+  timestamp: { type: Date, default: Date.now }
+});
+
+const Chat = mongoose.models.Chat || mongoose.model("Chat", ChatSchema);
+
+// ==========================================
+// 2. WHATSAPP SENDER HELPER
+// ==========================================
 export async function sendWhatsAppMessage(
   to: string, 
   text: string, 
@@ -23,7 +46,6 @@ export async function sendWhatsAppMessage(
     "Content-Type": "application/json",
   };
 
-  // If both a List and an Image exist, send the Image FIRST as a standalone message
   if (options?.list && options?.image) {
     await fetch(url, {
       method: "POST",
@@ -34,7 +56,6 @@ export async function sendWhatsAppMessage(
 
   let payload: any = { messaging_product: "whatsapp", recipient_type: "individual", to: to };
 
-  // ✅ NEW LOGIC: Handle URL Buttons (cta_url)
   if (options?.urlButton) {
     payload.type = "interactive";
     payload.interactive = {
@@ -42,20 +63,13 @@ export async function sendWhatsAppMessage(
       body: { text: text },
       action: {
         name: "cta_url",
-        parameters: {
-          display_text: options.urlButton.text,
-          url: options.urlButton.url
-        }
+        parameters: { display_text: options.urlButton.text, url: options.urlButton.url }
       }
     };
-  } 
-  // Existing Logic for Lists
-  else if (options?.list) {
+  } else if (options?.list) {
     payload.type = "interactive";
     payload.interactive = { type: "list", body: { text: text }, action: options.list };
-  } 
-  // Existing Logic for Reply Buttons
-  else if (options?.buttons && options.buttons.length > 0) {
+  } else if (options?.buttons && options.buttons.length > 0) {
     payload.type = "interactive";
     payload.interactive = {
       type: "button",
@@ -68,28 +82,25 @@ export async function sendWhatsAppMessage(
       }
     };
     if (options.image) payload.interactive.header = { type: "image", image: { link: options.image } };
-  } 
-  // Existing Logic for Images
-  else if (options?.image) {
+  } else if (options?.image) {
     payload.type = "image";
     payload.image = { link: options.image, caption: text };
-  } 
-  // Existing Logic for Plain Text
-  else {
+  } else {
     payload.type = "text";
     payload.text = { body: text };
   }
 
   try {
     const response = await fetch(url, { method: "POST", headers, body: JSON.stringify(payload) });
-    if (!response.ok) {
-      console.error("Meta API Error:", await response.json());
-    }
+    if (!response.ok) console.error("Meta API Error:", await response.json());
   } catch (error) {
     console.error("Failed to send WA message:", error);
   }
 }
 
+// ==========================================
+// 3. GET HANDLER (Webhook Verification)
+// ==========================================
 export async function GET(req: NextRequest) {
   const search = req.nextUrl.searchParams;
   if (search.get("hub.mode") === "subscribe" && search.get("hub.verify_token") === process.env.WHATSAPP_VERIFY_TOKEN) {
@@ -98,6 +109,9 @@ export async function GET(req: NextRequest) {
   return new NextResponse("Verification failed", { status: 403 });
 }
 
+// ==========================================
+// 4. POST HANDLER (Incoming Messages)
+// ==========================================
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -110,31 +124,51 @@ export async function POST(req: NextRequest) {
     const messageId = message.id as string;
     const waName = contact?.profile?.name || "Seeker";
 
-    // 1. PREVENT DUPLICATES (Idempotency check)
+    // 1. DUPLICATE CHECK
     const isDuplicate = await redis.get(`msg_processed:${messageId}`);
     if (isDuplicate) return new NextResponse("OK", { status: 200 });
-    await redis.set(`msg_processed:${messageId}`, "1", "EX", 3600); // Store for 1 hour
+    await redis.set(`msg_processed:${messageId}`, "1", "EX", 3600);
 
-    // 2. TRACK FOR 24-HOUR FOLLOW UP
+    // 2. LOG DATA PREPARATION
+    let incomingText = "";
+    let msgType = "text";
+
+    if (message.type === "interactive") {
+      if (message.interactive?.list_reply) {
+        incomingText = message.interactive.list_reply.title;
+        msgType = "list_selection";
+      } else if (message.interactive?.button_reply) {
+        incomingText = message.interactive.button_reply.title;
+        msgType = "button_click";
+      }
+    } else {
+      incomingText = message.text?.body || "";
+    }
+
+    // 3. TRACK STATE
+    const rawPrevState = await redis.get(`user_state:${from}`);
+    const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START", userData: { name: waName } };
+    prev.userData.name = waName;
+
+    // 4. GENERATE BOT RESPONSE
+    const { reply, buttons, list, image, urlButton, newState } = nextMessage(incomingText, prev);
+
+    // 5. SAVE TO DATABASE (MONGODB)
+    await connectDB();
+    await Chat.create({
+      phoneNumber: from,
+      waName: waName,
+      message: incomingText,
+      step: newState.step, // The step they just finished/moved to
+      type: msgType,
+      timestamp: new Date()
+    });
+
+    // 6. UPDATE REDIS & SEND MESSAGE
+    await redis.set(`user_state:${from}`, JSON.stringify(newState), "EX", 86400);
     await redis.hset("wa_last_interaction", from, Date.now().toString());
     await redis.hset("wa_names", from, waName);
 
-    let text = message?.type === "interactive" 
-      ? (message?.interactive?.list_reply?.title || message?.interactive?.button_reply?.title || "") 
-      : (message?.text?.body || "");
-
-    const rawPrevState = await redis.get(`user_state:${from}`);
-    const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START", userData: { name: waName } };
-    
-    // Ensure name is always in state
-    prev.userData.name = waName;
-
-    // ✅ UPDATED: Extract urlButton from nextMessage response
-    const { reply, buttons, list, image, urlButton, newState } = nextMessage(text, prev);
-
-    await redis.set(`user_state:${from}`, JSON.stringify(newState), "EX", 86400);
-    
-    // ✅ UPDATED: Pass urlButton into sendWhatsAppMessage
     await sendWhatsAppMessage(from, reply, { buttons, list, image, urlButton });
 
     return new NextResponse("OK", { status: 200 });
