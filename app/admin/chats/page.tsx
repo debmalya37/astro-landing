@@ -102,7 +102,7 @@ export default function AdminDashboard() {
               <BarChart3 size={18} className="text-white" />
             </div>
             <h1 className="text-xl font-black tracking-tighter text-slate-900 uppercase italic">
-              Astro<span className="text-[#8B1E1E]">Pulse</span> <span className="text-slate-300 font-light">v2.0</span>
+              Astro<span className="text-[#8B1E1E]">Dashboard</span> <span className="text-slate-300 font-light">v2.0</span>
             </h1>
           </div>
           <div className="flex items-center gap-4">
