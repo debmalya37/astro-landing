@@ -110,8 +110,9 @@ export async function POST(req: Request) {
     });
 
     // C. PREPARE NOTIFICATION DATA
-    const adminEmail = process.env.ADMIN_EMAIL || "developer.thinqit@gmail.com"; 
-    const senderEmail = process.env.EMAIL_FROM || "surabhiastrology <careers@thinqit.in>";
+    // ✅ Updated with multiple Admin Emails
+    const adminEmails = ["developer.thinqit@gmail.com", "surabhiastrology9@gmail.com"]; 
+    const senderEmail = process.env.EMAIL_FROM || "Surabhi Astrology <careers@thinqit.in>";
     
     let formattedPhone = form.phone.replace(/\D/g, "");
     if (formattedPhone.length === 10) formattedPhone = `91${formattedPhone}`;
@@ -129,31 +130,78 @@ export async function POST(req: Request) {
     }
 
     // D. CRITICAL: EXECUTE ALL EXTERNAL CALLS SIMULTANEOUSLY & WAIT
-    // Promise.allSettled ensures that one failure doesn't stop the others, 
-    // and the server waits for all of them to resolve before terminating.
     const results = await Promise.allSettled([
       // 1. Customer Email
       resend.emails.send({
         from: senderEmail,
         to: form.email,
-        subject: `Your ${form.reportType} Order is Confirmed! ✨`,
+        subject: `Order Confirmed: ${form.reportType} ✨`,
         html: `<h2>Radhe Radhe ${form.name} ji,</h2><p>Your payment of ₹${finalAmount} for the <strong>${form.reportType}</strong> is confirmed. Please check your WhatsApp for next steps!</p>`,
       }),
-      // 2. Admin Email
+      
+      // 2. Professional Admin Email (Sent to multiple admins)
       resend.emails.send({
         from: senderEmail,
-        to: adminEmail,
-        subject: `🚨 NEW ORDER: ${form.reportType}`,
-        html: `<div style="font-family: sans-serif; border: 1px solid #eee; padding: 20px;">
-                <h2 style="color: #8B1E1E;">New Order Received! 🚀</h2>
-                <p><strong>Customer:</strong> ${form.name} (${form.phone})</p>
-                <p><strong>Package:</strong> ${form.reportType} - ₹${finalAmount}</p>
-                <p><strong>Birth Details:</strong> ${form.dob} | ${form.tob} | ${form.city}</p>
-                <p><strong>Challenge:</strong> ${form.challenge || "None"}</p>
-              </div>`,
+        to: adminEmails,
+        subject: `🚨 NEW PAID ORDER: ${form.name} [₹${finalAmount}]`,
+        html: `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
+            <div style="background-color: #8B1E1E; padding: 25px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px;">New Premium Order! 🚀</h1>
+              <p style="color: #F5D98A; margin: 5px 0 0 0; font-weight: bold; letter-spacing: 1px;">SURABHI ASTROLOGY</p>
+            </div>
+            
+            <div style="padding: 30px; background-color: #ffffff;">
+              <div style="margin-bottom: 25px; border-bottom: 2px solid #f8f8f8; padding-bottom: 15px;">
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">🛒 Transaction Summary</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr><td style="padding: 5px 0; color: #666;">Report Type:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.reportType}</td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Amount Paid:</td><td style="padding: 5px 0; font-weight: bold; text-align: right; color: #1B4D30;">₹${finalAmount}</td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Payment ID:</td><td style="padding: 5px 0; font-family: monospace; font-size: 12px; text-align: right;">${razorpay_payment_id}</td></tr>
+                </table>
+              </div>
+
+              <div style="margin-bottom: 25px; border-bottom: 2px solid #f8f8f8; padding-bottom: 15px;">
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">👤 Customer Profile</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr><td style="padding: 5px 0; color: #666;">Name:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.name}</td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Phone:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;"><a href="https://wa.me/${formattedPhone}" style="color: #25D366; text-decoration: none;">+${formattedPhone}</a></td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Email:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.email}</td></tr>
+                </table>
+              </div>
+
+              <div style="margin-bottom: 25px; border-bottom: 2px solid #f8f8f8; padding-bottom: 15px;">
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">✨ Birth Information</h3>
+                <div style="background-color: #FFFBF0; padding: 15px; border-radius: 8px; border: 1px solid #F5D98A;">
+                  <p style="margin: 5px 0;"><strong>DOB:</strong> ${form.dob}</p>
+                  <p style="margin: 5px 0;"><strong>Time:</strong> ${form.tob}</p>
+                  <p style="margin: 5px 0;"><strong>Location:</strong> ${form.city} (${form.pinCode})</p>
+                  <p style="margin: 5px 0;"><strong>Gender:</strong> ${form.gender}</p>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 10px;">
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">🎯 The Challenge</h3>
+                <p style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; color: #333; line-height: 1.5; font-style: italic;">
+                  "${form.challenge || "No specific challenge mentioned."}"
+                </p>
+              </div>
+
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="https://wa.me/${formattedPhone}" style="background-color: #1B4D30; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">Open User WhatsApp</a>
+              </div>
+            </div>
+            
+            <div style="background-color: #f8f8f8; padding: 15px; text-align: center; color: #999; font-size: 11px;">
+              System generated notification for Surabhi Astrology CRM.
+            </div>
+          </div>
+        `,
       }),
+      
       // 3. WhatsApp Message
       sendWhatsAppMessage(formattedPhone, replyMessage, waButtons),
+      
       // 4. Redis Bot State
       redis.set(
         `user_state:${formattedPhone}`, 
@@ -165,10 +213,10 @@ export async function POST(req: Request) {
       )
     ]);
 
-    // Optional: Log failures in Vercel console for debugging
+    // Log failures for debugging
     results.forEach((result, idx) => {
       if (result.status === 'rejected') {
-        console.error(`Task ${idx} failed:`, result.reason);
+        console.error(`Production Task ${idx} failed:`, result.reason);
       }
     });
 
