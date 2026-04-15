@@ -34,6 +34,16 @@ function CheckoutContent() {
   // Combine them so the backend API knows exactly what was ordered
   const fullReportType = `${serviceName} - ${cleanPlanName}`;
 
+  useEffect(() => {
+  if (window.fbq) {
+    window.fbq('track', 'InitiateCheckout', {
+      content_name: serviceName,
+      value: basePrice,
+      currency: 'INR'
+    });
+  }
+}, [serviceName, basePrice]);
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -75,6 +85,17 @@ function CheckoutContent() {
     if (!form.name || !form.email || !form.phone || !form.dob) {
       alert("Please fill in all required fields.");
       return;
+    }
+
+    // ==========================================
+    // TRACKING: AddPaymentInfo on Button Click
+    // ==========================================
+    if (window.fbq) {
+      window.fbq('track', 'AddPaymentInfo', {
+        content_name: form.reportType,
+        value: finalAmount,
+        currency: 'INR'
+      });
     }
 
     setLoading(true);
