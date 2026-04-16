@@ -80,7 +80,7 @@ function getServicePlans(intent: string = "", isHi: boolean) {
       rows: isHi ? [
         { id: "p1", title: "कपल रिपोर्ट (₹1,100)", description: "विस्तृत अनुकूलता रिपोर्ट" },
         { id: "p2", title: "रिपोर्ट+Q (₹3,300)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" },
-        { id: "p3", title: "रिपोर्ट+कॉल (₹11k)", description: "रिपोर्ट + ऑन-कॉल परामर्श" },
+        { id: "p3", title: "रिपोर्ट+कॉल (₹11,000)", description: "रिपोर्ट + ऑन-कॉल परामर्श" },
         { id: "p4", title: "कपल कॉल (₹15,000)", description: "सुरभि जी के साथ 45 मिनट की कॉल" }
       ] : [
         { id: "p1", title: "Basic Match (₹1,100)", description: "Detailed compatibility report" },
@@ -102,7 +102,7 @@ function getServicePlans(intent: string = "", isHi: boolean) {
       ] : [
         { id: "p1", title: "Baby Report (₹1,100)", description: "Astrology & Numerology Report" },
         { id: "p2", title: "Report+Name (₹5,100)", description: "Report + Name Suggestions + 1 Question" },
-        { id: "p3", title: "Premium Call (₹11k)", description: "Report + Names + 30-Min Consultation" }
+        { id: "p3", title: "Premium Call (₹11,000)", description: "Report + Names + 30-Min Consultation" }
       ]
     }];
   }
@@ -113,10 +113,10 @@ function getServicePlans(intent: string = "", isHi: boolean) {
       title: isHi ? "समाधान चुनें" : "Choose Solution",
       rows: isHi ? [
         { id: "p1", title: "पीडीएफ रिपोर्ट (₹999)", description: "आपकी समस्या पर विस्तृत पीडीएफ रिपोर्ट" },
-        { id: "p2", title: "व्यक्तिगत कॉल (₹11k)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
+        { id: "p2", title: "व्यक्तिगत कॉल (₹11,000)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
       ] : [
         { id: "p1", title: "PDF Report (₹999)", description: "Detailed PDF report on your specific issue" },
-        { id: "p2", title: "1-on-1 Call (₹11k)", description: "Personal consultation call with Surbhi ji" }
+        { id: "p2", title: "1-on-1 Call (₹11,000)", description: "Personal consultation call with Surbhi ji" }
       ]
     }];
   }
