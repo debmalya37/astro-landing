@@ -338,10 +338,13 @@ const CelebrityEndorsementSection = () => {
                 <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
                 <Image 
   src="/surbhi-gupta-portrait.JPG" 
-  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer" 
-  width={360}   // Provide intrinsic width (Max width on desktop)
-  height={450}  // Provide intrinsic height (Based on 4/5 ratio)
-  priority      // Crucial: Loads this hero image instantly
+  alt="Celebrity Astrologer Surbhi Gupta" 
+  width={360}
+  height={450}
+  priority // Tells Next.js to preload this
+  fetchPriority="high" // New browser standard to force immediate download
+  placeholder="blur" // Shows a blurry version while the high-res one loads
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU39AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMElEQVR4nGNgYGBoYmBgSGRgYChmYGBoYmBgSGVgYChmYGBoYmBgSGRgYChmYGBoYmBgAAYBAf7p9jEAAAAASUVORK5CYII=" 
   className="absolute inset-0 w-full h-full object-cover z-10"
 />
                 <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
@@ -1416,11 +1419,12 @@ const time = useCountdown();
                <Image 
   src="/surbhi-gupta-new.JPG" 
   alt="Celebrity Astrologer Surbhi Gupta" 
-  fill // Uses the 'absolute inset-0' behavior naturally
-  sizes="(max-width: 1024px) 100vw, 50vw" // Helps the browser download the right size
+  fill 
+  loading="eager" // Tells the browser to download this sooner than a standard lazy image
+  placeholder="blur" // Instant visual feedback
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU39AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMElEQVR4nGNgYGBoYmBgSGRgYChmYGBoYmBgSGVgYChmYGBoYmBgSGRgYChmYGBoYmBgAAYBAf7p9jEAAAAASUVORK5CYII=" 
+  sizes="(max-width: 1024px) 100vw, 50vw" 
   className="object-cover object-[center_top] lg:object-center" 
-  // No need for onError manually; next/image handles placeholders better
-  // but if you need a specific fallback, you can use the 'placeholder' prop.
 />
                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#F5D98A] to-transparent h-24 lg:h-32 flex items-end justify-center pb-4 lg:pb-6">
                  {/* Hidden on mobile to save space since it's already in the text box below it */}
