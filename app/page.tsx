@@ -1,4 +1,5 @@
 "use client";
+import dynamic from 'next/dynamic';
 
 import ComparisonSlider2 from "@/components/Comparisonslider2";
 import HowItWorksSection from "@/components/Simplesteps";
@@ -8,7 +9,14 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from 'three';
 
 import { FaWhatsapp } from 'react-icons/fa6'
-import TestimonialsSection from "@/components/Testimonials";
+import Image from 'next/image';
+// import TestimonialsSection from "@/components/Testimonials";
+
+
+// Load sections that are further down the page lazily
+const TestimonialsSection = dynamic(() => import('@/components/Testimonials'), {
+  loading: () => <div className="h-96 animate-pulse bg-ivory" />
+});
 
 /* ─── PREMIUM COLOUR TOKENS ─── */
 const C = {
@@ -223,119 +231,7 @@ function FaqItem({ q, a, delay = "" }: { q: string; a: string; delay?: string })
 
 
 /* ─── 3D COSMIC EARTH BACKGROUND ─── */
-function CosmicEarthBackground() {
-  const mountRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!mountRef.current) return;
-
-    // 1. Scene Setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 7; // Pulled back slightly to fit the larger globe
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimization for high-res screens
-    mountRef.current.appendChild(renderer.domElement);
-
-    // 2. Create Stylized Astrological Sphere
-    // Increased radius to 3.2 to make it massive like the inspiration screenshot
-    const geometry = new THREE.SphereGeometry(3.2, 48, 48);
-
-    // Base dark translucent core
-    // Base dark translucent core
-    const baseMaterial = new THREE.MeshBasicMaterial({
-      color: 0x000000, // Bright Gold// <--- THIS IS THE WIREFRAME COLOR
-      transparent: true,
-      opacity: 0.3, // Increased opacity for a stronger core presence
-      wireframe: true, 
-    });
-    const baseSphere = new THREE.Mesh(geometry, baseMaterial);
-
-    // Dotted outer layer
-    const pointsMaterial = new THREE.PointsMaterial({
-      color: 0x2A0E00, 
-      size: 0.05, // Increased point size for better visibility
-      transparent: true,
-      opacity: 0.5, // Increased opacity for a stronger dotted effect
-    });
-    const points = new THREE.Points(geometry, pointsMaterial);
-
-    const earthGroup = new THREE.Group();
-    earthGroup.add(baseSphere);
-    earthGroup.add(points);
-    
-    // Tilt the axis to 23.5 degrees
-    earthGroup.rotation.z = 23.5 * (Math.PI / 180);
-    scene.add(earthGroup);
-
-    // Dynamic Positioning Function
-    const updateEarthPosition = () => {
-      if (window.innerWidth >= 1024) {
-        earthGroup.position.x = 3.5; // Pushes it to the right on Desktop
-        earthGroup.position.y = 0;
-      } else {
-        earthGroup.position.x = 0;   // Keeps it centered on Mobile
-        earthGroup.position.y = 0;
-      }
-    };
-    
-    // Set initial position
-    updateEarthPosition();
-
-    // 3. Animation & Scroll Interaction Logic
-    let currentScroll = window.scrollY;
-    let targetScrollRotation = 0;
-
-    const onScroll = () => {
-      const scrollDelta = window.scrollY - currentScroll;
-      targetScrollRotation += scrollDelta * 0.002; 
-      currentScroll = window.scrollY;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    const animate = () => {
-      requestAnimationFrame(animate);
-
-      // Constant slow auto-rotation
-      earthGroup.rotation.y += 0.001;
-
-      // Smoothly interpolate the scroll-based rotation
-      earthGroup.rotation.y += (targetScrollRotation * 0.1);
-      targetScrollRotation *= 0.9; 
-
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    // 4. Handle Window Resizing
-    const onResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      updateEarthPosition(); // Update position (right vs center) if user resizes window
-    };
-    window.addEventListener('resize', onResize);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-      if (mountRef.current) mountRef.current.removeChild(renderer.domElement);
-      geometry.dispose();
-      baseMaterial.dispose();
-      pointsMaterial.dispose();
-    };
-  }, []);
-
-  return (
-    <div
-      ref={mountRef}
-      className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 mix-blend-overlay"
-    />
-  );
-}
 
 // Make sure to add the 'Fraunces' font family in your tailwind config or global CSS.
 const CelebrityEndorsementSection = () => {
@@ -344,7 +240,7 @@ const CelebrityEndorsementSection = () => {
                style={{ background: `linear-gradient(135deg, #fdf3da 0%, #fce8c0 40%, #f9d89a 100%)` }}>
         
         {/* Interactive 3D Cosmic Earth */}
-        <CosmicEarthBackground />
+        {/* <CosmicEarthBackground /> */}
 
         <div className="max-w-7xl mx-auto px-5 w-full relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           
@@ -440,15 +336,14 @@ const CelebrityEndorsementSection = () => {
               <div className="relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden border-[4px] border-[#C8A84B]/40 shadow-[0_25px_60px_rgba(42,14,0,0.6)] bg-[#2A0E00]">
                 {/* Fallback color while image loads */}
                 <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
-                <img 
-                  src="/surbhi-gupta-portrait.JPG" 
-                  alt="celebrity astrologer Surbhi Gupta - Trusted Astrologer" 
-                  className="absolute inset-0 w-full h-full object-cover z-10"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600&h=800"; // Elegant fallback portrait
-                  }}
-                />
+                <Image 
+  src="/surbhi-gupta-portrait.JPG" 
+  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer" 
+  width={360}   // Provide intrinsic width (Max width on desktop)
+  height={450}  // Provide intrinsic height (Based on 4/5 ratio)
+  priority      // Crucial: Loads this hero image instantly
+  className="absolute inset-0 w-full h-full object-cover z-10"
+/>
                 <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
                 <div className="absolute bottom-5 inset-x-0 text-center z-30">
                   <div className="text-[#F5D98A] font-bold text-xl lg:text-2xl drop-shadow-lg">celebrity astrologer Surbhi Gupta</div>
@@ -861,14 +756,12 @@ const time = useCountdown();
             <div className="relative z-10 w-[200px] sm:w-[280px] lg:w-[360px] ml-6 sm:ml-10 lg:ml-0 lg:mr-0">
               <div className="relative w-full aspect-[4/5] rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-[3px] lg:border-[4px] border-[#C8A84B]/40 shadow-[0_15px_40px_rgba(42,14,0,0.6)] lg:shadow-[0_25px_60px_rgba(42,14,0,0.6)] bg-[#2A0E00]">
                 <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
-                <img 
-                  src="/surbhi-gupta-portrait.jpg" 
-                  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer" 
+                <Image
+                  src="/surbhi-gupta-portrait.jpg"
+                  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer"
+                  width={360}
+                  height={450}
                   className="absolute inset-0 w-full h-full object-cover z-10"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600&h=800";
-                  }}
                 />
                 <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
                 <div className="absolute bottom-3 lg:bottom-5 inset-x-0 text-center z-30">
@@ -1097,15 +990,14 @@ const time = useCountdown();
             {/* RIGHT / BOTTOM: Celebrity Astrologer Surbhi Gupta Image */}
             {/* CRITICAL CHANGE: Reduced mobile image height (h-[200px]) */}
             <div className="absolute bottom-0 right-0 w-full md:w-1/2 h-[200px] sm:h-[240px] md:h-full opacity-90 md:opacity-80">
-              <img 
-                src="/surbhi-narendra.JPG" 
-                alt="Celebrity Astrologer Surbhi Gupta" 
-                className="w-full h-full object-cover md:object-left object-[center_top]"
-                onError={(e) => {
-                  e.currentTarget.onerror = null; 
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800";
-                }}
-              />
+              <Image 
+  src="/surbhi-narendra.JPG" 
+  alt="Celebrity Astrologer Surbhi Gupta" 
+  width={400} // Based on the maximum width this image will be (on desktop)
+  height={500} // Based on the standard 4/5 aspect ratio in your CSS
+  priority // Crucial for faster LCP since this is a featured image
+  className="w-full h-full object-cover md:object-left object-[center_top]"
+/>
               {/* Fade to transparent on top (Mobile) and left (Desktop) */}
               <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-transparent via-transparent to-[#2A0E00]"></div>
             </div>
@@ -1159,13 +1051,20 @@ const time = useCountdown();
           {/* Big Author Image */}
           <div className="reveal order-2 lg:order-1 relative">
             <div className="absolute inset-0 bg-[#E8D8B8] rounded-[2rem] transform translate-x-4 translate-y-4"></div>
-            <img src="/surbhi-gupta-portrait.jpg" alt="celebrity astrologer Surbhi Gupta Astrologer" className="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl object-cover aspect-[4/5]" 
-                 onError={(e) => e.currentTarget.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800&h=1000"}/>
+            <Image 
+  src="/surbhi-gupta-portrait.jpg" 
+  alt="Celebrity Astrologer Surbhi Gupta" 
+  width={600}           // Provide the maximum expected width
+  height={750}          // Matches your aspect-[4/5] ratio
+  className="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl object-cover"
+  // No need for 'priority' here since it's further down the page
+  sizes="(max-width: 768px) 100vw, 50vw" // Helps browser choose the right size
+/>
             <div className="absolute bottom-10 left-[-20px] z-20 bg-white p-6 rounded-2xl shadow-xl border border-[#E8D8B8] reveal d3">
               <div className="fraunces text-2xl font-medium text-[#2A1400]">35+ Years</div>
               <div className="text-sm font-semibold text-[#C8A84B] uppercase tracking-wider">Mastering the Stars</div>
             </div>
-          </div>
+          </div> 
 
           {/* Timeline content */}
           <div className="reveal order-1 lg:order-2">
@@ -1449,12 +1348,15 @@ const time = useCountdown();
                
                {/* Assuming reportImgError and setReportImgError are defined in your component state */}
                {!reportImgError ? (
-                 <img 
-                   src="/smart-kundli.png" 
-                   alt="Smart Kundli Book" 
-                   className="w-full h-full object-cover rounded-xl rounded-r-2xl" 
-                   onError={() => setReportImgError(true)}
-                 />
+                 <Image 
+  src="/smart-kundli.png" 
+  alt="Smart Kundli Book" 
+  width={260}            // Matches the maximum width in your desktop CSS
+  height={364}           // Matches the 1/1.4 aspect ratio in your CSS
+  className="w-full h-full object-cover rounded-xl rounded-r-2xl" 
+  // onError={() => setReportImgError(true)}
+  // Default is lazy loading, which is perfect for this section
+/>
                ) : (
                  <div className="absolute inset-1 border-2 border-[#C8A84B] flex flex-col items-center justify-center p-3 text-center bg-gradient-to-b from-[#FCF7EE] to-[#E8D8B8] rounded-lg rounded-r-xl">
                    <div className="fraunces text-[#3D1600] font-medium text-xs sm:text-sm tracking-widest mb-1">SMART</div>
@@ -1511,12 +1413,15 @@ const time = useCountdown();
 
             {/* Image Side */}
             <div className="bg-[#E8D8B8] relative min-h-[400px] sm:min-h-[400px] w-full">
-               <img 
-                 src="/surbhi-gupta-new.JPG" 
-                 alt="Celebrity Astrologer Surbhi Gupta Astrologer" 
-                 className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-center" 
-                 onError={(e) => e.currentTarget.src = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800&h=800"}
-               />
+               <Image 
+  src="/surbhi-gupta-new.JPG" 
+  alt="Celebrity Astrologer Surbhi Gupta" 
+  fill // Uses the 'absolute inset-0' behavior naturally
+  sizes="(max-width: 1024px) 100vw, 50vw" // Helps the browser download the right size
+  className="object-cover object-[center_top] lg:object-center" 
+  // No need for onError manually; next/image handles placeholders better
+  // but if you need a specific fallback, you can use the 'placeholder' prop.
+/>
                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#F5D98A] to-transparent h-24 lg:h-32 flex items-end justify-center pb-4 lg:pb-6">
                  {/* Hidden on mobile to save space since it's already in the text box below it */}
                  <h3 className="hidden lg:block fraunces text-3xl font-medium text-[#2A1400] drop-shadow-md italic">

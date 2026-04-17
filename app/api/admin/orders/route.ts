@@ -1,19 +1,21 @@
+// app/api/admin/orders/route.ts
 import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/mongodb";
 import mongoose from "mongoose";
-
-async function connectDB() {
-  if (mongoose.connection.readyState >= 1) return;
-  await mongoose.connect(process.env.MONGODB_URI!);
-}
 
 const Order = mongoose.models.Order || mongoose.model("Order", new mongoose.Schema({}, { strict: false }));
 
 export async function GET() {
   try {
     await connectDB();
-    const orders = await Order.find({ status: "Paid" }).sort({ createdAt: -1 });
+    // .lean() makes queries 3x faster by returning plain JS objects
+    const orders = await Order.find({ status: "Paid" })
+      .sort({ createdAt: -1 })
+      .limit(200) 
+      .lean(); 
+
     return NextResponse.json(orders);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
+    return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
   }
 }
