@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 // Reusable Input Label Component
 const Label = ({ children }: { children: React.ReactNode }) => (
@@ -167,11 +168,13 @@ function CheckoutContent() {
         {/* Product Image */}
         <div className="w-full aspect-[4/3] bg-[#FCF7EE] rounded-2xl flex items-center justify-center border border-[#E8D8B8] mb-8 overflow-hidden relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(200,168,75,0.1)_0%,transparent_70%)]"></div>
-          <img
+          <Image
             src="/surbhi-narendra.JPG"
             alt={serviceName}
             className="h-full object-cover  object-left mix-blend-multiply drop-shadow-2xl z-10 hover:scale-105 transition-transform duration-700"
-            onError={(e) => { e.currentTarget.style.display = 'none' }}
+            // onError={(e) => { e.currentTarget.style.display = 'none' }}
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
           />
         </div>
 
