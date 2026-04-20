@@ -45,9 +45,15 @@ export async function sendWhatsAppMessage(
     "Content-Type": "application/json",
   };
 
-  // FIX: If there is an image AND a list/buttons, send the image FIRST and AWAIT it.
-  // This ensures the image appears above the selection menu.
-  if (options?.image && (options?.list || options?.buttons || options?.urlButton)) {
+  /**
+   * FIX: Logic to prevent double images
+   * 1. List and URL Buttons (cta_url) DO NOT support headers. We must pre-send the image.
+   * 2. Regular Buttons DO support headers. We should NOT pre-send to avoid duplicates.
+   */
+  const supportsHeader = options?.buttons && options.buttons.length > 0 && !options.urlButton && !options.list;
+  const needsPreSend = options?.image && !supportsHeader;
+
+  if (needsPreSend) {
     try {
       await fetch(url, {
         method: "POST",
@@ -91,12 +97,11 @@ export async function sendWhatsAppMessage(
         }))
       }
     };
-    // Only attach header if it wasn't already sent separately above
-    if (options.image && !options.list) {
+    // If it supports headers, we attach the image here (Single Bubble)
+    if (options.image) {
         payload.interactive.header = { type: "image", image: { link: options.image } };
     }
   } else if (options?.image) {
-    // Fallback for simple image + caption if no interactive elements
     payload.type = "image";
     payload.image = { link: options.image, caption: text };
   } else {
@@ -138,7 +143,7 @@ export async function POST(req: NextRequest) {
     const messageId = message.id as string;
     const waName = contact?.profile?.name || "Seeker";
 
-    // 1. DUPLICATE CHECK (Redis is fast, keep this sequential)
+    // 1. DUPLICATE CHECK
     const isDuplicate = await redis.get(`msg_processed:${messageId}`);
     if (isDuplicate) return new NextResponse("OK", { status: 200 });
     await redis.set(`msg_processed:${messageId}`, "1", "EX", 3600);
@@ -164,23 +169,15 @@ export async function POST(req: NextRequest) {
     const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START", userData: { name: waName } };
     prev.userData.name = waName;
 
-    // 4. GENERATE BOT RESPONSE (Instant local logic)
+    // 4. GENERATE BOT RESPONSE
     const { reply, buttons, list, image, urlButton, newState } = nextMessage(incomingText, prev);
 
     // 5. SPEED OPTIMIZATION: FIRE ASYNC TASKS IN PARALLEL
-    // We start DB connection, Chat logging, Redis updates, and Message sending all at once.
-    // The image pre-send awaiting happens inside sendWhatsAppMessage to maintain order.
-    
     const tasks = [
-        // Task A: Message Sending
         sendWhatsAppMessage(from, reply, { buttons, list, image, urlButton }),
-        
-        // Task B: Redis State Updates
         redis.set(`user_state:${from}`, JSON.stringify(newState), "EX", 86400),
         redis.hset("wa_last_interaction", from, Date.now().toString()),
         redis.hset("wa_names", from, waName),
-        
-        // Task C: Database Logging (Connect + Create)
         (async () => {
             await connectDB();
             return Chat.create({
@@ -194,7 +191,6 @@ export async function POST(req: NextRequest) {
         })()
     ];
 
-    // Fire all tasks. We don't wait for logs to finish before replying to user
     await Promise.all(tasks);
 
     return new NextResponse("OK", { status: 200 });
