@@ -49,15 +49,6 @@ export async function POST(req: Request) {
                 text: userName || "Customer" 
               }
             ]
-          },
-          // ==========================================
-          // ADDED: THIS BLOCK IS REQUIRED FOR THE BUTTON
-          // ==========================================
-          {
-            type: "button",
-            sub_type: "url",
-            index: "0",      
-            parameters: [] // Keep empty if the URL is hardcoded in Meta Dashboard
           }
         ]
       }
