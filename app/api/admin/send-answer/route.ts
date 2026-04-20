@@ -2,27 +2,23 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import mongoose from "mongoose";
 
-// Initialize the Order model (handling strict mode for dynamic fields)
+// Ensure the model is available
 const Order = mongoose.models.Order || mongoose.model("Order", new mongoose.Schema({}, { strict: false }));
 
 export async function POST(req: Request) {
   try {
-    // 1. Added 'orderId' to the destructured body
+    // 1. Get orderId from the request so we can update the database
     const { phone, pdfUrl, fileName, userName, orderId } = await req.json();
     
     const phoneNumberId = process.env.WHATSAPP_PHONE_ID;
     const token = process.env.WHATSAPP_TOKEN;
     
     if (!phoneNumberId || !token) {
-      throw new Error("Missing WhatsApp Credentials in Environment Variables");
+      throw new Error("Missing WhatsApp Credentials");
     }
 
     const url = `https://graph.facebook.com/v25.0/${phoneNumberId}/messages`;
-
     const cleanPhone = phone.replace(/\D/g, "");
-    if (cleanPhone.length < 10) {
-      throw new Error("Invalid phone number format");
-    }
 
     const payload = {
       messaging_product: "whatsapp",
@@ -30,7 +26,7 @@ export async function POST(req: Request) {
       to: cleanPhone,
       type: "template",
       template: {
-        name: "report_delivery",
+        name: "question_answer_delivery", 
         language: { code: "en" },
         components: [
           {
@@ -40,7 +36,7 @@ export async function POST(req: Request) {
                 type: "document",
                 document: {
                   link: pdfUrl,
-                  filename: fileName || "Astrology_Report.pdf"
+                  filename: fileName || "Answer_Report.pdf"
                 }
               }
             ]
@@ -50,9 +46,18 @@ export async function POST(req: Request) {
             parameters: [
               {
                 type: "text",
-                text: userName || "Customer"
+                text: userName || "Customer" 
               }
             ]
+          },
+          // ==========================================
+          // ADDED: THIS BLOCK IS REQUIRED FOR THE BUTTON
+          // ==========================================
+          {
+            type: "button",
+            sub_type: "url",
+            index: "0",      
+            parameters: [] // Keep empty if the URL is hardcoded in Meta Dashboard
           }
         ]
       }
@@ -70,29 +75,24 @@ export async function POST(req: Request) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("META API ERROR:", JSON.stringify(data, null, 2));
       throw new Error(data.error?.message || "Meta API Error");
     }
 
     // ==========================================
-    // NEW: Update Database for Report Status
+    // CRITICAL CHANGE: Update Database Status
     // ==========================================
     await connectDB();
     if (orderId) {
       await Order.findOneAndUpdate(
         { orderId: orderId },
-        { $set: { reportSent: true } }
+        { $set: { answerSent: true } }
       );
     }
 
-    console.log(`✅ Report status updated in DB for ${orderId}`);
-    return NextResponse.json({ success: true, messageId: data.messages?.[0]?.id });
+    return NextResponse.json({ success: true });
 
   } catch (error: any) {
-    console.error("SEND-REPORT CRITICAL ERROR:", error.message);
-    return NextResponse.json(
-      { error: error.message || "Internal Server Error" }, 
-      { status: 500 }
-    );
+    console.error("SEND-ANSWER ERROR:", error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

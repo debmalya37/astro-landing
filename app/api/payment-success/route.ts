@@ -15,9 +15,12 @@ const redis = new Redis(process.env.REDIS_URL!, {
 
 async function connectDB() {
   if (mongoose.connection.readyState >= 1) return;
-  await mongoose.connect(process.env.MONGODB_URI!);
+  await mongoose.connect(process.env.MONGODB_URI!, {
+    serverSelectionTimeoutMS: 5000,
+  });
 }
 
+// Define Schema with tracking fields and NEW Partner details
 const OrderSchema = new mongoose.Schema({
   paymentId: { type: String, required: true },
   orderId: { type: String, required: true },
@@ -28,16 +31,26 @@ const OrderSchema = new mongoose.Schema({
     dob: String, tob: String, city: String,
     pinCode: String, gender: String, language: String, challenge: String,
   },
-  offers: { expressDelivery: Boolean, consultation: Boolean },
+  // NEW: Optional Partner details for matchmaking
+  partner: {
+    name: String,
+    dob: String,
+    tob: String,
+    city: String,
+    gender: String
+  },
+  challenge: { type: String },
   status: { type: String, default: "Paid" },
-  createdAt: { type: Date, default: Date.now },
-});
+  reportSent: { type: Boolean, default: false }, 
+  answerSent: { type: Boolean, default: false },
+},
+  { 
+  timestamps: true // Automatically handles updatedAt and initial createdAt
+}
+);
 
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
 
-// ==========================================
-// Helper: Send Meta WhatsApp Message (Awaited)
-// ==========================================
 async function sendWhatsAppMessage(to: string, text: string, buttons?: string[]) {
   const phoneNumberId = process.env.WHATSAPP_PHONE_ID;
   const token = process.env.WHATSAPP_TOKEN;
@@ -70,6 +83,7 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
   
   if (!response.ok) {
     const err = await response.json();
+    console.log("whatsapp error response:", err);
     throw new Error(`WA API Error: ${JSON.stringify(err)}`);
   }
 }
@@ -80,7 +94,9 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, form, offers, finalAmount } = body;
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, form, finalAmount } = body;
+    
+    console.log("Received payment success webhook with body:", body);
 
     // A. VERIFY SIGNATURE
     const secret = process.env.RAZORPAY_KEY_SECRET!;
@@ -95,22 +111,43 @@ export async function POST(req: Request) {
 
     // B. SAVE TO MONGODB
     await connectDB();
+    
     const existingOrder = await Order.findOne({ orderId: razorpay_order_id });
     if (existingOrder && existingOrder.status === "Paid") {
        return NextResponse.json({ success: true, message: "Duplicate" }, { status: 200 });
     }
 
-    await Order.create({
+    // Map fields from form to include Partner Details
+    const newOrder = await Order.create({
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
       amount: finalAmount,
       reportType: form.reportType,
       customer: form,
-      offers: offers,
+      // NEW: Explicitly map Partner 2 fields from the form
+      partner: {
+        name: form?.partnerName,
+        dob: form?.partnerDob,
+        tob: form?.partnerTob,
+        city: form?.partnerCity,
+        gender: form?.partnerGender
+      },
+      challenge: form.challenge,
+      reportSent: false,
+      answerSent: false,
+      status: "Paid",
+      createdAt: new Date() // Explicitly set for dashboard date fix
     });
 
+    console.log("new order body", newOrder);
+    if (!newOrder) {
+      console.log("Failed to create order in DB for:", razorpay_order_id);
+      throw new Error("Failed to create order in database");
+    }
+
+    console.log("Order saved to DB with ID:", newOrder._id);
+
     // C. PREPARE NOTIFICATION DATA
-    // ✅ Updated with multiple Admin Emails
     const adminEmails = ["developer.thinqit@gmail.com", "surabhiastrology9@gmail.com"]; 
     const senderEmail = process.env.EMAIL_FROM || "Surabhi Astrology <careers@thinqit.in>";
     
@@ -120,6 +157,7 @@ export async function POST(req: Request) {
     const reportType = form.reportType || "Service";
     const isHi = form.language === "hindi";
     const isCareer = reportType.toLowerCase().includes("career") || reportType.toLowerCase().includes("करियर");
+    const isMatchmaking = reportType.toLowerCase().includes("couple match making");
 
     let replyMessage = `✅ *Payment Confirmed!*\n\n🙏 *Radhe Radhe, ${form.name || "ji"}!*\nYour order for the *${reportType}* has been successfully confirmed.\n\nSurbhi ji and the team will deliver your detailed analysis right here within *72 hours*. ⏳`;
     let waButtons: string[] | undefined = undefined;
@@ -129,7 +167,7 @@ export async function POST(req: Request) {
       waButtons = isHi ? ["प्रश्न पूछें"] : ["Ask Question"];
     }
 
-    // D. CRITICAL: EXECUTE ALL EXTERNAL CALLS SIMULTANEOUSLY & WAIT
+    // D. EXECUTE ALL NOTIFICATIONS
     const results = await Promise.allSettled([
       // 1. Customer Email
       resend.emails.send({
@@ -139,7 +177,7 @@ export async function POST(req: Request) {
         html: `<h2>Radhe Radhe ${form.name} ji,</h2><p>Your payment of ₹${finalAmount} for the <strong>${form.reportType}</strong> is confirmed. Please check your WhatsApp for next steps!</p>`,
       }),
       
-      // 2. Professional Admin Email (Sent to multiple admins)
+      // 2. Admin Email (Preserving your layout + adding Partner details if Matchmaking)
       resend.emails.send({
         from: senderEmail,
         to: adminEmails,
@@ -157,31 +195,31 @@ export async function POST(req: Request) {
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr><td style="padding: 5px 0; color: #666;">Report Type:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.reportType}</td></tr>
                   <tr><td style="padding: 5px 0; color: #666;">Amount Paid:</td><td style="padding: 5px 0; font-weight: bold; text-align: right; color: #1B4D30;">₹${finalAmount}</td></tr>
-                  <tr><td style="padding: 5px 0; color: #666;">Payment ID:</td><td style="padding: 5px 0; font-family: monospace; font-size: 12px; text-align: right;">${razorpay_payment_id}</td></tr>
                 </table>
               </div>
 
               <div style="margin-bottom: 25px; border-bottom: 2px solid #f8f8f8; padding-bottom: 15px;">
-                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">👤 Customer Profile</h3>
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">👤 Person 1 Details (Customer)</h3>
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr><td style="padding: 5px 0; color: #666;">Name:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.name}</td></tr>
-                  <tr><td style="padding: 5px 0; color: #666;">Phone:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;"><a href="https://wa.me/${formattedPhone}" style="color: #25D366; text-decoration: none;">+${formattedPhone}</a></td></tr>
-                  <tr><td style="padding: 5px 0; color: #666;">Email:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.email}</td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Birth Info:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.dob} | ${form.tob}</td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Location:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.city} (${form.pinCode})</td></tr>
                 </table>
               </div>
 
+              ${isMatchmaking ? `
               <div style="margin-bottom: 25px; border-bottom: 2px solid #f8f8f8; padding-bottom: 15px;">
-                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">✨ Birth Information</h3>
-                <div style="background-color: #FFFBF0; padding: 15px; border-radius: 8px; border: 1px solid #F5D98A;">
-                  <p style="margin: 5px 0;"><strong>DOB:</strong> ${form.dob}</p>
-                  <p style="margin: 5px 0;"><strong>Time:</strong> ${form.tob}</p>
-                  <p style="margin: 5px 0;"><strong>Location:</strong> ${form.city} (${form.pinCode})</p>
-                  <p style="margin: 5px 0;"><strong>Gender:</strong> ${form.gender}</p>
-                </div>
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">💑 Person 2 Details (Partner)</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr><td style="padding: 5px 0; color: #666;">Name:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.partnerName}</td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Birth Info:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.partnerDob} | ${form.partnerTob}</td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Location:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.partnerCity}</td></tr>
+                </table>
               </div>
+              ` : ''}
 
               <div style="margin-bottom: 10px;">
-                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">🎯 The Challenge</h3>
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">🎯 The Question </h3>
                 <p style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; color: #333; line-height: 1.5; font-style: italic;">
                   "${form.challenge || "No specific challenge mentioned."}"
                 </p>
@@ -191,18 +229,12 @@ export async function POST(req: Request) {
                 <a href="https://wa.me/${formattedPhone}" style="background-color: #1B4D30; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">Open User WhatsApp</a>
               </div>
             </div>
-            
-            <div style="background-color: #f8f8f8; padding: 15px; text-align: center; color: #999; font-size: 11px;">
-              System generated notification for Surabhi Astrology CRM.
-            </div>
           </div>
         `,
       }),
       
-      // 3. WhatsApp Message
       sendWhatsAppMessage(formattedPhone, replyMessage, waButtons),
       
-      // 4. Redis Bot State
       redis.set(
         `user_state:${formattedPhone}`, 
         JSON.stringify({ 
@@ -213,17 +245,10 @@ export async function POST(req: Request) {
       )
     ]);
 
-    // Log failures for debugging
-    results.forEach((result, idx) => {
-      if (result.status === 'rejected') {
-        console.error(`Production Task ${idx} failed:`, result.reason);
-      }
-    });
-
     return NextResponse.json({ success: true }, { status: 200 });
 
   } catch (error: any) {
     console.error("Critical verification error:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
   }
 }

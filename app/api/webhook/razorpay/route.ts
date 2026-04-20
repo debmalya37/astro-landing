@@ -8,34 +8,48 @@ import { connectDB } from "@/lib/mongodb";
 // --- 1. Singleton Service Initialization ---
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Cache Redis connection outside the handler for reuse
 let redis: Redis;
 const getRedis = () => {
   if (!redis) {
     redis = new Redis(process.env.REDIS_URL!, {
       lazyConnect: true,
-      maxRetriesPerRequest: 3, // Fail fast in webhook context
+      maxRetriesPerRequest: 3,
     });
   }
   return redis;
 };
 
-const Order = mongoose.models.Order || mongoose.model("Order", new mongoose.Schema({
-  paymentId: String, 
-  orderId: String, 
-  amount: Number, 
-  reportType: String, 
-  customer: Object, 
-  offers: Object, 
-  status: String,
-  createdAt: { type: Date, default: Date.now }
-}));
+// Define Schema to match payment-success exactly
+const OrderSchema = new mongoose.Schema({
+  paymentId: { type: String, required: true },
+  orderId: { type: String, required: true },
+  amount: { type: Number, required: true },
+  reportType: { type: String },
+  customer: {
+    name: String, email: String, phone: String,
+    dob: String, tob: String, city: String,
+    pinCode: String, gender: String, language: String, challenge: String,
+  },
+  partner: {
+    name: String,
+    dob: String,
+    tob: String,
+    city: String,
+    gender: String
+  },
+  challenge: { type: String },
+  status: { type: String, default: "Paid" },
+  reportSent: { type: Boolean, default: false }, 
+  answerSent: { type: Boolean, default: false },
+}, { timestamps: true });
+
+const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
 
 // --- 2. Helper: Send Meta WhatsApp Message ---
 async function sendWhatsAppMessage(to: string, text: string, buttons?: string[]) {
   const phoneNumberId = process.env.WHATSAPP_PHONE_ID;
   const token = process.env.WHATSAPP_TOKEN;
-  const url = `https://graph.facebook.com/v25.0/${phoneNumberId}/messages`; // Updated to v25.0
+  const url = `https://graph.facebook.com/v25.0/${phoneNumberId}/messages`; 
 
   let payload: any = { messaging_product: "whatsapp", recipient_type: "individual", to: to };
 
@@ -77,7 +91,6 @@ export async function POST(req: Request) {
     const rawBody = await req.text(); 
     const signature = req.headers.get("x-razorpay-signature");
 
-    // A. VERIFY WEBHOOK SIGNATURE
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET!)
       .update(rawBody)
@@ -89,30 +102,58 @@ export async function POST(req: Request) {
 
     const event = JSON.parse(rawBody);
 
-    // B. PROCESS ONLY CAPTURED PAYMENTS
     if (event.event === "payment.captured") {
-      const { id: paymentId, order_id: razorpayOrderId } = event.payload.payment.entity;
+      const { id: paymentId, order_id: razorpayOrderId, notes } = event.payload.payment.entity;
 
       await connectDB();
       
-      // OPTIMIZATION: Use lean() and select() for raw speed
       const order = await Order.findOne({ orderId: razorpayOrderId })
-        .select("+customer +reportType +status +amount")
+       .select("+customer +reportType +status +amount")
         .lean();
       
-      if (!order || order.status === "Paid") {
-        return NextResponse.json({ status: "skipped_or_duplicate" }, { status: 200 }); 
+      // Prevent double processing if success API already finished
+      if (order && order.status === "Paid") {
+        return NextResponse.json({ status: "already_processed" }, { status: 200 }); 
       }
 
-      // Mark as Paid in DB immediately
-      await Order.updateOne(
-        { _id: order._id },
-        { $set: { status: "Paid", paymentId: paymentId } }
-      );
+      /**
+       * NOTE: Webhooks usually only have 'notes' if you passed them to Razorpay.
+       * If your frontend 'form' data isn't in notes, we check if the order exists.
+       * If it doesn't exist yet, we create it using the data available.
+       */
+      
+      if (!order) {
+        // Fallback creation logic if webhook hits before Success API
+        // This assumes you sent the form data as 'notes' in create-order
+        const formData = notes?.formData ? JSON.parse(notes.formData) : {};
+        
+        await Order.create({
+          paymentId,
+          orderId: razorpayOrderId,
+          amount: event.payload.payment.entity.amount / 100, // Razorpay is in paise
+          reportType: formData.reportType || "Vedic Report",
+          customer: formData,
+          partner: {
+            name: formData.partnerName,
+            dob: formData.partnerDob,
+            tob: formData.partnerTob,
+            city: formData.partnerCity,
+            gender: formData.partnerGender
+          },
+          challenge: formData.challenge,
+          status: "Paid",
+          createdAt: new Date()
+        });
+      } else {
+        await Order.updateOne(
+          { _id: order._id },
+          { $set: { status: "Paid", paymentId: paymentId } }
+        );
+      }
 
-      // C. EXECUTE NOTIFICATIONS (Awaited for stability, or fire-and-forget for max speed)
-      // We pass the order data to a separate function to keep the logic clean
-      await triggerNotifications(order, paymentId);
+      // Re-fetch clean lean order for notifications
+      const finalOrder = await Order.findOne({ orderId: razorpayOrderId }).lean();
+      await triggerNotifications(finalOrder, paymentId);
     }
 
     return NextResponse.json({ status: "ok" }, { status: 200 });
@@ -123,7 +164,7 @@ export async function POST(req: Request) {
   }
 }
 
-// --- 4. Notification Logic (Preserving all your HTML/Layouts) ---
+// --- 4. Notification Logic (Synced with payment-success) ---
 async function triggerNotifications(order: any, paymentId: string) {
   const adminEmails = ["developer.thinqit@gmail.com", "surabhiastrology9@gmail.com"]; 
   const senderEmail = process.env.EMAIL_FROM || "Surabhi Astrology <info@surabhiastrology.com>";
@@ -134,6 +175,7 @@ async function triggerNotifications(order: any, paymentId: string) {
   const reportType = order.reportType || "Service";
   const isHi = order.customer.language === "hindi";
   const isCareer = reportType.toLowerCase().includes("career") || reportType.toLowerCase().includes("करियर");
+  const isMatchmaking = reportType.toLowerCase().includes("couple match making");
 
   let replyMessage = `✅ *Payment Confirmed!*\n\n🙏 *Radhe Radhe, ${order.customer.name || "ji"}!*\nYour order for the *${reportType}* has been successfully confirmed.\n\nSurbhi ji and the team will deliver your detailed analysis right here within *72 hours*. ⏳`;
   let waButtons: string[] | undefined = undefined;
@@ -143,7 +185,7 @@ async function triggerNotifications(order: any, paymentId: string) {
     waButtons = isHi ? ["प्रश्न पूछें"] : ["Ask Question"];
   }
 
-  const results = await Promise.allSettled([
+  await Promise.allSettled([
     // 1. Customer Email
     resend.emails.send({
       from: senderEmail,
@@ -152,25 +194,40 @@ async function triggerNotifications(order: any, paymentId: string) {
       html: `<h2>Radhe Radhe ${order.customer.name} ji,</h2><p>Your payment of ₹${order.amount} for the <strong>${order.reportType}</strong> is confirmed. Please check WhatsApp for next steps!</p>`,
     }),
 
-    // 2. Admin Email (Your exact layout preserved)
+    // 2. Admin Email (Matchmaking Aware)
     resend.emails.send({
       from: senderEmail,
       to: adminEmails,
-      subject: `🚨 NEW ORDER (Webhook): ${order.customer.name} [₹${order.amount}]`,
+      subject: `🚨 WEBHOOK ORDER: ${order.customer.name} [₹${order.amount}]`,
       html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
+        <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
           <div style="background-color: #3D1600; padding: 20px; text-align: center;">
-            <h2 style="color: #F5D98A; margin: 0;">Webhook Order Received! 🚀</h2>
+            <h2 style="color: #F5D98A; margin: 0;">Webhook Order Captured! 🚀</h2>
+            <p style="color: #fff; font-size: 12px; margin-top: 5px;">Transaction ID: ${paymentId}</p>
           </div>
+          
           <div style="padding: 25px;">
             <h3 style="color: #8B1E1E; border-bottom: 1px solid #eee; padding-bottom: 10px;">🛒 Details</h3>
-            <p><strong>Customer:</strong> ${order.customer.name}</p>
-            <p><strong>WhatsApp:</strong> <a href="https://wa.me/${formattedPhone}">+${formattedPhone}</a></p>
             <p><strong>Package:</strong> ${order.reportType} - ₹${order.amount}</p>
-            <div style="background-color: #FFFBF0; padding: 15px; border-radius: 8px; margin-top: 15px;">
+
+            <h3 style="color: #8B1E1E;">👤 Person 1 (Customer)</h3>
+            <p><strong>Name:</strong> ${order.customer.name}</p>
+            <p><strong>WhatsApp:</strong> <a href="https://wa.me/${formattedPhone}">+${formattedPhone}</a></p>
+            <div style="background-color: #FFFBF0; padding: 15px; border-radius: 8px;">
               <p><strong>Birth Info:</strong> ${order.customer.dob} | ${order.customer.tob} | ${order.customer.city}</p>
             </div>
-            <p style="margin-top: 15px; font-style: italic; color: #666;">"${order.customer.challenge || "No challenge specified"}"</p>
+
+            ${isMatchmaking && order.partner ? `
+            <h3 style="color: #8B1E1E; margin-top: 20px;">💑 Person 2 (Partner)</h3>
+            <p><strong>Name:</strong> ${order.partner.name}</p>
+            <div style="background-color: #F0F7FF; padding: 15px; border-radius: 8px;">
+              <p><strong>Birth Info:</strong> ${order.partner.dob} | ${order.partner.tob} | ${order.partner.city}</p>
+            </div>
+            ` : ''}
+
+            <div style="margin-top: 20px; padding: 15px; background-color: #f4f4f4; border-radius: 8px;">
+               <p style="margin: 0; font-style: italic; color: #666;">"${order.challenge || "No specific challenge"}"</p>
+            </div>
           </div>
         </div>
       `,
@@ -189,8 +246,4 @@ async function triggerNotifications(order: any, paymentId: string) {
       "EX", 86400
     )
   ]);
-
-  results.forEach((res, i) => {
-    if (res.status === 'rejected') console.error(`Task ${i} failed:`, res.reason);
-  });
 }

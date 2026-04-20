@@ -17,13 +17,12 @@ async function connectDB() {
   await mongoose.connect(process.env.MONGODB_URI!);
 }
 
-// Defining the Chat Schema to store history
 const ChatSchema = new mongoose.Schema({
   phoneNumber: String,
   waName: String,
   message: String,
-  step: String, // Step they moved to after this message
-  type: String, // 'text' or 'button_click' or 'list_selection'
+  step: String,
+  type: String,
   timestamp: { type: Date, default: Date.now }
 });
 
@@ -46,12 +45,23 @@ export async function sendWhatsAppMessage(
     "Content-Type": "application/json",
   };
 
-  if (options?.list && options?.image) {
-    await fetch(url, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ messaging_product: "whatsapp", to: to, type: "image", image: { link: options.image } }),
-    });
+  // FIX: If there is an image AND a list/buttons, send the image FIRST and AWAIT it.
+  // This ensures the image appears above the selection menu.
+  if (options?.image && (options?.list || options?.buttons || options?.urlButton)) {
+    try {
+      await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ 
+          messaging_product: "whatsapp", 
+          to: to, 
+          type: "image", 
+          image: { link: options.image } 
+        }),
+      });
+    } catch (e) {
+      console.error("Image Pre-send Error:", e);
+    }
   }
 
   let payload: any = { messaging_product: "whatsapp", recipient_type: "individual", to: to };
@@ -81,8 +91,12 @@ export async function sendWhatsAppMessage(
         }))
       }
     };
-    if (options.image) payload.interactive.header = { type: "image", image: { link: options.image } };
+    // Only attach header if it wasn't already sent separately above
+    if (options.image && !options.list) {
+        payload.interactive.header = { type: "image", image: { link: options.image } };
+    }
   } else if (options?.image) {
+    // Fallback for simple image + caption if no interactive elements
     payload.type = "image";
     payload.image = { link: options.image, caption: text };
   } else {
@@ -99,7 +113,7 @@ export async function sendWhatsAppMessage(
 }
 
 // ==========================================
-// 3. GET HANDLER (Webhook Verification)
+// 3. GET HANDLER
 // ==========================================
 export async function GET(req: NextRequest) {
   const search = req.nextUrl.searchParams;
@@ -124,7 +138,7 @@ export async function POST(req: NextRequest) {
     const messageId = message.id as string;
     const waName = contact?.profile?.name || "Seeker";
 
-    // 1. DUPLICATE CHECK
+    // 1. DUPLICATE CHECK (Redis is fast, keep this sequential)
     const isDuplicate = await redis.get(`msg_processed:${messageId}`);
     if (isDuplicate) return new NextResponse("OK", { status: 200 });
     await redis.set(`msg_processed:${messageId}`, "1", "EX", 3600);
@@ -150,26 +164,38 @@ export async function POST(req: NextRequest) {
     const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START", userData: { name: waName } };
     prev.userData.name = waName;
 
-    // 4. GENERATE BOT RESPONSE
+    // 4. GENERATE BOT RESPONSE (Instant local logic)
     const { reply, buttons, list, image, urlButton, newState } = nextMessage(incomingText, prev);
 
-    // 5. SAVE TO DATABASE (MONGODB)
-    await connectDB();
-    await Chat.create({
-      phoneNumber: from,
-      waName: waName,
-      message: incomingText,
-      step: newState.step, // The step they just finished/moved to
-      type: msgType,
-      timestamp: new Date()
-    });
+    // 5. SPEED OPTIMIZATION: FIRE ASYNC TASKS IN PARALLEL
+    // We start DB connection, Chat logging, Redis updates, and Message sending all at once.
+    // The image pre-send awaiting happens inside sendWhatsAppMessage to maintain order.
+    
+    const tasks = [
+        // Task A: Message Sending
+        sendWhatsAppMessage(from, reply, { buttons, list, image, urlButton }),
+        
+        // Task B: Redis State Updates
+        redis.set(`user_state:${from}`, JSON.stringify(newState), "EX", 86400),
+        redis.hset("wa_last_interaction", from, Date.now().toString()),
+        redis.hset("wa_names", from, waName),
+        
+        // Task C: Database Logging (Connect + Create)
+        (async () => {
+            await connectDB();
+            return Chat.create({
+                phoneNumber: from,
+                waName: waName,
+                message: incomingText,
+                step: newState.step,
+                type: msgType,
+                timestamp: new Date()
+            });
+        })()
+    ];
 
-    // 6. UPDATE REDIS & SEND MESSAGE
-    await redis.set(`user_state:${from}`, JSON.stringify(newState), "EX", 86400);
-    await redis.hset("wa_last_interaction", from, Date.now().toString());
-    await redis.hset("wa_names", from, waName);
-
-    await sendWhatsAppMessage(from, reply, { buttons, list, image, urlButton });
+    // Fire all tasks. We don't wait for logs to finish before replying to user
+    await Promise.all(tasks);
 
     return new NextResponse("OK", { status: 200 });
   } catch (error) {
