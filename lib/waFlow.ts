@@ -129,7 +129,7 @@ function getServicePlans(intent: string = "", isHi: boolean) {
       { id: "p2", title: "रिपोर्ट+Q (₹2,999)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" },
       { id: "p3", title: "कॉल सहित (₹11,000)", description: "रिपोर्ट + 30 मिनट कॉल परामर्श" }
     ] : [
-      { id: "p1", title: "10-Yr Report (₹999)", description: "Detailed astrological prediction report" },
+      { id: "p1", title: "10-Yr Report + 1Q (₹999)", description: "Detailed astrological prediction report + Ask 1 question via chat" },
       { id: "p2", title: "Report + 1Q (₹2,999)", description: "10-Year Report + Ask 1 question via chat" },
       { id: "p3", title: "With Call (₹11,000)", description: "Report + 1 Q + 30-Min Call Consultation" }
     ]
