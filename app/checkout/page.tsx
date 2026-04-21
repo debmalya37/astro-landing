@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -70,6 +70,9 @@ function CheckoutContent() {
   const serviceName = urlService ? decodeURIComponent(urlService) : "Premium Personalized Kundali";
   const planName = urlPlan ? decodeURIComponent(urlPlan) : "10-Year Report (₹999)";
 
+  // Tracking flag to prevent multiple "Form Start" events
+  const hasStartedForm = useRef(false);
+
   // Check if matchmaking
   const isMatchmaking = serviceName.toLowerCase().includes("couple match making");
   const showQuestionDropdown = serviceName === "Surbhi Kundli" && planName.includes("Report + 1Q");
@@ -124,11 +127,34 @@ function CheckoutContent() {
     document.body.appendChild(script);
   }, []);
 
+  // Track user starting to fill the form
+  const trackFormStart = () => {
+    if (!hasStartedForm.current) {
+      if (window.fbq) {
+        window.fbq('trackCustom', 'FormFillStarted', {
+          service: serviceName,
+          plan: planName
+        });
+      }
+      hasStartedForm.current = true;
+    }
+  };
+
   const handleChange = (e: any) => {
+    trackFormStart(); // Trigger tracking on first input
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handlePayment = async () => {
+    // Analytics: Track the attempt to pay (Submit Button Click)
+    if (window.fbq) {
+      window.fbq('trackCustom', 'ClickPaySecurely', {
+        content_name: form.reportType,
+        value: finalAmount,
+        currency: 'INR'
+      });
+    }
+
     if (!agreedToTerms) {
       alert("Please agree to the Terms and Conditions to proceed.");
       return;
@@ -141,6 +167,15 @@ function CheckoutContent() {
     if (!commonFields || (isMatchmaking && !matchmakingFields)) {
       alert("Please fill in all birth details for both partners to continue.");
       return;
+    }
+
+    // Existing Pixel Event
+    if (window.fbq) {
+      window.fbq('track', 'AddPaymentInfo', {
+        content_name: form.reportType,
+        value: finalAmount,
+        currency: 'INR'
+      });
     }
 
     setLoading(true);
@@ -160,6 +195,15 @@ function CheckoutContent() {
         description: form.reportType, 
         order_id: order.id,
         handler: async function (response: any) {
+          // Analytics: Track standard Purchase event on success
+          if (window.fbq) {
+            window.fbq('track', 'Purchase', {
+              value: finalAmount,
+              currency: 'INR',
+              content_name: form.reportType
+            });
+          }
+
           await fetch("/api/payment-success", {
             method: "POST",
             body: JSON.stringify({ ...response, form, finalAmount }),
@@ -199,7 +243,7 @@ function CheckoutContent() {
           <li className="flex items-start gap-3 font-medium">✓ 100% Confidential</li>
           <li className="flex items-start gap-3 font-medium">✓ Personal Guidance by Surbhi's Team</li>
         </ul>
-         <div className="mt-8 bg-[#FFFBF0] border border-[#C8A84B]/30 rounded-xl p-4 flex items-center gap-3">
+          <div className="mt-8 bg-[#FFFBF0] border border-[#C8A84B]/30 rounded-xl p-4 flex items-center gap-3">
           <span className="text-2xl">🔒</span>
           <p className="text-xs text-[#4A2E10] leading-relaxed font-medium">
             <strong>100% Secure Checkout.</strong> Your personal details are encrypted and kept strictly confidential.
@@ -216,15 +260,14 @@ function CheckoutContent() {
         <div className="space-y-6">
           {/* Main Contact Section (Always Visible) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div><Label>Main WhatsApp Number</Label><input name="phone" placeholder="+91 98765 43210" className={inputClass} onChange={handleChange} /></div>
-            <div><Label>Main Email Address</Label><input name="email" type="email" placeholder="john@example.com" className={inputClass} onChange={handleChange} /></div>
+            <div><Label>Main WhatsApp Number</Label><input name="phone" placeholder="+91 98765 43210" className={inputClass} onChange={handleChange} onFocus={trackFormStart} /></div>
+            <div><Label>Main Email Address</Label><input name="email" type="email" placeholder="john@example.com" className={inputClass} onChange={handleChange} onFocus={trackFormStart} /></div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             
             <div>
               <Label>Selected Package</Label>
-              {/* Using native title attribute to show full text on hover if it gets cut off */}
               <input 
                 name="reportType" 
                 value={form.reportType} 
@@ -269,10 +312,6 @@ function CheckoutContent() {
                    <Label>Birth City</Label>
                    <input name="city" placeholder="Enter city" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
                 </div>
-                {/* <div>
-              <Label>Pin Code</Label>
-              <input name="pinCode" placeholder="e.g. 110001" className={inputClass} onChange={handleChange} />
-            </div> */}
                 <div>
                    <Label>Gender</Label>
                    <select name="gender" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange}>
