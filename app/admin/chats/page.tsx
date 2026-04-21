@@ -11,8 +11,18 @@ import {
   AreaChart, Area
 } from "recharts";
 
+interface ChatMessage {
+  _id: string;
+  phoneNumber: string;
+  waName: string;
+  message: string;
+  type: string;
+  step: string;
+  timestamp: string;
+}
+
 export default function AdminDashboard() {
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
