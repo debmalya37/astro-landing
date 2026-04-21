@@ -1644,7 +1644,7 @@ const time = useCountdown();
                 </div>
 
                 {/* CTA Button */}
-                <a href="/checkout" className="btn-auto-shine block w-full bg-gradient-to-r from-[#D9481E] to-[#A32A0C] text-white py-4 rounded-xl font-medium text-center text-lg shadow-[0_10px_20px_rgba(217,72,30,0.3)] hover:-translate-y-0.5 transition-transform duration-300">
+                <a href="https://kundalireport.surabhiastrology.com/checkout?service=Surbhi%20Kundli&plan=10-Yr%20Report%20%2B%201Q%20(%E2%82%B9999)" className="btn-auto-shine block w-full bg-gradient-to-r from-[#D9481E] to-[#A32A0C] text-white py-4 rounded-xl font-medium text-center text-lg shadow-[0_10px_20px_rgba(217,72,30,0.3)] hover:-translate-y-0.5 transition-transform duration-300">
                   BUY NOW →
                 </a>
 

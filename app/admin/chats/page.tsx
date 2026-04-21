@@ -3,7 +3,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { 
   Users, MessageSquare, Clock, MousePointer2, BarChart3, 
-  ArrowUpRight, RefreshCcw, X, Search, MessageCircle, ExternalLink
+  ArrowUpRight, RefreshCcw, X, Search, MessageCircle, ExternalLink,
+  ChevronDown, ChevronUp, History
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
@@ -15,6 +16,7 @@ export default function AdminDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [userSearch, setUserSearch] = useState("");
+  const [expandedUsers, setExpandedUsers] = useState<Record<string, boolean>>({});
 
   const fetchData = async () => {
     setRefreshing(true);
@@ -36,6 +38,11 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  // Toggle user message group
+  const toggleUser = (phone: string) => {
+    setExpandedUsers(prev => ({ ...prev, [phone]: !prev[phone] }));
+  };
+
   // --- Intelligent Data Aggregation ---
   const userStats = useMemo(() => {
     const users: Record<string, any> = {};
@@ -50,9 +57,12 @@ export default function AdminDashboard() {
           currentStep: c.step,
           isLead: c.step?.includes("CHECKOUT"),
           isPaid: c.step?.includes("F1_"),
+          history: [] // Added for the grouped view
         };
       }
       users[c.phoneNumber].messages += 1;
+      users[c.phoneNumber].history.push(c); // Grouping messages per user
+      
       if (new Date(c.timestamp) > new Date(users[c.phoneNumber].lastActive)) {
         users[c.phoneNumber].lastActive = c.timestamp;
         users[c.phoneNumber].currentStep = c.step;
@@ -185,65 +195,92 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Right Column: Live Feed */}
+          {/* Right Column: Grouped User List (NEW) */}
           <div className="lg:col-span-2">
             <div className="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col h-full">
               <div className="border-b border-slate-100 bg-slate-50/50 p-6 flex items-center justify-between">
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Live Interaction Feed</h3>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Showing last 50 events</span>
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Grouped Interaction Feed</h3>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Toggle to see message history</span>
               </div>
               
-              <div className="flex-1 overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-white sticky top-0 z-10">
-                    <tr>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400">User</th>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400">Message</th>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400">Step</th>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400 text-right">Time</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {chats.slice(0, 50).map((chat: any) => (
-                      <tr key={chat._id} className="group transition-colors hover:bg-slate-50/80">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 shrink-0 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-sm transition-all group-hover:bg-[#8B1E1E] group-hover:text-white">
-                              {chat.waName?.charAt(0)}
-                            </div>
-                            <div className="min-w-0">
-                              <div className="font-bold text-slate-800 truncate text-sm">{chat.waName}</div>
-                              <div className="text-[11px] font-bold text-slate-400 tracking-tighter">+{chat.phoneNumber}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
+              <div className="flex-1 overflow-y-auto max-h-[800px]">
+                {userStats.slice(0, 50).map((user: any) => (
+                  <div key={user.phone} className="border-b border-slate-50 last:border-0">
+                    {/* User Summary Row */}
+                    <div 
+                      onClick={() => toggleUser(user.phone)}
+                      className="flex items-center justify-between p-6 cursor-pointer hover:bg-slate-50/50 transition-colors group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-sm group-hover:bg-[#8B1E1E] group-hover:text-white transition-all">
+                          {user.name?.charAt(0)}
+                        </div>
+                        <div>
                           <div className="flex items-center gap-2">
-                            {chat.type?.includes("button") || chat.type?.includes("list") ? 
-                              <MousePointer2 size={12} className="text-blue-500" /> : 
-                              <MessageSquare size={12} className="text-slate-300" />
-                            }
-                            <span className="text-[13px] font-medium text-slate-600 line-clamp-1 italic italic-font tracking-tight">
-                              "{chat.message}"
+                            <span className="font-bold text-slate-800 text-sm">{user.name}</span>
+                            <span className={`rounded-full px-2 py-0.5 text-[8px] font-black uppercase ${
+                                user.isPaid ? 'bg-green-100 text-green-700' : user.isLead ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400'
+                            }`}>
+                                {user.isPaid ? 'Paid' : user.isLead ? 'Lead' : 'Explorer'}
                             </span>
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[9px] font-black uppercase tracking-tight ${
-                            chat.step?.includes("CHECKOUT") ? "bg-amber-100 text-amber-700" : 
-                            chat.step?.includes("F1") ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
-                          }`}>
-                            {chat.step?.replace("F2_", "").substring(0, 15)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="text-[11px] font-black text-slate-700">{new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                          <div className="text-[9px] font-bold text-slate-400">{new Date(chat.timestamp).toLocaleDateString()}</div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                          <div className="text-[11px] font-bold text-slate-400 tracking-tighter">+{user.phone} • {user.messages} events</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-6">
+                        <div className="text-right hidden sm:block">
+                           <div className="text-[10px] font-black text-slate-700 uppercase tracking-tighter">Last Active</div>
+                           <div className="text-[11px] font-bold text-slate-400">{new Date(user.lastActive).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                        <div className={`p-2 rounded-full bg-slate-100 text-slate-400 group-hover:bg-[#8B1E1E]/10 group-hover:text-[#8B1E1E] transition-all ${expandedUsers[user.phone] ? 'rotate-180' : ''}`}>
+                          <ChevronDown size={18} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expanded Conversation History */}
+                    {expandedUsers[user.phone] && (
+                      <div className="bg-[#fcfcfd] border-t border-slate-100 p-6 space-y-4 animate-in slide-in-from-top-2 duration-300">
+                        <div className="flex items-center gap-2 mb-4 px-2">
+                            <History size={14} className="text-[#8B1E1E]" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-[#8B1E1E]">Interaction Timeline</span>
+                        </div>
+                        
+                        <div className="relative border-l-2 border-slate-100 ml-4 space-y-6">
+                          {user.history.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).map((msg: any) => (
+                            <div key={msg._id} className="relative pl-6">
+                                {/* Dot on timeline */}
+                                <div className={`absolute -left-[9px] top-1.5 h-4 w-4 rounded-full border-4 border-[#fcfcfd] ${
+                                    msg.step?.includes("CHECKOUT") ? "bg-amber-400" : msg.step?.includes("F1") ? "bg-green-400" : "bg-slate-300"
+                                }`} />
+                                
+                                <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
+                                            msg.type?.includes("button") ? "bg-blue-50 text-blue-600" : "bg-slate-50 text-slate-500"
+                                        }`}>
+                                            {msg.type || 'text'}
+                                        </span>
+                                        <span className="text-[10px] font-bold text-slate-400">
+                                            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {new Date(msg.timestamp).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm font-medium text-slate-700 italic italic-font tracking-tight mb-3">"{msg.message}"</p>
+                                    <div className="flex items-center gap-1">
+                                        <span className="text-[9px] font-black text-slate-400 uppercase">Reached:</span>
+                                        <span className="text-[9px] font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">
+                                            {msg.step?.replace("F2_", "").replace("F1_", "")}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>

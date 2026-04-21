@@ -267,7 +267,7 @@ export function nextMessage(
 
       return {
         reply: checkoutMsg,
-        // ✅ NEW: Added the URL button payload
+        image: `${baseUrl}/surbhi-15.png`, // ✅ ADDED: Image for the checkout message
         urlButton: {
           text: "Proceed",
           url: checkoutUrl
