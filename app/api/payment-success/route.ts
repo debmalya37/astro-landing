@@ -29,9 +29,9 @@ const OrderSchema = new mongoose.Schema({
   customer: {
     name: String, email: String, phone: String,
     dob: String, tob: String, city: String,
-    pinCode: String, gender: String, language: String, challenge: String,
+    pinCode: String, gender: String, language: String, 
+    challenge: String, // Stores the value from the form
   },
-  // NEW: Optional Partner details for matchmaking
   partner: {
     name: String,
     dob: String,
@@ -39,13 +39,13 @@ const OrderSchema = new mongoose.Schema({
     city: String,
     gender: String
   },
-  challenge: { type: String },
+  challenge: { type: String }, // Top-level field for easy dashboard access
   status: { type: String, default: "Paid" },
   reportSent: { type: Boolean, default: false }, 
   answerSent: { type: Boolean, default: false },
 },
   { 
-  timestamps: true // Automatically handles updatedAt and initial createdAt
+  timestamps: true 
 }
 );
 
@@ -83,7 +83,6 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
   
   if (!response.ok) {
     const err = await response.json();
-    console.log("whatsapp error response:", err);
     throw new Error(`WA API Error: ${JSON.stringify(err)}`);
   }
 }
@@ -96,8 +95,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature, form, finalAmount } = body;
     
-    console.log("Received payment success webhook with body:", body);
-
     // A. VERIFY SIGNATURE
     const secret = process.env.RAZORPAY_KEY_SECRET!;
     const generatedSignature = crypto
@@ -117,14 +114,12 @@ export async function POST(req: Request) {
        return NextResponse.json({ success: true, message: "Duplicate" }, { status: 200 });
     }
 
-    // Map fields from form to include Partner Details
     const newOrder = await Order.create({
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
       amount: finalAmount,
       reportType: form.reportType,
       customer: form,
-      // NEW: Explicitly map Partner 2 fields from the form
       partner: {
         name: form?.partnerName,
         dob: form?.partnerDob,
@@ -132,20 +127,22 @@ export async function POST(req: Request) {
         city: form?.partnerCity,
         gender: form?.partnerGender
       },
-      challenge: form.challenge,
+      // CAPTURING THE DYNAMIC CHALLENGE FROM FORM
+      challenge: form.challenge || "No specific challenge provided",
       reportSent: false,
       answerSent: false,
       status: "Paid",
-      createdAt: new Date() // Explicitly set for dashboard date fix
+      createdAt: new Date()
     });
 
-    console.log("new order body", newOrder);
+     console.log("new order body", newOrder);
     if (!newOrder) {
       console.log("Failed to create order in DB for:", razorpay_order_id);
       throw new Error("Failed to create order in database");
     }
 
     console.log("Order saved to DB with ID:", newOrder._id);
+
 
     // C. PREPARE NOTIFICATION DATA
     const adminEmails = ["developer.thinqit@gmail.com", "surabhiastrology9@gmail.com"]; 
@@ -177,7 +174,7 @@ export async function POST(req: Request) {
         html: `<h2>Radhe Radhe ${form.name} ji,</h2><p>Your payment of ₹${finalAmount} for the <strong>${form.reportType}</strong> is confirmed. Please check your WhatsApp for next steps!</p>`,
       }),
       
-      // 2. Admin Email (Preserving your layout + adding Partner details if Matchmaking)
+      // 2. Admin Email
       resend.emails.send({
         from: senderEmail,
         to: adminEmails,
@@ -199,7 +196,7 @@ export async function POST(req: Request) {
               </div>
 
               <div style="margin-bottom: 25px; border-bottom: 2px solid #f8f8f8; padding-bottom: 15px;">
-                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">👤 Person 1 Details (Customer)</h3>
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">👤 Person 1 Details</h3>
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr><td style="padding: 5px 0; color: #666;">Name:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.name}</td></tr>
                   <tr><td style="padding: 5px 0; color: #666;">Birth Info:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.dob} | ${form.tob}</td></tr>
@@ -219,9 +216,9 @@ export async function POST(req: Request) {
               ` : ''}
 
               <div style="margin-bottom: 10px;">
-                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">🎯 The Question </h3>
+                <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">🎯 Current Challenge / Question</h3>
                 <p style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; color: #333; line-height: 1.5; font-style: italic;">
-                  "${form.challenge || "No specific challenge mentioned."}"
+                  "${form.challenge || "No specific challenge provided."}"
                 </p>
               </div>
 
@@ -239,7 +236,12 @@ export async function POST(req: Request) {
         `user_state:${formattedPhone}`, 
         JSON.stringify({ 
           step: isCareer ? "F1_START" : "F1_END", 
-          userData: { name: form.name, intent: reportType, language: isHi ? "hi" : "en" } 
+          userData: { 
+            name: form.name, 
+            intent: reportType, 
+            language: isHi ? "hi" : "en",
+            challenge: form.challenge // Sync challenge to Bot state
+          } 
         }), 
         "EX", 86400
       )

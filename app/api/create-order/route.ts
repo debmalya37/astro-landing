@@ -3,8 +3,6 @@ import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 
 export async function POST(req: Request) {
-  // ✅ MOVED INSIDE THE FUNCTION
-  // Now this only runs when a user actually clicks "Pay", not during the Vercel build!
   const razorpay = new Razorpay({
     key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID as string,
     key_secret: process.env.RAZORPAY_KEY_SECRET as string,
@@ -12,36 +10,21 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { amount } = body;
-
-    if (!amount) {
-      return NextResponse.json({ error: "Amount is required" }, { status: 400 });
-    }
-
-    // Razorpay requires the amount in subunits (paise for INR)
-    // So ₹499 becomes 49900
-    const amountInPaise = amount * 100;
+    const { amount, form } = body; // <--- 1. Catch the form data here
 
     const options = {
-      amount: amountInPaise,
+      amount: amount * 100,
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
-      // payment_capture: 1, // Note: payment_capture is deprecated in newer Razorpay SDKs, but harmless if required by your version
+      // 2. Staple the form data to the order using 'notes'
+      notes: {
+        formData: JSON.stringify(form) 
+      }
     };
 
     const order = await razorpay.orders.create(options);
-
-    return NextResponse.json({
-      id: order.id,
-      amount: order.amount,
-      currency: order.currency,
-    }, { status: 200 });
-
-  } catch (error: any) {
-    console.error("Error creating Razorpay order:", error);
-    return NextResponse.json(
-      { error: "Failed to create order" },
-      { status: 500 }
-    );
+    return NextResponse.json(order);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

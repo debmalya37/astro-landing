@@ -73,7 +73,7 @@ function CheckoutContent() {
   // Tracking flag to prevent multiple "Form Start" events
   const hasStartedForm = useRef(false);
 
-  // Check if matchmaking
+  // Check if matchmaking or 1Q logic
   const isMatchmaking = serviceName.toLowerCase().includes("couple match making");
   const showQuestionDropdown = serviceName === "Surbhi Kundli" && planName.includes("Report + 1Q");
 
@@ -107,7 +107,7 @@ function CheckoutContent() {
     pinCode: "",   // Main Pin
     gender: "",    // Partner 1 Gender
     language: "hindi",
-    challenge: isMatchmaking ? "Matchmaking Analysis Request" : "No Issue",
+    challenge: isMatchmaking ? "Matchmaking Analysis Request" : "",
     // Partner 2 Details
     partnerName: "",
     partnerDob: "",
@@ -181,11 +181,16 @@ function CheckoutContent() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/create-order", {
-        method: "POST",
-        body: JSON.stringify({ amount: finalAmount }),
-      });
-      const order = await res.json();
+  const res = await fetch("/api/create-order", {
+    method: "POST",
+    // 3. Send both amount AND form data to the create-order API
+    body: JSON.stringify({ 
+      amount: finalAmount, 
+      form: form 
+    }),
+  });
+  
+  const order = await res.json();
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -205,11 +210,11 @@ function CheckoutContent() {
           }
 
           await fetch("/api/payment-success", {
-            method: "POST",
-            body: JSON.stringify({ ...response, form, finalAmount }),
-          });
-          window.location.href = "/success";
-        },
+         method: "POST",
+         body: JSON.stringify({ ...response, form, finalAmount }),
+       });
+       window.location.href = "/success";
+    },
         prefill: { name: form.name, email: form.email, contact: form.phone },
         theme: { color: "#8B1E1E" },
       };
@@ -361,6 +366,21 @@ function CheckoutContent() {
                   </optgroup>
                 ))}
               </select>
+            </div>
+          )}
+
+          {/* New Challenge TextArea: Shows only when dropdown is hidden and NOT matchmaking */}
+          {!isMatchmaking && !showQuestionDropdown && (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-500">
+                <Label>Current Challenge You Are Facing</Label>
+                <textarea 
+                  name="challenge"
+                  rows={4}
+                  placeholder="Describe your current situation, problem, or the specific question you want surbhi ji to look into..."
+                  className={`${inputClass} resize-none`}
+                  onChange={handleChange}
+                  onFocus={trackFormStart}
+                />
             </div>
           )}
 
