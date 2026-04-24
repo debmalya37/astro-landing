@@ -154,6 +154,19 @@ export function nextMessage(
   const isHi = data.language === "hi";
   const userName = data.name && data.name !== "Seeker" ? data.name : "";
 
+  // Logic to detect if the user clicked a Service Title instead of a Plan
+  const serviceNames = [
+    "surbhi consultation", "surbhi kundli", "numerology report", 
+    "couple match making", "baby name report", "career", "love", "health",
+    "सुरभि गुप्ता परामर्श", "सुरभि कुंडली", "अंकशास्त्र रिपोर्ट", "कुंडली मिलान", "बच्चों के नाम की रिपोर्ट"
+  ];
+  const isSelectingNewService = serviceNames.some(s => lowerMsg.includes(s.toLowerCase()));
+
+  // FIX: Force Step back to Hook if they pick a service while in checkout
+  if (isSelectingNewService && (currentState.step === "F2_CHECKOUT" || currentState.step === "F2_HOOK")) {
+    currentState.step = "F2_HOOK";
+  }
+
   if (lowerMsg === "restart" || lowerMsg === "hi" || lowerMsg === "hello" || lowerMsg === "hi surbhi") {
     return {
       reply: `Radhe Radhe ${userName} ji 🙏 🙏\n\nPlease select your language / कृपया अपनी भाषा चुनें |`,
@@ -267,7 +280,7 @@ export function nextMessage(
 
       return {
         reply: checkoutMsg,
-        image: `${baseUrl}/surbhi-15.png`, // ✅ ADDED: Image for the checkout message
+        image: `${baseUrl}/surbhi-15.png`, 
         urlButton: {
           text: "Proceed",
           url: checkoutUrl
