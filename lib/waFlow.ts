@@ -267,6 +267,11 @@ export function nextMessage(
       const encodedService = encodeURIComponent(data.intent || "Service");
       const encodedPlan = encodeURIComponent(data.plan || "Plan");
       const checkoutUrl = `${paymentLink}?service=${encodedService}&plan=${encodedPlan}`;
+
+      // Logic to determine image based on selected service
+      const selectedService = (data.intent || "").toLowerCase();
+      const isSurbhiKundli = selectedService.includes("surbhi kundli") || selectedService.includes("सुरभि कुंडली");
+      const checkoutImage = isSurbhiKundli ? `${baseUrl}/surbhi-15.png` : `${baseUrl}/surbhi-16.png`;
       
       let checkoutMsg = isHi
         ? `धन्यवाद! 🌟\n\nकृपया सुरक्षित भुगतान के लिए नीचे दिए गए *'Proceed'* बटन पर क्लिक करें 👇`
@@ -280,7 +285,7 @@ export function nextMessage(
 
       return {
         reply: checkoutMsg,
-        image: `${baseUrl}/surbhi-15.png`, 
+        image: checkoutImage, 
         urlButton: {
           text: "Proceed",
           url: checkoutUrl
