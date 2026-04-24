@@ -276,6 +276,7 @@ export default function OrdersPage() {
                    <ClipboardList className="text-[#8B1E1E]" /> Order Full Details
                 </h2>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Order ID: {viewOrder.orderId}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Payment ID: {viewOrder.paymentId}</p>
               </div>
               <button onClick={() => setViewOrder(null)} className="h-10 w-10 bg-white border border-slate-200 rounded-full flex items-center justify-center hover:bg-slate-100 transition-all text-slate-400">
                 <X size={20}/>
