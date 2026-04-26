@@ -803,12 +803,16 @@ const time = useCountdown();
               <div className="relative w-full aspect-[4/5] rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-[3px] lg:border-[4px] border-[#C8A84B]/40 shadow-[0_15px_40px_rgba(42,14,0,0.6)] lg:shadow-[0_25px_60px_rgba(42,14,0,0.6)] bg-[#2A0E00]">
                 <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
                 <Image
-                  src="/surbhi-gupta-portrait.jpg"
-                  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer"
-                  width={360}
-                  height={450}
-                  className="absolute inset-0 w-full h-full object-cover z-10"
-                />
+  src="/surbhi-gupta-portrait.jpg"
+  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer"
+  width={360}
+  height={450}
+  // guidline-change: add priority prop to disable lazy-loading (defaults loading="eager")
+  priority
+  // guidline-change: add fetchPriority="high" for immediate discovery/download
+  fetchPriority="high"
+  className="absolute inset-0 w-full h-full object-cover z-10"
+/>
                 <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
                 <div className="absolute bottom-3 lg:bottom-5 inset-x-0 text-center z-30">
                   <div className="text-[#F5D98A] font-bold text-sm sm:text-xl lg:text-2xl drop-shadow-lg px-2 leading-tight">Celebrity Astrologer<br/>Surbhi Gupta</div>
