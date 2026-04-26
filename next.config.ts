@@ -3,6 +3,41 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // 1. Advanced Image Optimization
   images: {
+    // 1. Add the external domain here
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.surabhiastrology.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'archive.siasat.com', // Added for the PM Modi News Image
+      },
+      {
+        protocol: 'https',
+        hostname: 'encrypted-tbn0.gstatic.com', // Added for the PM Modi News Image
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.vecteezy.com', // Added for your "Solve" cards
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.jyotishdham.com', // Added for your "Solve" cards
+      },
+      {
+        protocol: 'https',
+        hostname: 'gerardcounseling.com', // Added for your "Solve" cards
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.swncdn.com', // Added for your "Solve" cards
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.istockphoto.com', // Added for your "Solve" cards
+      }
+    ],
     // Automatically serves AVIF (smallest) or WebP depending on browser support
     formats: ['image/avif', 'image/webp'],
     // Optimization for common device widths (prevents oversized images on mobile)

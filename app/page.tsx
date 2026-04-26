@@ -6,7 +6,6 @@ import HowItWorksSection from "@/components/Simplesteps";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import * as THREE from 'three';
 
 import { FaWhatsapp } from 'react-icons/fa6'
 import Image from 'next/image';
@@ -473,7 +472,17 @@ function ComparisonSlider() {
     >
       {/* AFTER IMAGE (Background) */}
       <div className="absolute inset-0 bg-[#0A1A10]">
-        <img src="/after-bg.jpg" alt="After" className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay" />
+        <Image 
+  src="/after-bg.jpg" 
+  alt="Life state after Kundali report" 
+  // 1. 'fill' is best for background images where you want to cover the container
+  fill
+  // 2. Add 'sizes' so Next.js doesn't serve a massive desktop image to mobile users
+  sizes="(max-width: 768px) 100vw, 50vw"
+  // 3. Keep all your cinematic overlay effects
+  className="object-cover opacity-40 mix-blend-overlay"
+  // 4. Leave as default (lazy load) so it doesn't slow down the critical path
+/>
         <div className="absolute inset-0 flex items-center justify-end p-8 lg:p-16">
           <div className="text-right max-w-sm ml-auto z-10 pl-12">
             <h3 className="fraunces text-3xl lg:text-4xl font-medium text-[#A0F0C8] mb-6">AFTER Smart Kundli</h3>
@@ -493,14 +502,35 @@ function ComparisonSlider() {
           </div>
           {/* Main Visual Right */}
           <div className="absolute right-[5%] bottom-[5%] lg:right-[15%] w-[40%] lg:w-[35%] opacity-80 pointer-events-none">
-             <img src="/happy-person-planet.png" alt="" className="w-full h-auto object-contain animate-float" />
+             <Image 
+  src="/happy-person-planet.png" 
+  alt="Happy state after Kundali report" 
+  // 1. Set explicit width and height to fix the PageInsight diagnostic
+  width={500} 
+  height={500}
+  // 2. Add 'sizes' so mobile users get a lightweight version
+  sizes="(max-width: 768px) 40vw, 35vw"
+  // 3. Keep your existing animation and styling
+  className="w-full h-auto object-contain animate-float" 
+  // 4. Leave as default (lazy load) so it doesn't slow down the Hero load
+/>
           </div>
         </div>
       </div>
 
       {/* BEFORE IMAGE (Clipped Foreground) */}
       <div className="absolute inset-0 bg-[#1A0505] clip-before border-r-[3px] border-white z-20">
-        <img src="/before-bg.jpg" alt="Before" className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay grayscale" />
+      <Image 
+  src="/before-bg.jpg" 
+  alt="Life state before Vedic analysis" 
+  // 1. 'fill' is best for background images where you want to cover the container
+  fill
+  // 2. Add 'sizes' so Next.js doesn't serve a massive desktop image to mobile users
+  sizes="(max-width: 768px) 100vw, 50vw"
+  // 3. Keep all your cinematic overlay and grayscale effects
+  className="object-cover opacity-30 mix-blend-overlay grayscale"
+  // 4. Default is lazy loading, perfect since the slider is usually below the fold
+/>
         <div className="absolute inset-0 flex items-center justify-start p-8 lg:p-16">
           <div className="text-left max-w-sm z-10 pr-12">
             <h3 className="fraunces text-3xl lg:text-4xl font-medium text-[#FF8080] mb-6">BEFORE Smart Kundli</h3>
@@ -520,7 +550,19 @@ function ComparisonSlider() {
           </div>
           {/* Main Visual Left */}
           <div className="absolute left-[5%] bottom-[5%] lg:left-[15%] w-[40%] lg:w-[35%] opacity-60 pointer-events-none grayscale">
-             <img src="/confused-person-planet.png" alt="" className="w-full h-auto object-contain animate-float-slow" />
+        <Image 
+  src="/confused-person-planet.png" 
+  alt="Confused state before Kundali" 
+  // 1. Provide the natural width and height of the file
+  width={500} 
+  height={500}
+  // 2. Use 'sizes' to ensure mobile users get a smaller version
+  sizes="(max-width: 768px) 40vw, 35vw"
+  // 3. Keep your existing animation and styling classes
+  className="w-full h-auto object-contain animate-float-slow" 
+  // 4. This is inside the slider which is usually below the fold, 
+  // so we let it lazy load automatically.
+/>
           </div>
         </div>
       </div>
@@ -623,16 +665,17 @@ const time = useCountdown();
       ════════════════════════════════ */}
       <nav className="sticky top-0 z-[99] flex items-center justify-between px-4 lg:px-8 h-[70px] border-b backdrop-blur-xl" style={{ background: "rgba(252,247,238,0.9)", borderColor: C.iv2 }}>
         <Link href="/" className="flex-shrink-0 flex items-center">
-          <img 
-            src="/logo.svg" 
-            alt="celebrity astrologer Surbhi Gupta" 
-            className="h-14 sm:h-16 lg:h-16 w-auto object-cover"
-            onError={(e) => {
-              // Fallback to text if the SVG is missing or fails to load
-              e.currentTarget.style.display = 'none';
-              e.currentTarget.nextElementSibling?.classList.remove('hidden');
-            }}
-          />
+          <Image 
+  src="https://www.surabhiastrology.com/assets/images/surbhi-logo.png" 
+  alt="Celebrity Astrologer Surbhi Gupta" 
+  // Set these to the natural aspect ratio of your logo
+  width={250} 
+  height={64}
+  // This keeps the logo sharp while allowing Tailwind to handle responsive sizing
+  className="h-14 sm:h-16 lg:h-16 w-auto object-contain"
+  // Since the logo is in the navbar, it's critical for LCP
+  priority
+/>
           {/* Fallback text just in case the image path is wrong */}
           <div className="hidden fraunces text-[1.15rem] sm:text-[1.35rem] font-bold" style={{ color: C.t1 }}>
             Celebrity Astrologer Surbhi <em style={{ fontStyle: "italic", color: C.g }}>Gupta</em>
@@ -883,15 +926,17 @@ const time = useCountdown();
                 className={`reveal d${(i % 3) + 1} group relative w-full aspect-[2/1] md:aspect-[4/5] rounded-[2rem] overflow-hidden cursor-pointer bg-[#2A0E00] shadow-xl hover:shadow-[0_30px_60px_rgba(200,168,75,0.25)] transition-all duration-500 hover:-translate-y-3`}
               >
                 {/* 1. Background Image with 3D Zoom Effect */}
-                <img 
-                  src={item.img} 
-                  alt={item.title} 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90 group-hover:opacity-100" 
-                  onError={(e) => {
-                    e.currentTarget.onerror = null; 
-                    e.currentTarget.src = "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?auto=format&fit=crop&q=80&w=600&h=800";
-                  }}
-                />
+                <Image 
+  src={item.img} 
+  alt={item.title} 
+  // 1. Use 'fill' to cover the absolute container (the rounded-2rem div)
+  fill
+  // 2. 'sizes' prevents the browser from loading full-size images for small cards
+  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+  // 3. Keep all your hover and transition styles
+  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90 group-hover:opacity-100" 
+  // 4. These are below the fold, so they stay lazy-loaded by default
+/>
 
                 {/* 2. Premium Dark Gradient Overlay (Protects Text Legibility) */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A0A00] via-[#1A0A00]/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500"></div>
@@ -977,15 +1022,18 @@ const time = useCountdown();
             {/* LEFT / TOP: PM Modi Image */}
             {/* CRITICAL CHANGE: Reduced mobile image height (h-[180px]) */}
             <div className="absolute top-0 left-0 w-full md:w-1/2 h-[180px] sm:h-[220px] md:h-full opacity-90 md:opacity-80">
-              <img 
-                src="https://archive.siasat.com/wp-content/uploads/2023/07/2023_7img15_Jul_2023_PTI07_15_2023_000054B-scaled-1.jpg" 
-                alt="PM Narendra Modi" 
-                className="w-full h-full object-cover object-[center_top] md:object-[right_top]"
-                onError={(e) => {
-                  e.currentTarget.onerror = null; 
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1542360663-8f4023704c71?auto=format&fit=crop&q=80&w=800";
-                }}
-              />
+              <Image 
+  src="https://archive.siasat.com/wp-content/uploads/2023/07/2023_7img15_Jul_2023_PTI07_15_2023_000054B-scaled-1.jpg" 
+  alt="PM Narendra Modi" 
+  // 1. Using 'fill' because the parent container defines the size
+  fill
+  // 2. 'priority' ensures it loads immediately to improve LCP
+  priority
+  // 3. 'sizes' tells the browser not to download the 2000px version for mobile
+  sizes="(max-width: 768px) 100vw, 50vw"
+  // 4. Keeping your custom positioning styles
+  className="object-cover object-[center_top] md:object-[right_top]"
+/>
               {/* Fade to transparent on bottom (Mobile) and right (Desktop) */}
               <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent via-transparent to-[#2A0E00]"></div>
             </div>
@@ -1484,7 +1532,19 @@ const time = useCountdown();
                   
                   {/* Image (Replace src with actual celeb images) */}
                   <div className="absolute inset-0 bg-[#3D1600] flex items-center justify-center text-4xl opacity-20 z-0">👤</div>
-                  <img src={celeb.img} alt={celeb.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 z-0" />
+                  <Image 
+  src={celeb.img} 
+  alt={celeb.name} 
+  // 1. Define dimensions based on the container aspect ratio (3:4)
+  width={220} // The max width in your CSS
+  height={293} // Matches the 3/4 aspect ratio (220 / 3 * 4)
+  // 2. Responsive 'sizes' are crucial for carousel images
+  sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
+  // 3. Keep your existing cinematic/hover styling
+  className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 z-0"
+  // 4. Set priority to false (or just omit it) because it's further down the page
+  priority={false}
+/>
 
                   {/* Dark Gradient Overlay for Text Readability */}
                   <div className="absolute inset-x-0 bottom-0 p-3 lg:p-5 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, rgba(20,5,0,0.6) 60%, transparent 100%)" }}>
@@ -1537,11 +1597,19 @@ const time = useCountdown();
                     {/* Placeholder icon just in case image doesn't load */}
                     <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-10">📰</div>
                     
-                    <img 
-                      src={news.img} 
-                      alt={`News snippet from ${news.publisher}`} 
-                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 z-10"
-                    />
+                    <Image 
+  src={news.img} 
+  alt={`News snippet from ${news.publisher}`} 
+  // 1. Define dimensions to prevent Layout Shift (CLS)
+  width={400} 
+  height={300}
+  // 2. Add 'sizes' so Next.js generates smaller versions for mobile
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+  // 3. Keep your existing cinematic styling
+  className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 z-10"
+  // 4. Optimization: Standard <img> doesn't need 'loading="lazy"' here 
+  // because Next.js handles it automatically for images below the fold.
+/>
                     
                     {/* Gradient Overlay for bottom text */}
                     <div className="absolute inset-x-0 bottom-0 h-2/3 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, transparent 100%)" }} />
