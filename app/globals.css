@@ -1,38 +1,46 @@
-/* ✅ FIRST — ALL IMPORTS */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@300;500;700&family=Nunito+Sans:wght@300;400;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ✅ THEN YOUR STYLES */
+/* ❌ REMOVED: @import url('https://fonts.googleapis.com/...'); 
+  This was blocking your mobile render for 3+ seconds.
+  Fonts are now handled via next/font in layout.tsx.
+*/
+
 body {
   background-color: #FCF7EE;
   color: #2A1400;
-  font-family: 'Nunito Sans', sans-serif;
+  /* Next.js Font fallback logic */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Paper texture */
+/* Paper texture - Optimized with pointer-events-none */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   opacity: 0.03;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,...");
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* PERFORMANCE TIP: Use transform: translate3d for hardware acceleration 
+  This makes animations smoother on weak mobile CPUs.
+*/
 @keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg) translate3d(0,0,0); }
+  to { transform: rotate(360deg) translate3d(0,0,0); }
 }
 
 .animate-spin-slow {
   animation: spin-slow 200s linear infinite;
+  will-change: transform;
 }
+
 @keyframes auto-shine {
   0% { transform: translateX(-150%) skewX(-20deg); }
-  /* We removed the 40% stop. Now it sweeps across the entire time */
   100% { transform: translateX(200%) skewX(-20deg); } 
 }
 
@@ -42,30 +50,31 @@ body::before {
   position: absolute;
   inset: 0;
   background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
-  
-  /* Changed to 2.5s for a nice pace, and 'linear' so the speed stays perfectly consistent between loops */
   animation: auto-shine 2.5s infinite linear; 
 }
 
+/* Continuous slow gold shimmer */
+@keyframes bar-shimmer {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  30% { transform: translateX(200%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
+}
+.ann-bar-shimmer { position: relative; overflow: hidden; }
+.ann-bar-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 40%, rgba(200, 168, 75, 0.45) 50%, transparent 60%);
+  animation: bar-shimmer 8s infinite ease-in-out;
+}
 
-    /* Continuous very slow gold shimmer for the whole bar */
-    @keyframes bar-shimmer {
-      0% { transform: translateX(-150%) skewX(-20deg); }
-      30% { transform: translateX(200%) skewX(-20deg); }
-      100% { transform: translateX(200%) skewX(-20deg); }
-    }
-    .ann-bar-shimmer { overflow: hidden; }
-    .ann-bar-shimmer::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 40%, rgba(200, 168, 75, 0.45) 50%, transparent 60%);
-      animation: bar-shimmer 8s infinite ease-in-out;
-    }
-
-    /* Pulsating gold dot on red background */
-    @keyframes gold-pd {
-      0%,100%{box-shadow:0 0 0 0 rgba(200,168,75,.6)}
-      50%{box-shadow:0 0 0 7px rgba(200,168,75,0)}
-    }
-    .ann-dot-gold { width:7px;height:7px;background:#C8A84B;border-radius:50%;flex-shrink:0;animation:gold-pd 1.5s ease-in-out infinite; }
+/* Pulsating gold dot */
+@keyframes gold-pd {
+  0%,100%{box-shadow:0 0 0 0 rgba(200,168,75,.6)}
+  50%{box-shadow:0 0 0 7px rgba(200,168,75,0)}
+}
+.ann-dot-gold { 
+  width:7px; height:7px; background:#C8A84B; 
+  border-radius:50%; flex-shrink:0; 
+  animation: gold-pd 1.5s ease-in-out infinite; 
+}
