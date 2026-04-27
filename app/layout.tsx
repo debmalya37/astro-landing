@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Outfit } from "next/font/google"; // Use your brand fonts
+import { Fraunces, Outfit } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-// 1. Optimize Font Loading
-// 'swap' prevents invisible text; 'variable' allows Tailwind usage
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
@@ -18,7 +16,7 @@ const outfit = Outfit({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#1A0A00", // Matches your deep cosmic brown
+  themeColor: "#1A0A00",
   width: "device-width",
   initialScale: 1,
 };
@@ -46,18 +44,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${outfit.variable}`}>
       <head>
-        {/* DESKTOP OPTIMIZATION: Preconnect to external assets */}
+        {/* 1. KEEP PRECONNECT: This is low-cost and helps both mobile/desktop */}
         <link rel="preconnect" href="https://connect.facebook.net" />
         
-        {/* DESKTOP OPTIMIZATION: Preload the main Hero Portrait (LCP) 
-            This forces the browser to fetch the image while parsing the HTML.
+        {/* 2. REMOVED MANUAL PRELOAD: 
+           Manual preloads for Next.js images often cause double-downloads on mobile, 
+           dropping the score. We will use 'priority' in the component instead.
         */}
-        <link
-          rel="preload"
-          as="image"
-          href="/surbhi-gupta-portrait.jpg"
-          fetchPriority="high"
-        />
 
         <Script id="fb-pixel" strategy="lazyOnload">
           {`
@@ -79,8 +72,8 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      {/* ADDED 'scroll-smooth' for better desktop UX */}
-      <body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit scroll-smooth`}>
+      {/* 3. OPTIMIZED BODY: scroll-smooth can stay as it's CSS-only */}
+<body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit scroll-smooth`}>
         {children}
         <noscript>
           <img 
