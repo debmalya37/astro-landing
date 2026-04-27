@@ -46,11 +46,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${outfit.variable}`}>
       <head>
-        {/* OPTIMIZATION: 
-          1. Use strategy="lazyOnload" (already good)
-          2. Add manual check to only load on production to save dev bandwidth
-          3. Wrap initialization in a micro-task to free up the main thread
+        {/* DESKTOP OPTIMIZATION: Preconnect to external assets */}
+        <link rel="preconnect" href="https://connect.facebook.net" />
+        
+        {/* DESKTOP OPTIMIZATION: Preload the main Hero Portrait (LCP) 
+            This forces the browser to fetch the image while parsing the HTML.
         */}
+        <link
+          rel="preload"
+          as="image"
+          href="/surbhi-gupta-portrait.jpg"
+          fetchPriority="high"
+        />
+
         <Script id="fb-pixel" strategy="lazyOnload">
           {`
             if (window.location.hostname !== 'localhost') {
@@ -63,7 +71,6 @@ export default function RootLayout({
               s.parentNode.insertBefore(t,s)}(window,document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
               
-              // Move init inside an idle period to improve mobile TBT (Total Blocking Time)
               (window.requestIdleCallback || window.setTimeout)(function() {
                 fbq('init', '1836254097051134'); 
                 fbq('track', 'PageView');
@@ -72,7 +79,8 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit`}>
+      {/* ADDED 'scroll-smooth' for better desktop UX */}
+      <body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit scroll-smooth`}>
         {children}
         <noscript>
           <img 
