@@ -46,28 +46,34 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${outfit.variable}`}>
       <head>
-        {/* 2. Optimize Tracking Scripts
-          'lazyOnload' fires after the page is fully interactive.
-          This prevents the Pixel from slowing down your LCP (Largest Contentful Paint).
+        {/* OPTIMIZATION: 
+          1. Use strategy="lazyOnload" (already good)
+          2. Add manual check to only load on production to save dev bandwidth
+          3. Wrap initialization in a micro-task to free up the main thread
         */}
         <Script id="fb-pixel" strategy="lazyOnload">
           {`
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window,document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '1836254097051134'); 
-            fbq('track', 'PageView');
+            if (window.location.hostname !== 'localhost') {
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window,document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              
+              // Move init inside an idle period to improve mobile TBT (Total Blocking Time)
+              (window.requestIdleCallback || window.setTimeout)(function() {
+                fbq('init', '1836254097051134'); 
+                fbq('track', 'PageView');
+              });
+            }
           `}
         </Script>
       </head>
-      <body className="antialiased font-outfit">
+      <body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit`}>
         {children}
-        {/* noscript moved to bottom of body to prevent head bloat */}
         <noscript>
           <img 
             height="1" 
