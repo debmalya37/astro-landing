@@ -105,6 +105,8 @@ const GlobalStyles = () => (
     .slider-handle { cursor: ew-resize; touch-action: pan-y; }
     .clip-before { clip-path: polygon(0 0, var(--pos) 0, var(--pos) 100%, 0 100%); }
     .clip-after { clip-path: polygon(var(--pos) 0, 100% 0, 100% 100%, var(--pos) 100%); }
+
+    
   `}</style>
 );
 
@@ -447,7 +449,11 @@ const time = useCountdown();
             
             {/* 1. BACKGROUND: Massive Cosmic Wheel */}
             <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-[-25%] w-[400px] sm:w-[500px] lg:w-[750px] aspect-square z-0 pointer-events-none opacity-90 lg:opacity-100">
-              <svg className="w-full h-full drop-shadow-[0_0_40px_rgba(200,168,75,0.2)] animate-[spin_120s_linear_infinite]" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-full h-full drop-shadow-[0_0_40px_rgba(200,168,75,0.2)] animate-[spin_120s_linear_infinite]" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg"
+              shapeRendering="optimizeSpeed" 
+  textRendering="optimizeSpeed"
+  style={{ willChange: 'transform' }}
+              >
                 <defs>
                   <radialGradient id="wbg" cx="50%" cy="50%" r="50%">
                     <stop offset="0%" stopColor="#1A0500" stopOpacity="0.8"/>
@@ -491,6 +497,7 @@ const time = useCountdown();
   priority
   // guidline-change: add fetchPriority="high" for immediate discovery/download
   fetchPriority="high"
+  sizes="(max-width: 768px) 200px, 360px"
   className="absolute inset-0 w-full h-full object-cover z-10"
 />
                 <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
@@ -1088,6 +1095,7 @@ const time = useCountdown();
   alt="Smart Kundli Book" 
   width={260}            // Matches the maximum width in your desktop CSS
   height={364}           // Matches the 1/1.4 aspect ratio in your CSS
+  sizes="(max-width: 768px) 110px, 220px"
   className="w-full h-full object-cover rounded-xl rounded-r-2xl" 
   // onError={() => setReportImgError(true)}
   // Default is lazy loading, which is perfect for this section
