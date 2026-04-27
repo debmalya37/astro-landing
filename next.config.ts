@@ -70,7 +70,7 @@ const nextConfig: NextConfig = {
   // 4. Experimental tweaks for heavy pages
   experimental: {
     // Reduces the size of the JavaScript bundle
-    optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion'],
+    optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion', 'three','react-icons', 'fa6'],
   },
 };
 

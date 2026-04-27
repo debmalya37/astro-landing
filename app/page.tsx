@@ -1,7 +1,11 @@
 "use client";
 import dynamic from 'next/dynamic';
 
-import ComparisonSlider2 from "@/components/Comparisonslider2";
+// Lazy load the heavy interactive components
+const ComparisonSlider2 = dynamic(() => import("@/components/Comparisonslider2"), {
+  ssr: false, // Prevents server-side bloat
+  loading: () => <div className="h-[500px] bg-ivory animate-pulse" /> // Placeholder
+});
 import HowItWorksSection from "@/components/Simplesteps";
 
 import Link from "next/link";
