@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Outfit } from "next/font/google";
+import { Fraunces, Outfit } from "next/font/google"; // Use your brand fonts
 import Script from "next/script";
 import "./globals.css";
 
+// 1. Optimize Font Loading
+// 'swap' prevents invisible text; 'variable' allows Tailwind usage
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
@@ -16,7 +18,7 @@ const outfit = Outfit({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#1A0A00",
+  themeColor: "#1A0A00", // Matches your deep cosmic brown
   width: "device-width",
   initialScale: 1,
 };
@@ -44,14 +46,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${outfit.variable}`}>
       <head>
-        {/* 1. KEEP PRECONNECT: This is low-cost and helps both mobile/desktop */}
-        <link rel="preconnect" href="https://connect.facebook.net" />
-        
-        {/* 2. REMOVED MANUAL PRELOAD: 
-           Manual preloads for Next.js images often cause double-downloads on mobile, 
-           dropping the score. We will use 'priority' in the component instead.
+        {/* OPTIMIZATION: 
+          1. Use strategy="lazyOnload" (already good)
+          2. Add manual check to only load on production to save dev bandwidth
+          3. Wrap initialization in a micro-task to free up the main thread
         */}
-
         <Script id="fb-pixel" strategy="lazyOnload">
           {`
             if (window.location.hostname !== 'localhost') {
@@ -64,6 +63,7 @@ export default function RootLayout({
               s.parentNode.insertBefore(t,s)}(window,document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
               
+              // Move init inside an idle period to improve mobile TBT (Total Blocking Time)
               (window.requestIdleCallback || window.setTimeout)(function() {
                 fbq('init', '1836254097051134'); 
                 fbq('track', 'PageView');
@@ -72,8 +72,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      {/* 3. OPTIMIZED BODY: scroll-smooth can stay as it's CSS-only */}
-<body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit scroll-smooth`}>
+      <body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit`}>
         {children}
         <noscript>
           <img 
