@@ -360,6 +360,7 @@ const time = useCountdown();
     className="h-10 sm:h-14 lg:h-16 w-auto object-contain"
     // 4. Critical for LCP and mobile score
     priority
+    quality={50}
     fetchPriority="high"
   />
   {/* Fallback text */}
@@ -502,6 +503,7 @@ const time = useCountdown();
   // guidline-change: add fetchPriority="high" for immediate discovery/download
   fetchPriority="high"
   sizes="(max-width: 768px) 200px, 360px"
+  quality={50}
   className="absolute inset-0 w-full h-full object-cover z-10"
 />
                 <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
@@ -624,13 +626,11 @@ const time = useCountdown();
                 <Image 
   src={item.img} 
   alt={item.title} 
-  // 1. Use 'fill' to cover the absolute container (the rounded-2rem div)
   fill
-  // 2. 'sizes' prevents the browser from loading full-size images for small cards
   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-  // 3. Keep all your hover and transition styles
+  // ADD THIS:
+  quality={50} 
   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90 group-hover:opacity-100" 
-  // 4. These are below the fold, so they stay lazy-loaded by default
 />
 
                 {/* 2. Premium Dark Gradient Overlay (Protects Text Legibility) */}
@@ -726,6 +726,8 @@ const time = useCountdown();
   priority
   // 3. 'sizes' tells the browser not to download the 2000px version for mobile
   sizes="(max-width: 768px) 100vw, 50vw"
+  quality={40}
+  
   // 4. Keeping your custom positioning styles
   className="object-cover object-[center_top] md:object-[right_top]"
 />
@@ -742,6 +744,8 @@ const time = useCountdown();
   width={400} // Based on the maximum width this image will be (on desktop)
   height={500} // Based on the standard 4/5 aspect ratio in your CSS
   priority // Crucial for faster LCP since this is a featured image
+  sizes="(max-width: 768px) 100vw, 50vw"
+  quality={50}
   className="w-full h-full object-cover md:object-left object-[center_top]"
 />
               {/* Fade to transparent on top (Mobile) and left (Desktop) */}
@@ -802,6 +806,7 @@ const time = useCountdown();
   alt="Celebrity Astrologer Surbhi Gupta" 
   width={600}           // Provide the maximum expected width
   height={750}          // Matches your aspect-[4/5] ratio
+  quality={50}         // Balance quality and performance
   className="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl object-cover"
   // No need for 'priority' here since it's further down the page
   sizes="(max-width: 768px) 100vw, 50vw" // Helps browser choose the right size
@@ -1097,6 +1102,7 @@ const time = useCountdown();
                  <Image 
   src="/smart-kundli.png" 
   alt="Smart Kundli Book" 
+  quality={50}
   width={260}            // Matches the maximum width in your desktop CSS
   height={364}           // Matches the 1/1.4 aspect ratio in your CSS
   sizes="(max-width: 768px) 110px, 220px"
@@ -1168,6 +1174,7 @@ const time = useCountdown();
   placeholder="blur" // Instant visual feedback
   blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU39AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMElEQVR4nGNgYGBoYmBgSGRgYChmYGBoYmBgSGVgYChmYGBoYmBgSGRgYChmYGBoYmBgAAYBAf7p9jEAAAAASUVORK5CYII=" 
   sizes="(max-width: 1024px) 100vw, 50vw" 
+  quality={50}
   className="object-cover object-[center_top] lg:object-center" 
 />
                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#F5D98A] to-transparent h-24 lg:h-32 flex items-end justify-center pb-4 lg:pb-6">
@@ -1231,6 +1238,7 @@ const time = useCountdown();
                   <Image 
   src={celeb.img} 
   alt={celeb.name} 
+  quality={50}
   // 1. Define dimensions based on the container aspect ratio (3:4)
   width={220} // The max width in your CSS
   height={293} // Matches the 3/4 aspect ratio (220 / 3 * 4)
@@ -1299,6 +1307,7 @@ const time = useCountdown();
   // 1. Define dimensions to prevent Layout Shift (CLS)
   width={400} 
   height={300}
+  quality={50}
   // 2. Add 'sizes' so Next.js generates smaller versions for mobile
   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
   // 3. Keep your existing cinematic styling

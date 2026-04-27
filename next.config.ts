@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // 1. Advanced Image Optimization
   images: {
+    qualities: [20, 40, 50, 60, 75],
     // 1. Add the external domain here
     remotePatterns: [
       {
@@ -71,6 +72,7 @@ const nextConfig: NextConfig = {
   experimental: {
     // Reduces the size of the JavaScript bundle
     optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion', 'three','react-icons', 'fa6'],
+    inlineCss: true,
   },
 };
 
