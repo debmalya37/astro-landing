@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { 
   Users, MessageSquare, Clock, MousePointer2, BarChart3, 
   ArrowUpRight, RefreshCcw, X, Search, MessageCircle, ExternalLink,
-  ChevronDown, History, Zap, Target, TrendingUp, Activity
+  ChevronDown, History, Zap, Target, TrendingUp, Activity, Plus
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
@@ -28,13 +28,40 @@ export default function AdminDashboard() {
   const [showUserModal, setShowUserModal] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [expandedUsers, setExpandedUsers] = useState<Record<string, boolean>>({});
+  
+  // --- Pagination States ---
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchData = async () => {
+  const fetchData = async (isLoadMore = false) => {
     setRefreshing(true);
+    const nextPage = isLoadMore ? page + 1 : 1;
+    
     try {
-      const res = await fetch("/api/admin/chats");
+      // Increased limit to 200 for better initial visibility of past days
+      const res = await fetch(`/api/admin/chats?page=${nextPage}&limit=200`);
       const data = await res.json();
-      setChats(data);
+      
+      // If we got an object with pagination metadata
+      const newChats = data.chats || data;
+      const pagination = data.pagination;
+
+      if (isLoadMore) {
+        setChats(prev => [...prev, ...newChats]);
+        setPage(nextPage);
+      } else {
+        setChats(newChats);
+        setPage(1);
+      }
+
+      // Check if more data exists
+      if (pagination) {
+        setHasMore(pagination.page < pagination.pages);
+      } else {
+        // Fallback if API hasn't been updated yet
+        setHasMore(newChats.length >= 50); 
+      }
+
     } catch (err) {
       console.error("Failed to load dashboard data");
     } finally {
@@ -45,7 +72,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 60000); 
+    const interval = setInterval(() => fetchData(false), 60000); 
     return () => clearInterval(interval);
   }, []);
 
@@ -86,7 +113,6 @@ export default function AdminDashboard() {
         if (c.step?.includes("F1_")) users[c.phoneNumber].isPaid = true;
       }
     });
-    // FIX: Clone array before sorting
     return Object.values(users).sort((a: any, b: any) => 
       new Date(b.lastActive).getTime() - new Date(a.lastActive).getTime()
     );
@@ -107,7 +133,6 @@ export default function AdminDashboard() {
       const stepName = c.step?.replace("F2_", "").replace("F1_", "") || "Unknown";
       counts[stepName] = (counts[stepName] || 0) + 1;
     });
-    // FIX: Creating a fresh array to avoid read-only errors
     return Object.keys(counts).map(key => ({
       name: key,
       count: counts[key]
@@ -149,7 +174,7 @@ export default function AdminDashboard() {
                 </p>
              </div>
             <button 
-              onClick={fetchData} 
+              onClick={() => fetchData(false)} 
               className={`p-2 rounded-xl transition-all ${refreshing ? 'bg-slate-100' : 'hover:bg-slate-100 text-slate-500 hover:text-[#8B1E1E]'}`}
             >
               <RefreshCcw size={20} className={refreshing ? "animate-spin" : ""} />
@@ -233,7 +258,6 @@ export default function AdminDashboard() {
               <div className="absolute top-[-10%] right-[-10%] h-32 w-32 rounded-full bg-[#C8A84B] opacity-20 blur-2xl" />
               <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C8A84B] mb-4">Market Prediction</h4>
               <p className="text-sm font-medium leading-relaxed italic text-white/90">
-                {/* FIX: Use spread operator [...hourlyData] to avoid read-only sort error */}
                 Peak activity detected at {[...hourlyData].sort((a,b) => b.count - a.count)[0]?.hour || "N/A"}. 
                 Conversion rate is holding at {userStats.length > 0 ? ((chats.filter((c: any) => c.step?.includes("F1")).length / userStats.length) * 100).toFixed(1) : 0}%.
               </p>
@@ -254,7 +278,7 @@ export default function AdminDashboard() {
               </div>
               
               <div className="flex-1 overflow-y-auto max-h-[1000px] divide-y divide-slate-50">
-                {userStats.slice(0, 40).map((user: any) => (
+                {userStats.map((user: any) => (
                   <div key={user.phone} className="group transition-all">
                     <div 
                       onClick={() => toggleUser(user.phone)}
@@ -341,6 +365,20 @@ export default function AdminDashboard() {
                     )}
                   </div>
                 ))}
+                
+                {/* --- LOAD MORE SECTION --- */}
+                {hasMore && (
+                  <div className="p-8 flex justify-center bg-white">
+                    <button 
+                      onClick={() => fetchData(true)}
+                      disabled={refreshing}
+                      className="flex items-center gap-2 px-8 py-3 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#8B1E1E] transition-all disabled:opacity-50 active:scale-95"
+                    >
+                      <Plus size={16} />
+                      {refreshing ? "Fetching Archives..." : "Load Older Records"}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

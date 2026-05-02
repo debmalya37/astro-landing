@@ -7,16 +7,32 @@ const Chat = mongoose.models.Chat || mongoose.model("Chat", new mongoose.Schema(
   phoneNumber: String, waName: String, message: String, step: String, timestamp: Date
 }));
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await connectDB();
-    // Limit is crucial for speed as chat logs grow
+    
+    // Get pagination params from URL
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "200"); // Increased default limit
+    const skip = (page - 1) * limit;
+
     const chats = await Chat.find()
       .sort({ timestamp: -1 })
-      .limit(50)
+      .skip(skip)
+      .limit(limit)
       .lean();
       
-    return NextResponse.json(chats);
+    const total = await Chat.countDocuments();
+      
+    return NextResponse.json({
+      chats,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit)
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
   }
