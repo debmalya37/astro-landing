@@ -228,7 +228,19 @@ export default function TermsAndConditions() {
                 These Terms shall be governed by and interpreted in accordance with the laws of India. Any disputes shall be subject to the jurisdiction of courts in Jaipur.
               </p>
             </section>
-
+<section className="mt-8">
+              <h2 className="text-xl font-bold text-[#2A1400] font-serif mb-4 flex items-center gap-3">
+                <span className="bg-[#FCF7EE] text-[#8B1E1E] w-8 h-8 rounded-full flex items-center justify-center text-sm border border-[#E8D8B8]">12</span>
+                WhatsApp Communication & Consent
+              </h2>
+              <p className="mb-2">By providing your phone number, interacting with our WhatsApp bot, or purchasing a service, you explicitly consent to receive communications from Surbhi Gupta Astrology via WhatsApp.</p>
+              <ul className="list-disc pl-5 space-y-2 text-[#6B4423]">
+                <li><strong>Message Types:</strong> You may receive appointment confirmations, report deliveries, responses to your inquiries, and relevant service updates.</li>
+                <li><strong>Opt-Out (Stop Messages):</strong> You can withdraw your consent and stop receiving messages at any time by replying with the word <strong>"STOP"</strong> or <strong>"UNSUBSCRIBE"</strong> in the WhatsApp chat.</li>
+                <li><strong>No Spam:</strong> We strictly adhere to WhatsApp's anti-spam policies and will not send unsolicited promotional broadcasts without your explicit prior consent.</li>
+                <li>Standard data rates may apply depending on your network provider.</li>
+              </ul>
+            </section>
             <section className="mt-8">
               <h2 className="text-xl font-bold text-[#2A1400] font-serif mb-4 flex items-center gap-3">
                 <span className="bg-[#FCF7EE] text-[#8B1E1E] w-8 h-8 rounded-full flex items-center justify-center text-sm border border-[#E8D8B8]">14</span>
