@@ -51,14 +51,33 @@ const OrderSchema = new mongoose.Schema({
 
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
 
-async function sendWhatsAppMessage(to: string, text: string, buttons?: string[]) {
+// UPDATED: Added optional templateData parameter while keeping all old logic intact
+async function sendWhatsAppMessage(to: string, text: string, buttons?: string[], templateData?: any) {
   const phoneNumberId = process.env.WHATSAPP_PHONE_ID;
   const token = process.env.WHATSAPP_TOKEN;
   const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
 
   let payload: any = { messaging_product: "whatsapp", recipient_type: "individual", to: to };
 
-  if (buttons && buttons.length > 0) {
+  // 1. If Template Data is provided, use it (Bypasses 24-hour rule)
+  if (templateData) {
+    payload.type = "template";
+    payload.template = {
+      name: templateData.name,
+      language: { code: templateData.language },
+      components: [
+        {
+          type: "body",
+          parameters: templateData.params.map((param: string) => ({
+            type: "text",
+            text: param
+          }))
+        }
+      ]
+    };
+  } 
+  // 2. Original Interactive Button Logic
+  else if (buttons && buttons.length > 0) {
     payload.type = "interactive";
     payload.interactive = {
       type: "button",
@@ -70,7 +89,9 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
         }))
       }
     };
-  } else {
+  } 
+  // 3. Original Standard Text Logic
+  else {
     payload.type = "text";
     payload.text = { body: text };
   }
@@ -135,7 +156,7 @@ export async function POST(req: Request) {
       createdAt: new Date()
     });
 
-     console.log("new order body", newOrder);
+    console.log("new order body", newOrder);
     if (!newOrder) {
       console.log("Failed to create order in DB for:", razorpay_order_id);
       throw new Error("Failed to create order in database");
@@ -163,6 +184,20 @@ export async function POST(req: Request) {
       replyMessage += `\n\n🎁 *Bonus:* As promised, please click below to choose your 1 FREE career question!`;
       waButtons = isHi ? ["प्रश्न पूछें"] : ["Ask Question"];
     }
+
+    // NEW: Prepare Template Data for the 24-hour restriction bypass
+    let templateName = "";
+    if (isCareer) {
+      templateName = isHi ? "payment_career_hi" : "payment_career_en";
+    } else {
+      templateName = isHi ? "payment_general_hi" : "payment_general_en";
+    }
+
+    const waTemplateData = {
+      name: templateName,
+      language: isHi ? "hi" : "en",
+      params: [form.name || "Customer", reportType]
+    };
 
     // D. EXECUTE ALL NOTIFICATIONS
     const results = await Promise.allSettled([
@@ -230,8 +265,10 @@ export async function POST(req: Request) {
         `,
       }),
       
-      sendWhatsAppMessage(formattedPhone, replyMessage, waButtons),
+      // 3. WhatsApp Message (Passes the newly injected Template Data to bypass 24h rule)
+      sendWhatsAppMessage(formattedPhone, replyMessage, waButtons, waTemplateData),
       
+      // 4. Redis Update
       redis.set(
         `user_state:${formattedPhone}`, 
         JSON.stringify({ 

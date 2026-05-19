@@ -4,8 +4,13 @@ import crypto from "crypto";
 import mongoose from "mongoose";
 import { Resend } from "resend";
 import Redis from "ioredis";
-import { connectDB } from "@/lib/mongodb";
 
+// REMOVED: import { connectDB } from "@/lib/mongodb"; 
+// We are now using the inline serverless cached version below.
+
+// ==========================================
+// 1. INITIALIZE SERVICES (With Caching)
+// ==========================================
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 let redis: Redis;
@@ -19,6 +24,32 @@ const getRedis = () => {
   return redis;
 };
 
+// NEW: Serverless MongoDB Connection Cache (Fixes Vercel Timeout/Exhaustion)
+let cached = (global as any).mongoose;
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null };
+}
+
+async function connectDB() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGODB_URI!, {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 5000, 
+      maxPoolSize: 10 // Prevents Vercel from crashing Atlas with too many connections
+    }).then((mongoose) => {
+      return mongoose;
+    });
+  }
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
+
+// ==========================================
+// 2. SCHEMAS
+// ==========================================
 const OrderSchema = new mongoose.Schema({
   paymentId: { type: String, required: true },
   orderId: { type: String, required: true },
@@ -40,14 +71,36 @@ const OrderSchema = new mongoose.Schema({
 
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
 
-async function sendWhatsAppMessage(to: string, text: string, buttons?: string[]) {
+// ==========================================
+// 3. WHATSAPP SENDER (UPDATED FOR TEMPLATES)
+// ==========================================
+// Added optional `templateData` parameter to bypass the 24-hour rule
+async function sendWhatsAppMessage(to: string, text: string, buttons?: string[], templateData?: any) {
   const phoneNumberId = process.env.WHATSAPP_PHONE_ID;
   const token = process.env.WHATSAPP_TOKEN;
   const url = `https://graph.facebook.com/v25.0/${phoneNumberId}/messages`; 
 
   let payload: any = { messaging_product: "whatsapp", recipient_type: "individual", to: to };
 
-  if (buttons?.length) {
+  // 1. Template Logic (Bypasses 24h limit)
+  if (templateData) {
+    payload.type = "template";
+    payload.template = {
+      name: templateData.name,
+      language: { code: templateData.language },
+      components: [
+        {
+          type: "body",
+          parameters: templateData.params.map((param: string) => ({
+            type: "text",
+            text: param
+          }))
+        }
+      ]
+    };
+  } 
+  // 2. Original Interactive Logic
+  else if (buttons?.length) {
     payload.type = "interactive";
     payload.interactive = {
       type: "button",
@@ -59,7 +112,9 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
         }))
       }
     };
-  } else {
+  } 
+  // 3. Original Text Logic
+  else {
     payload.type = "text";
     payload.text = { body: text };
   }
@@ -72,10 +127,14 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[])
 
   if (!response.ok) {
     const err = await response.json();
-    throw new Error(`WA API Error: ${JSON.stringify(err)}`);
+    // Changed from `throw new Error` to `console.error` so Razorpay Webhook doesn't endlessly retry if WA fails
+    console.error(`WA API Error: ${JSON.stringify(err)}`);
   }
 }
 
+// ==========================================
+// 4. MAIN POST HANDLER
+// ==========================================
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text(); 
@@ -103,8 +162,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ status: "already_processed" }, { status: 200 }); 
       }
 
-      // 1. EXTRACT DATA FROM NOTES (This is crucial)
-      // We assume your create-order API passes: notes: { formData: JSON.stringify(form) }
+      // 1. EXTRACT DATA FROM NOTES
       const formData = notes?.formData ? JSON.parse(notes.formData) : {};
 
       if (!order) {
@@ -134,7 +192,7 @@ export async function POST(req: Request) {
         );
       }
 
-      // 2. TRIGGER NOTIFICATIONS (Same as payment-success)
+      // 2. TRIGGER NOTIFICATIONS
       const finalOrder = await Order.findOne({ orderId: razorpayOrderId }).lean();
       await triggerNotifications(finalOrder, paymentId);
     }
@@ -147,6 +205,9 @@ export async function POST(req: Request) {
   }
 }
 
+// ==========================================
+// 5. NOTIFICATIONS
+// ==========================================
 async function triggerNotifications(order: any, paymentId: string) {
   const adminEmails = ["developer.thinqit@gmail.com", "surabhiastrology9@gmail.com"]; 
   const senderEmail = process.env.EMAIL_FROM || "Surabhi Astrology <info@surabhiastrology.com>";
@@ -166,6 +227,21 @@ async function triggerNotifications(order: any, paymentId: string) {
     replyMessage += `\n\n🎁 *Bonus:* As promised, please click below to choose your 1 FREE career question!`;
     waButtons = isHi ? ["प्रश्न पूछें"] : ["Ask Question"];
   }
+
+  // NEW: Prepare Template Data for Webhook
+  let templateName = "";
+  if (isCareer) {
+    templateName = isHi ? "payment_career_hi" : "payment_career_en";
+  } else {
+    templateName = isHi ? "payment_general_hi" : "payment_general_en";
+  }
+
+  const waTemplateData = {
+    name: templateName,
+    language: isHi ? "hi" : "en",
+    params: [order.customer.name || "Customer", reportType]
+  };
+
   await Promise.allSettled([
     // Customer Email
     resend.emails.send({
@@ -214,7 +290,8 @@ async function triggerNotifications(order: any, paymentId: string) {
       `,
     }),
 
-    sendWhatsAppMessage(formattedPhone, replyMessage, waButtons),
+    // WhatsApp Message (Passes the newly injected Template Data to bypass 24h rule)
+    sendWhatsAppMessage(formattedPhone, replyMessage, waButtons, waTemplateData),
 
     getRedis().set(
       `user_state:${formattedPhone}`, 
