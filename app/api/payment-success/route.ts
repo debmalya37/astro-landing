@@ -213,7 +213,7 @@ export async function POST(req: Request) {
       resend.emails.send({
         from: senderEmail,
         to: adminEmails,
-        subject: `🚨 NEW PAID ORDER: ${form.name} [₹${finalAmount}]`,
+        subject: `🚨 NEW PAID ORDER: ${form.name} [₹${finalAmount}] | ${form.language}`,
         html: `
           <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
             <div style="background-color: #8B1E1E; padding: 25px; text-align: center;">
@@ -226,6 +226,7 @@ export async function POST(req: Request) {
                 <h3 style="color: #8B1E1E; margin-bottom: 10px; font-size: 18px;">🛒 Transaction Summary</h3>
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr><td style="padding: 5px 0; color: #666;">Report Type:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.reportType}</td></tr>
+                  <tr><td style="padding: 5px 0; color: #666;">Language:</td><td style="padding: 5px 0; font-weight: bold; text-align: right;">${form.language}</td></tr>
                   <tr><td style="padding: 5px 0; color: #666;">Amount Paid:</td><td style="padding: 5px 0; font-weight: bold; text-align: right; color: #1B4D30;">₹${finalAmount}</td></tr>
                 </table>
               </div>
