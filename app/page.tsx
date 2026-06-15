@@ -349,7 +349,7 @@ const time = useCountdown();
       <nav className="sticky top-0 z-[99] flex items-center justify-between px-4 lg:px-8 h-[70px] border-b backdrop-blur-xl" style={{ background: "rgba(252,247,238,0.9)", borderColor: C.iv2 }}>
         <Link href="/" className="flex-shrink-0 flex items-center">
   <Image 
-    src="https://www.surabhiastrology.com/assets/images/surbhi-logo.png" 
+    src="https://www.surabhiastrology.com/assets/surbhi-logo-7E9_g-Rh.png" 
     alt="Celebrity Astrologer Surbhi Gupta" 
     // 1. Provide the maximum desktop dimensions here
     width={250} 
