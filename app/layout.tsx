@@ -46,11 +46,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${outfit.variable}`}>
       <head>
-        {/* OPTIMIZATION: 
-          1. Use strategy="lazyOnload" (already good)
-          2. Add manual check to only load on production to save dev bandwidth
-          3. Wrap initialization in a micro-task to free up the main thread
-        */}
+        {/* GLOBAL GOOGLE TAG MANAGER (GTM) CODES */}
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-N6XWPHSK');
+          `}
+        </Script>
+
+        {/* OPTIMIZATION: FACEBOOK PIXEL */}
         <Script id="fb-pixel" strategy="lazyOnload">
           {`
             if (window.location.hostname !== 'localhost') {
@@ -73,7 +80,19 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit`}>
+        {/* GTM FALLBACK LAYER FOR BROWSERS WITH RUNTIME JAVASCRIPT DISABLED */}
+        <noscript>
+          <iframe 
+            src="https://www.googletagmanager.com/ns.html?id=GTM-N6XWPHSK" 
+            height="0" 
+            width="0" 
+            style={{ display: 'none', visibility: 'hidden' }}
+          ></iframe>
+        </noscript>
+
         {children}
+
+        {/* FACEBOOK PIXEL FALLBACK LAYER */}
         <noscript>
           <img 
             height="1" 
