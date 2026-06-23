@@ -19,7 +19,7 @@ export type FlowState = {
 // Helper: Check if the selected service is Career related
 function isCareerService(intent: string = "") {
   const lowerIntent = intent.toLowerCase();
-  return lowerIntent.includes("career") || lowerIntent.includes("करियर");
+  return lowerIntent.includes("career") || lowerIntent.includes("business") || lowerIntent.includes("करियर") || lowerIntent.includes("व्यापार");
 }
 
 // Helper: Dynamic Career Questions for the 1 Free Question Bonus
@@ -107,8 +107,8 @@ function getServicePlans(intent: string = "", isHi: boolean) {
     }];
   }
 
-  // 5. Specific Problems (Career, Love, Health)
-  if (lower.includes("career") || lower.includes("love") || lower.includes("health") || lower.includes("करियर") || lower.includes("प्रेम") || lower.includes("स्वास्थ्य")) {
+  // 5. Specific Problems (Career, Love, Health, Money, Family)
+  if (lower.includes("career") || lower.includes("love") || lower.includes("health") || lower.includes("money") || lower.includes("family") || lower.includes("करियर") || lower.includes("प्रेम") || lower.includes("स्वास्थ्य") || lower.includes("धन") || lower.includes("परिवार")) {
     return [{
       title: isHi ? "समाधान चुनें" : "Choose Solution",
       rows: isHi ? [
@@ -157,7 +157,7 @@ export function nextMessage(
   // Logic to detect if the user clicked a Service Title instead of a Plan
   const serviceNames = [
     "surbhi consultation", "surbhi kundli", "numerology report", 
-    "couple match making", "baby name report", "career", "love", "health",
+    "couple match making", "baby name report", "career", "love", "health", "money", "family",
     "सुरभि गुप्ता परामर्श", "सुरभि कुंडली", "अंकशास्त्र रिपोर्ट", "कुंडली मिलान", "बच्चों के नाम की रिपोर्ट"
   ];
   const isSelectingNewService = serviceNames.some(s => lowerMsg.includes(s.toLowerCase()));
@@ -169,7 +169,7 @@ export function nextMessage(
 
   if (lowerMsg === "restart" || lowerMsg === "hi" || lowerMsg === "hello" || lowerMsg === "hi surbhi") {
     return {
-      reply: `Radhe Radhe ${userName} ji 🙏 🙏\n\nPlease select your language / कृपया अपनी भाषा चुनें |`,
+      reply: `🙏 Namaste and welcome🙏\n\nLet us know which language are you more comfortable talking with; our expert will connect with you in the same language 👇\n\n🙏 नमस्ते और स्वागत है  🙏\n\nकृपया बताएं कि आप किस भाषा में बात करना अधिक पसंद करेंगे; हमारे विशेषज्ञ आपसे उसी भाषा में जुड़ेंगे 👇`,
       buttons: ["English 🇬🇧", "हिंदी 🇮🇳"],
       image: imgWelcome,
       newState: { step: "F2_INTENT", userData: { name: userName } },
@@ -199,7 +199,7 @@ export function nextMessage(
   switch (currentState.step) {
     case "START":
       return {
-        reply: `Radhe Radhe ${userName} ji 🙏 🙏\n\nPlease select your language / कृपया अपनी भाषा चुनें |`,
+        reply: `🙏 Namaste and welcome🙏\n\nLet us know which language are you more comfortable talking with; our expert will connect with you in the same language 👇\n\n🙏 नमस्ते और स्वागत है  🙏\n\nकृपया बताएं कि आप किस भाषा में बात करना अधिक पसंद करेंगे; हमारे विशेषज्ञ आपसे उसी भाषा में जुड़ेंगे 👇`,
         buttons: ["English 🇬🇧", "हिंदी 🇮🇳"],
         image: imgWelcome,
         newState: { step: "F2_INTENT", userData: data },
@@ -210,12 +210,28 @@ export function nextMessage(
       const isHindi = data.language === "hi";
       return {
         reply: isHindi
-          ? `राधे राधे ${userName} जी 🙏\n\nमैं ज्योतिषी सुरभि गुप्ता जी का आधिकारिक सहायक हूँ। आज आप किस विषय में मार्गदर्शन चाहते हैं?`
-          : `Radhe Radhe ${userName} ji 🙏\n\nI’m the official assistant of Astrologer Surbhi Gupta Ji. What would you like guidance about today?`,
+          ? `🙏 नमस्ते और स्वागत है ${userName ? userName + " जी" : ""}।\nमैं सेलिब्रिटी ज्योतिषी सुरभि गुप्ता जी का आधिकारिक सहायक हूँ।\n\nकृपया मुझे बताएं, इस समय आपको सबसे ज्यादा क्या परेशान कर रहा है?`
+          : `🙏 Namaste and welcome ${userName ? userName : ""}.\nI am the official assistant of Celebrity Astrologer Surbhi Gupta.\n\nPlease tell me, what is troubling you the most right now?`,
         image: imgServices,
         list: {
           button: isHindi ? "यहाँ चुनें" : "Select Here",
           sections: [
+            {
+              title: isHindi ? "विशिष्ट समस्याएं" : "Specific Problems",
+              rows: isHindi ? [
+                { id: "career", title: "करियर और व्यापार", description: "नौकरी, पदोन्नति और व्यवसाय" },
+                { id: "love", title: "विवाह और रिश्ते", description: "प्रेम समस्याओं का समाधान" },
+                { id: "money", title: "धन और वित्त", description: "आर्थिक स्थिति और धन लाभ" },
+                { id: "health", title: "स्वास्थ्य समस्याएं", description: "स्वास्थ्य और उपाय" },
+                { id: "family", title: "पारिवारिक चिंताएं", description: "पारिवारिक शांति और विवाद" }
+              ] : [
+                { id: "career", title: "Career & Business", description: "Job, promotion, and business growth" },
+                { id: "love", title: "Marriage & Relationships", description: "Navigating love & breakups" },
+                { id: "money", title: "Money & Finances", description: "Wealth and financial stability" },
+                { id: "health", title: "Health Issues", description: "Health concerns and remedies" },
+                { id: "family", title: "Family Concerns", description: "Family peace and disputes" }
+              ]
+            },
             {
               title: isHindi ? "प्रीमियम सेवाएं" : "Premium Services",
               rows: isHindi ? [
@@ -231,18 +247,6 @@ export function nextMessage(
                 { id: "couple_match_making", title: "Couple Match Making", description: "Kundali Milan for marriage" },
                 { id: "baby_name_report", title: "Baby Name Report", description: "Meaningful baby names" }
               ]
-            },
-            {
-              title: isHindi ? "विशिष्ट समस्याएं" : "Specific Problems",
-              rows: isHindi ? [
-                { id: "career", title: "करियर और वृद्धि", description: "पेशेवर जीवन के लिए" },
-                { id: "love", title: "प्रेम और रिश्ते", description: "प्रेम समस्याओं का समाधान" },
-                { id: "health", title: "स्वास्थ्य समस्याएं", description: "उपाय सहित" }
-              ] : [
-                { id: "career", title: "Overall Career Growth", description: "Insights for your profession" },
-                { id: "love", title: "Relationship Problems", description: "Navigating love & breakups" },
-                { id: "health", title: "Health Issues", description: "Including remedies" }
-              ]
             }
           ]
         },
@@ -251,10 +255,27 @@ export function nextMessage(
 
     case "F2_HOOK":
       data.intent = msg;
+      
+      let hookReply = "";
+      const selectedIntent = msg.toLowerCase();
+
+      // Hook Logic based on the document's tone
+      if (selectedIntent.includes("career") || selectedIntent.includes("business") || selectedIntent.includes("love") || selectedIntent.includes("marriage") || selectedIntent.includes("money") || selectedIntent.includes("health") || selectedIntent.includes("family") || selectedIntent.includes("करियर") || selectedIntent.includes("व्यापार") || selectedIntent.includes("प्रेम") || selectedIntent.includes("विवाह") || selectedIntent.includes("धन") || selectedIntent.includes("स्वास्थ्य") || selectedIntent.includes("परिवार")) {
+        hookReply = isHi 
+          ? `मैं *${msg}* को लेकर आपकी चिंता समझता हूँ। 🌟\nसुरभि जी एक विस्तृत 10-वर्षीय भविष्यवाणी रिपोर्ट और एक महत्वपूर्ण प्रश्न पर मार्गदर्शन के साथ स्पष्टता प्राप्त करने में आपकी मदद कर सकती हैं।\n\n🔒 पूरी तरह से निजी और गोपनीय\n📱 24 घंटे के भीतर WhatsApp पर साझा किया जाएगा\n\n👇 कृपया अपना विकल्प चुनें:`
+          : `I understand your concern about *${msg}*. 🌟\nSurbhi Ji can help you gain clarity with a detailed 10-Year Prediction Report and guidance on one important question.\n\n🔒 Completely private & confidential\n📱 Shared on WhatsApp within 24 hours\n\n👇 Choose an option:`;
+      } else if (selectedIntent.includes("kundli") || selectedIntent.includes("कुंडली")) {
+        hookReply = isHi
+          ? `🌙 आपने सुरभि कुंडली का चयन किया है।\nकभी-कभी हम जिन उत्तरों की तलाश कर रहे होते हैं वे उन पैटर्नों में छिपे होते हैं जिन्हें हम खुद नहीं देख सकते।\nसुरभि जी व्यक्तिगत रूप से आपके जन्म विवरण का अध्ययन करेंगी और आपके जीवन के महत्वपूर्ण चरणों को कवर करते हुए एक विस्तृत 10-वर्षीय भविष्यवाणी रिपोर्ट तैयार करेंगी।\n✨ एक विशेष पेशकश के रूप में, वह व्यक्तिगत रूप से एक ऐसे प्रश्न का उत्तर भी देंगी जो आपके दिल के सबसे करीब है।\n\n👇 शुरू करने के लिए नीचे एक विकल्प चुनें।`
+          : `🌙 You have selected Surbhi Kundli.\nSometimes the answers we're looking for are hidden in patterns we cannot see ourselves.\nSurbhi Ji will personally study your birth details and prepare a detailed 10-Year Prediction Report covering important phases of your life.\n✨ As a special offering, she will also personally answer one question that is closest to your heart.\n\n👇 To begin, choose an option below.`;
+      } else {
+        hookReply = isHi
+          ? `💼 कभी-कभी यह अधिक मेहनत करने के बारे में नहीं है। यह सही दिशा जानने के बारे में है।\n*${msg}* के संबंध में स्पष्टता प्राप्त करने में आपकी मदद करने के लिए, हम इन सेवाओं की सलाह देते हैं:\n\n👇 नीचे एक विकल्प चुनें।\n(यदि आपको कोई अन्य सेवा चाहिए तो MORE टाइप करें)`
+          : `💼 Sometimes it's not about working harder. It's about knowing the right direction.\nTo help you gain clarity regarding *${msg}*, we recommend these services:\n\n👇 Choose an option below.\n(Need a different service? Reply MORE.)`;
+      }
+
       return {
-        reply: isHi
-          ? `अपने *${msg}* पर विस्तृत स्पष्टीकरण प्राप्त करें। यहाँ आपके लिए समाधान हैं 👇`
-          : `Get detailed clarity on your *${msg}*. Here are the solutions for you 👇`,
+        reply: hookReply,
         list: {
           button: isHi ? "समाधान देखें" : "View Solutions",
           sections: getServicePlans(data.intent, isHi)
@@ -268,14 +289,13 @@ export function nextMessage(
       const encodedPlan = encodeURIComponent(data.plan || "Plan");
       const checkoutUrl = `${paymentLink}?service=${encodedService}&plan=${encodedPlan}`;
 
-      // Logic to determine image based on selected service
       const selectedService = (data.intent || "").toLowerCase();
       const isSurbhiKundli = selectedService.includes("surbhi kundli") || selectedService.includes("सुरभि कुंडली");
       const checkoutImage = isSurbhiKundli ? `${baseUrl}/surbhi-15.png` : `${baseUrl}/surbhi-16.png`;
       
       let checkoutMsg = isHi
-        ? `धन्यवाद! 🌟\n\nकृपया सुरक्षित भुगतान के लिए नीचे दिए गए *'Proceed'* बटन पर क्लिक करें 👇`
-        : `Thank you! 🌟\n\nPlease click the *'Proceed'* button below for secure payment 👇`;
+        ? `धन्यवाद! 🌟\n\nअपना परामर्श शुरू करने और अपनी गोपनीयता सुरक्षित करने के लिए, कृपया नीचे दिए गए *'Start My Kundli'* बटन पर क्लिक करें 👇`
+        : `Thank you! 🌟\n\nTo begin your consultation and secure your privacy, please click the *'Start My Kundli'* button below 👇`;
         
       if (isCareerService(data.intent)) {
         checkoutMsg += isHi 
@@ -287,7 +307,7 @@ export function nextMessage(
         reply: checkoutMsg,
         image: checkoutImage, 
         urlButton: {
-          text: "Proceed",
+          text: isHi ? "Start My Kundli" : "Start My Kundli",
           url: checkoutUrl
         },
         newState: { step: "F2_CHECKOUT", userData: data },

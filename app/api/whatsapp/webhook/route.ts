@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { nextMessage } from "@/lib/waFlow";
 import Redis from "ioredis";
 import mongoose from "mongoose";
+import { GoogleGenAI } from "@google/genai";
 
 // ==========================================
 // 1. SINGLETON / GLOBAL SETUP
@@ -34,6 +35,9 @@ const ChatSchema = new mongoose.Schema({
 
 const Chat = mongoose.models.Chat || mongoose.model("Chat", ChatSchema);
 
+// Initialize Gemini Client
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
 // ==========================================
 // 2. WHATSAPP SENDER HELPER
 // ==========================================
@@ -51,11 +55,10 @@ export async function sendWhatsAppMessage(
     "Content-Type": "application/json",
   };
 
-  // Reusable fetch options for speed
   const fetchOptions = {
     method: "POST",
     headers: commonHeaders,
-    keepalive: true, // Reuses TCP connection for faster subsequent calls
+    keepalive: true, 
   };
 
   const supportsHeader = !!options?.urlButton || (options?.buttons && options.buttons.length > 0);
@@ -115,7 +118,34 @@ export async function sendWhatsAppMessage(
 }
 
 // ==========================================
-// 3. HANDLERS
+// 3. SYSTEM INSTRUCTION & MODELS FOR GEMINI
+// ==========================================
+const MODELS = [
+  'gemini-2.0-flash-lite-preview-02-05', // Best for speed/quota
+  'gemini-2.0-flash-exp',               // Fallback 1
+  'gemini-2.5-flash',                   // Fallback 2
+  'gemini-2.0-flash',                   // Fallback 3 (Standard)
+];
+
+const GEMINI_SYSTEM_PROMPT = `
+You are the official AI assistant for Celebrity Astrologer Surbhi Gupta.
+Your goal is to answer the user's custom question politely, briefly, and guide them to purchase a relevant service.
+Always greet them warmly with "Radhe Radhe 🙏". Keep responses under 3 short sentences.
+
+Available Services & Pricing:
+- Surbhi Consultation: Offline (₹24,000), Priority (₹51,000)
+- Numerology Report: Basic (₹1,100), Correction (₹5,100), With Call (₹11,000)
+- Couple Match Making: Basic (₹1,100), Match+1Q (₹3,300), Match+Call (₹11,000)
+- Baby Name Report: Report (₹1,100), Report+Name (₹5,100)
+- Career/Love/Health Problem: PDF Report (₹999), 1-on-1 Call (₹11,000)
+- Surbhi Kundli: 10-Yr Report (₹999)
+
+Do NOT offer free readings or free predictions. 
+End your response by telling the user to click the "Main Menu" button below to select a service.
+`;
+
+// ==========================================
+// 4. HANDLERS
 // ==========================================
 export async function GET(req: NextRequest) {
   const search = req.nextUrl.searchParams;
@@ -141,7 +171,6 @@ export async function POST(req: NextRequest) {
     const isDuplicate = await redis.get(`msg_processed:${messageId}`);
     if (isDuplicate) return new NextResponse("OK", { status: 200 });
     
-    // Fire-and-forget duplicate marker (don't await it strictly if speed is king)
     redis.set(`msg_processed:${messageId}`, "1", "EX", 3600);
 
     let incomingText = "";
@@ -157,27 +186,84 @@ export async function POST(req: NextRequest) {
     const rawPrevState = await redis.get(`user_state:${from}`);
     const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START", userData: { name: waName } };
     
-    // Logic is local and instant
-    const { reply, buttons, list, image, urlButton, newState } = nextMessage(incomingText, prev);
+    // ==========================================
+    // SMART ROUTING LOGIC (Flow vs AI Fallback)
+    // ==========================================
+    const lowerInput = incomingText.toLowerCase();
+    const isStandardCommand = ["restart", "hi", "hello", "hi surbhi", "paid"].includes(lowerInput);
+    const isInteractive = msgType === "list_selection" || msgType === "button_click";
+    
+    // If user is explicitly asked for their problem (F2_HOOK), let the waFlow handle it
+    const isExpectingFreeText = prev.step === "F2_HOOK" || prev.step === "F1_START";
+
+    let finalReply = "";
+    let finalButtons: string[] | undefined = undefined;
+    let finalList: any = undefined;
+    let finalImage: string | undefined = undefined;
+    let finalUrlButton: any = undefined;
+    let finalNewState = prev;
+
+    if (isInteractive || isStandardCommand || isExpectingFreeText) {
+      // 1. ROUTE TO PREDEFINED HARDCODED FLOW
+      const result = nextMessage(incomingText, prev);
+      finalReply = result.reply;
+      finalButtons = result.buttons;
+      finalList = result.list;
+      finalImage = result.image;
+      finalUrlButton = result.urlButton;
+      finalNewState = result.newState;
+    } else {
+      // 2. ROUTE TO GEMINI AI FALLBACK (WITH MULTI-MODEL RETRY LOGIC)
+      let aiSuccess = false;
+
+      for (const modelName of MODELS) {
+        try {
+          const response = await ai.models.generateContent({
+            model: modelName,
+            contents: incomingText,
+            config: {
+              systemInstruction: GEMINI_SYSTEM_PROMPT,
+              temperature: 0.7,
+            }
+          });
+          
+          finalReply = response.text || "Radhe Radhe 🙏! How can I help you today?";
+          finalButtons = ["Restart 🔄"]; // Provide an escape hatch to the main menu
+          finalNewState = { step: "START", userData: prev.userData }; // Reset state so they can enter the flow
+          
+          aiSuccess = true;
+          break; // Exit the loop if the model succeeds
+
+        } catch (geminiError: any) {
+          console.warn(`[Gemini Fallback] Model ${modelName} failed. Retrying next...`, geminiError.message);
+          // Loop will automatically continue to the next model in the array
+        }
+      }
+
+      // 3. FINAL CATCH-ALL IF ALL MODELS FAIL
+      if (!aiSuccess) {
+        console.error("[Gemini Fallback] All configured Gemini models failed or timed out.");
+        finalReply = `Radhe Radhe ${waName} ji 🙏\n\nI am currently assisting many seekers. Please tap the button below to view our services.`;
+        finalButtons = ["Restart 🔄"];
+        finalNewState = { step: "START", userData: prev.userData };
+      }
+    }
 
     // BACKGROUND TASKS
-    // Note: We don't await the DB and Redis updates before responding to Meta.
-    // This makes the webhook response ultra-fast.
     const backgroundTasks = async () => {
       await Promise.all([
-        redis.set(`user_state:${from}`, JSON.stringify(newState), "EX", 86400),
+        redis.set(`user_state:${from}`, JSON.stringify(finalNewState), "EX", 86400),
         redis.hset("wa_last_interaction", from, Date.now().toString()),
         redis.hset("wa_names", from, waName),
         (async () => {
           await connectDB();
-          await Chat.create({ phoneNumber: from, waName, message: incomingText, step: newState.step, type: msgType, timestamp: new Date() });
+          await Chat.create({ phoneNumber: from, waName, message: incomingText, step: finalNewState.step, type: msgType, timestamp: new Date() });
         })()
       ]);
     };
 
     // Execute sending and background tasks
-    // We await the message send to ensure user gets reply, but response to Meta is fast.
-    await sendWhatsAppMessage(from, reply, { buttons, list, image, urlButton });
+    await sendWhatsAppMessage(from, finalReply, { buttons: finalButtons, list: finalList, image: finalImage, urlButton: finalUrlButton });
     
     // Start background tasks without awaiting them to block the response
     backgroundTasks();

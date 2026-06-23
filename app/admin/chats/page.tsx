@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { 
   Users, MessageSquare, Clock, MousePointer2, BarChart3, 
   ArrowUpRight, RefreshCcw, X, Search, MessageCircle, ExternalLink,
-  ChevronDown, History, Zap, Target, TrendingUp, Activity, Plus
+  ChevronDown, History, Zap, Target, TrendingUp, Activity, Plus, CheckCheck
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
@@ -21,6 +21,20 @@ interface ChatMessage {
   timestamp: string;
 }
 
+// Helper to translate Bot Steps into readable WhatsApp Bot Replies
+const getBotActionText = (step: string) => {
+  switch(step) {
+    case "START": return "Sent Language Selection Menu 🌐";
+    case "F2_INTENT": return "Sent Main Services Catalog 📋";
+    case "F2_HOOK": return "Sent Pricing & Plans Options 💳";
+    case "F2_CHECKOUT": return "Sent Secure Payment Link 🔗";
+    case "F1_START": return "Confirmed Payment & Asked for Free Question 🎁";
+    case "F1_FREE_QUESTION": return "Acknowledged Question. Analysis Started ⏳";
+    case "F1_END": return "Sent 'Analysis in Progress' Notification 🔮";
+    default: return `Automated Workflow Action: ${step}`;
+  }
+};
+
 export default function AdminDashboard() {
   const [chats, setChats] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +43,6 @@ export default function AdminDashboard() {
   const [userSearch, setUserSearch] = useState("");
   const [expandedUsers, setExpandedUsers] = useState<Record<string, boolean>>({});
   
-  // --- Pagination States ---
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
@@ -38,11 +51,9 @@ export default function AdminDashboard() {
     const nextPage = isLoadMore ? page + 1 : 1;
     
     try {
-      // Increased limit to 200 for better initial visibility of past days
       const res = await fetch(`/api/admin/chats?page=${nextPage}&limit=200`);
       const data = await res.json();
       
-      // If we got an object with pagination metadata
       const newChats = data.chats || data;
       const pagination = data.pagination;
 
@@ -54,11 +65,9 @@ export default function AdminDashboard() {
         setPage(1);
       }
 
-      // Check if more data exists
       if (pagination) {
         setHasMore(pagination.page < pagination.pages);
       } else {
-        // Fallback if API hasn't been updated yet
         setHasMore(newChats.length >= 50); 
       }
 
@@ -80,7 +89,6 @@ export default function AdminDashboard() {
     setExpandedUsers(prev => ({ ...prev, [phone]: !prev[phone] }));
   };
 
-  // --- Intelligent Data Aggregation ---
   const userStats = useMemo(() => {
     const users: Record<string, any> = {};
     chats.forEach((c: any) => {
@@ -210,6 +218,7 @@ export default function AdminDashboard() {
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           
+          {/* Charts Area */}
           <div className="lg:col-span-1 space-y-6">
             <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
               <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
@@ -264,6 +273,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+          {/* Interaction Vault (Chat List) */}
           <div className="lg:col-span-2">
             <div className="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col h-full">
               <div className="border-b border-slate-100 bg-slate-50/50 p-6 flex items-center justify-between">
@@ -280,6 +290,8 @@ export default function AdminDashboard() {
               <div className="flex-1 overflow-y-auto max-h-[1000px] divide-y divide-slate-50">
                 {userStats.map((user: any) => (
                   <div key={user.phone} className="group transition-all">
+                    
+                    {/* User List Item (Header) */}
                     <div 
                       onClick={() => toggleUser(user.phone)}
                       className="flex items-center justify-between p-6 cursor-pointer hover:bg-slate-50/50 transition-colors"
@@ -316,50 +328,77 @@ export default function AdminDashboard() {
                       </div>
                     </div>
 
+                    {/* NEW: WhatsApp Web Style Chat View */}
                     {expandedUsers[user.phone] && (
-                      <div className="bg-[#FDFBF7] border-t border-slate-100 p-8 space-y-6 animate-in slide-in-from-top-4 duration-500">
-                        <div className="flex items-center justify-between px-2">
-                            <div className="flex items-center gap-2">
-                                <History size={16} className="text-[#8B1E1E]" />
-                                <span className="text-[11px] font-black uppercase tracking-widest text-slate-700">Full Interaction History</span>
+                      <div className="bg-[#EFEAE2] border-t border-slate-200 animate-in slide-in-from-top-2 duration-300 relative overflow-hidden chat-bg-pattern">
+                        
+                        {/* Chat View Header */}
+                        <div className="bg-slate-100/90 backdrop-blur-sm border-b border-slate-200 p-3 px-6 flex justify-between items-center sticky top-0 z-10">
+                          <div className="flex items-center gap-3">
+                            <div className="h-8 w-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-black text-slate-600">
+                              {user.name?.charAt(0)}
                             </div>
-                            <a href={`https://wa.me/${user.phone}`} target="_blank" className="flex items-center gap-1.5 text-[10px] font-black text-green-600 hover:underline">
-                              <MessageCircle size={14} /> Open WhatsApp
-                            </a>
+                            <span className="text-sm font-bold text-slate-800">{user.name} <span className="text-xs font-normal text-slate-500 ml-1">+{user.phone}</span></span>
+                          </div>
+                          <a href={`https://wa.me/${user.phone}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs font-bold text-green-600 hover:text-green-700 bg-white px-3 py-1.5 rounded-full shadow-sm border border-green-100 transition-colors">
+                            <MessageCircle size={14} /> WhatsApp Web
+                          </a>
+                        </div>
+
+                        {/* Chat Messages Container */}
+                        <div className="p-6 h-[400px] overflow-y-auto flex flex-col gap-4">
+                          <div className="flex justify-center mb-2">
+                            <span className="bg-white/80 text-slate-500 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg shadow-sm backdrop-blur-sm">
+                              Interaction History
+                            </span>
+                          </div>
+
+                          {/* Sort older messages to the top so it reads like a normal chat */}
+                          {[...user.history].sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()).map((msg: any) => {
+                            const timeString = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            
+                            return (
+                              <div key={msg._id} className="flex flex-col gap-3 w-full">
+                                {/* Left Bubble: User's Message */}
+                                <div className="flex justify-start w-full">
+                                  <div className="bg-white text-slate-800 rounded-lg rounded-tl-none px-3 pt-2 pb-1 shadow-sm max-w-[85%] relative border border-slate-100 group">
+                                    {/* Action Tag Context */}
+                                    {msg.type && msg.type !== "text" && (
+                                      <div className="text-[9px] font-bold text-blue-500 uppercase mb-1 flex items-center gap-1">
+                                        <MousePointer2 size={10} /> {msg.type.replace("_", " ")}
+                                      </div>
+                                    )}
+                                    <p className="text-[13px] leading-relaxed break-words pr-8">{msg.message}</p>
+                                    <div className="text-[9px] text-slate-400 text-right mt-1 ml-4 flex items-center justify-end gap-1">
+                                      {timeString}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Right Bubble: Simulated Bot Response based on Step */}
+                                <div className="flex justify-end w-full">
+                                  <div className="bg-[#D9FDD3] text-slate-800 rounded-lg rounded-tr-none px-3 pt-2 pb-1 shadow-sm max-w-[85%] relative border border-[#c3f0bb]">
+                                    <p className="text-[13px] leading-relaxed break-words pr-4">
+                                      <span className="text-[10px] font-black text-green-700 block mb-1 uppercase tracking-tight flex items-center gap-1">
+                                        <Zap size={10} className="fill-green-700" /> Surbhi AI Bot
+                                      </span>
+                                      {getBotActionText(msg.step)}
+                                    </p>
+                                    <div className="text-[9px] text-green-700/60 text-right mt-1 ml-4 flex items-center justify-end gap-1">
+                                      {timeString} <CheckCheck size={12} className="text-blue-500" />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                         
-                        <div className="relative border-l-2 border-slate-200 ml-4 space-y-8 pb-4">
-                          {[...user.history].sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).map((msg: any) => (
-                            <div key={msg._id} className="relative pl-8">
-                                <div className={`absolute -left-[11px] top-1 h-5 w-5 rounded-full border-4 border-[#FDFBF7] shadow-sm ${
-                                    msg.step?.includes("CHECKOUT") ? "bg-amber-400" : msg.step?.includes("F1") ? "bg-green-500" : "bg-slate-300"
-                                }`} />
-                                
-                                <div className="bg-white rounded-[1.5rem] border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div className="flex items-center gap-2">
-                                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Event:</span>
-                                          <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-lg ${
-                                              msg.type?.includes("button") ? "bg-blue-50 text-blue-600" : "bg-slate-100 text-slate-600"
-                                          }`}>
-                                              {msg.type}
-                                          </span>
-                                        </div>
-                                        <span className="text-[10px] font-bold text-slate-300">
-                                            {new Date(msg.timestamp).toLocaleTimeString()}
-                                        </span>
-                                    </div>
-                                    <p className="text-base font-medium text-slate-800 italic italic-font leading-relaxed">"{msg.message}"</p>
-                                    <div className="mt-4 flex items-center gap-2 pt-4 border-t border-slate-50">
-                                        <div className="text-[9px] font-black text-slate-300 uppercase">Lifecycle Step</div>
-                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-xl">
-                                          <div className="h-1.5 w-1.5 rounded-full bg-[#C8A84B]" />
-                                          <span className="text-[10px] font-bold text-slate-700">{msg.step || "START"}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                          ))}
+                        {/* Chat Input Placeholder */}
+                        <div className="bg-[#F0F2F5] p-3 flex items-center gap-3 border-t border-slate-200">
+                           <div className="flex-1 bg-white rounded-full px-4 py-2 text-sm text-slate-400 italic border border-slate-200">
+                              Automated flow active. Manual reply feature coming soon...
+                           </div>
                         </div>
                       </div>
                     )}
@@ -385,6 +424,7 @@ export default function AdminDashboard() {
         </div>
       </main>
 
+      {/* User Search CRM Modal */}
       {showUserModal && (
         <div className="fixed inset-0 z-[300] flex justify-end bg-slate-900/40 backdrop-blur-sm transition-all duration-500">
           <div className="h-full w-full max-w-2xl animate-slide-left bg-white shadow-2xl flex flex-col border-l border-slate-200">
@@ -427,7 +467,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   </div>
-                  <a href={`https://wa.me/${u.phone}`} target="_blank" className="h-12 w-12 flex items-center justify-center rounded-2xl bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition-all">
+                  <a href={`https://wa.me/${u.phone}`} target="_blank" rel="noreferrer" className="h-12 w-12 flex items-center justify-center rounded-2xl bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition-all">
                     <MessageCircle size={22} />
                   </a>
                 </div>
@@ -441,6 +481,12 @@ export default function AdminDashboard() {
         @keyframes slide-left { from { transform: translateX(100%); } to { transform: translateX(0); } }
         .animate-slide-left { animation: slide-left 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .italic-font { font-family: 'Times New Roman', serif; }
+        
+        /* Subtle WhatsApp Web Background Pattern Simulation */
+        .chat-bg-pattern {
+           background-image: radial-gradient(#d1cbbd 1px, transparent 1px);
+           background-size: 20px 20px;
+        }
       `}}/>
     </div>
   );
