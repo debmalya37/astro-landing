@@ -120,19 +120,25 @@ export async function sendWhatsAppMessage(
 // ==========================================
 // 3. SYSTEM INSTRUCTION & MODELS FOR GEMINI
 // ==========================================
+// OPTIMIZED FOR FREE TIER (15 Requests Per Minute)
 const MODELS = [
-  'gemini-2.0-flash-lite-preview-02-05', // Best for speed/quota
-  'gemini-2.0-flash-exp',               // Fallback 1
+  'gemini-1.5-flash', 
   'gemini-2.5-flash',                   // Fallback 2
-  'gemini-2.0-flash',                   // Fallback 3 (Standard)
+  'gemini-2.0-flash',        // Primary: Extremely stable, fast, handles Free Tier perfectly
+  'gemini-1.5-flash-8b'     // Fallback: Lighter version in case the main server is overloaded
 ];
 
 const GEMINI_SYSTEM_PROMPT = `
-You are the official AI assistant for Celebrity Astrologer Surbhi Gupta.
-Your goal is to answer the user's custom question politely, briefly, and guide them to purchase a relevant service.
-Always greet them warmly with "Radhe Radhe 🙏". Keep responses under 3 short sentences.
+You are the official, empathetic AI assistant for Celebrity Astrologer Surbhi Gupta.
+Your ultimate goal is to convert the user into a client by making them feel heard and understood.
 
-Available Services & Pricing:
+CRITICAL INSTRUCTIONS:
+1. EMPATHY FIRST: If the user shares a problem (e.g., career stress, heartbreak, confusion), DO NOT jump straight to selling. 
+2. VALIDATE: Start by warmly acknowledging their feelings (e.g., "I completely understand how stressful career uncertainty can be...", "Heartbreak is very painful, but planetary phases do pass...").
+3. BRIDGE TO SERVICE: Gently explain that astrology is a tool for clarity, and Surbhi Ji can help them navigate this difficult time.
+4. CALL TO ACTION: Always end your response by guiding them to the services menu.
+
+Available Services for your reference:
 - Surbhi Consultation: Offline (₹24,000), Priority (₹51,000)
 - Numerology Report: Basic (₹1,100), Correction (₹5,100), With Call (₹11,000)
 - Couple Match Making: Basic (₹1,100), Match+1Q (₹3,300), Match+Call (₹11,000)
@@ -140,8 +146,11 @@ Available Services & Pricing:
 - Career/Love/Health Problem: PDF Report (₹999), 1-on-1 Call (₹11,000)
 - Surbhi Kundli: 10-Yr Report (₹999)
 
-Do NOT offer free readings or free predictions. 
-End your response by telling the user to click the "Main Menu" button below to select a service.
+RULES:
+- Always greet with "Radhe Radhe 🙏" if it's the first response.
+- Keep your response conversational, warm, and under 4 short sentences.
+- NEVER offer free readings, free advice, or exact predictions.
+- End your response EXACTLY with this sentence: "Please click the 'Main Menu' button below to explore how Surbhi Ji can help you."
 `;
 
 // ==========================================
@@ -187,9 +196,26 @@ export async function POST(req: NextRequest) {
     const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START", userData: { name: waName } };
     
     // ==========================================
+    // CRITICAL FIX: ADMIN MANUAL CHAT HANDOFF & BUTTON MAPPING
+    // ==========================================
+    let lowerInput = incomingText.toLowerCase();
+
+    // Map the new "Main Menu" button back to the "restart" command so waFlow understands it!
+    if (lowerInput.includes("main menu")) {
+      incomingText = "restart";
+      lowerInput = "restart";
+    }
+    
+    // If the admin has paused this chat from the dashboard, block AI and Flow execution
+    if (prev.step === "PAUSED_BY_ADMIN" && !["restart", "hi", "hello"].includes(lowerInput)) {
+       await connectDB();
+       await Chat.create({ phoneNumber: from, waName, message: incomingText, step: "PAUSED_BY_ADMIN", type: msgType, timestamp: new Date() });
+       return new NextResponse("OK", { status: 200 }); 
+    }
+
+    // ==========================================
     // SMART ROUTING LOGIC (Flow vs AI Fallback)
     // ==========================================
-    const lowerInput = incomingText.toLowerCase();
     const isStandardCommand = ["restart", "hi", "hello", "hi surbhi", "paid"].includes(lowerInput);
     const isInteractive = msgType === "list_selection" || msgType === "button_click";
     
@@ -213,7 +239,7 @@ export async function POST(req: NextRequest) {
       finalUrlButton = result.urlButton;
       finalNewState = result.newState;
     } else {
-      // 2. ROUTE TO GEMINI AI FALLBACK (WITH MULTI-MODEL RETRY LOGIC)
+      // 2. ROUTE TO GEMINI AI FALLBACK (WITH SMART FREE-TIER RETRY LOGIC)
       let aiSuccess = false;
 
       for (const modelName of MODELS) {
@@ -223,28 +249,32 @@ export async function POST(req: NextRequest) {
             contents: incomingText,
             config: {
               systemInstruction: GEMINI_SYSTEM_PROMPT,
-              temperature: 0.7,
+              temperature: 0.7, // Keeps the AI creative and empathetic
             }
           });
           
           finalReply = response.text || "Radhe Radhe 🙏! How can I help you today?";
-          finalButtons = ["Restart 🔄"]; // Provide an escape hatch to the main menu
-          finalNewState = { step: "START", userData: prev.userData }; // Reset state so they can enter the flow
+          finalButtons = ["Main Menu 📋"]; // Updated to Main Menu!
+          finalNewState = { step: "START", userData: prev.userData }; 
           
           aiSuccess = true;
           break; // Exit the loop if the model succeeds
 
         } catch (geminiError: any) {
-          console.warn(`[Gemini Fallback] Model ${modelName} failed. Retrying next...`, geminiError.message);
-          // Loop will automatically continue to the next model in the array
+          console.warn(`[Gemini Fallback] Model ${modelName} failed:`, geminiError.message);
+          
+          // CRITICAL FREE TIER CHECK
+          if (geminiError.status === 429 || geminiError.message?.includes("429") || geminiError.message?.includes("quota")) {
+            console.error("[Gemini Fallback] Free Tier Rate Limit Hit (15 RPM)!");
+            break; 
+          }
         }
       }
 
-      // 3. FINAL CATCH-ALL IF ALL MODELS FAIL
+      // 3. FINAL CATCH-ALL IF API IS RATE-LIMITED OR MODELS FAIL
       if (!aiSuccess) {
-        console.error("[Gemini Fallback] All configured Gemini models failed or timed out.");
-        finalReply = `Radhe Radhe ${waName} ji 🙏\n\nI am currently assisting many seekers. Please tap the button below to view our services.`;
-        finalButtons = ["Restart 🔄"];
+        finalReply = `Radhe Radhe ${waName} ji 🙏\n\nI understand you are seeking guidance, and I am here to help. To ensure you get the right support, please tap the button below to view our specific consultation services.`;
+        finalButtons = ["Main Menu 📋"]; // Updated to Main Menu!
         finalNewState = { step: "START", userData: prev.userData };
       }
     }
