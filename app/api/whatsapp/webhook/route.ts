@@ -129,14 +129,17 @@ const MODELS = [
 ];
 
 const GEMINI_SYSTEM_PROMPT = `
-You are the official, empathetic AI assistant for Celebrity Astrologer Surbhi Gupta.
-Your ultimate goal is to convert the user into a client by making them feel heard and understood.
+You are the official, deeply empathetic AI assistant for Celebrity Astrologer Surbhi Gupta.
+Your ultimate goal is to convert the user into a client by making them feel heard, validated, and understood.
 
 CRITICAL INSTRUCTIONS:
-1. EMPATHY FIRST: If the user shares a problem (e.g., career stress, heartbreak, confusion), DO NOT jump straight to selling. 
-2. VALIDATE: Start by warmly acknowledging their feelings (e.g., "I completely understand how stressful career uncertainty can be...", "Heartbreak is very painful, but planetary phases do pass...").
-3. BRIDGE TO SERVICE: Gently explain that astrology is a tool for clarity, and Surbhi Ji can help them navigate this difficult time.
-4. CALL TO ACTION: Always end your response by guiding them to the services menu.
+1. MATCH THE USER'S LANGUAGE & TONE: 
+   - If they speak in English, reply in English.
+   - If they speak in Hindi, reply in Hindi.
+   - If they speak in HINGLISH (Hindi written with English alphabet, e.g., "mai bohot pareshaan hoon", "kuch samajh nahi aa raha"), you MUST reply in natural, warm HINGLISH (e.g., "Radhe Radhe 🙏 Main samajh sakti hoon ki aap kitne pareshan hain...").
+2. EMPATHY FIRST: If the user shares a problem (e.g., emotional pain, career stress), DO NOT jump straight to selling. Validate their feelings first (e.g., "I am so sorry you are going through this pain," or "Bohot dukh hota hai jab..."). 
+3. BRIDGE TO SERVICE: Gently explain that astrology is a tool for clarity, and Surbhi Ji can help them navigate this difficult time to find solutions.
+4. CALL TO ACTION: Always end your response by guiding them to the main menu.
 
 Available Services for your reference:
 - Surbhi Consultation: Offline (₹24,000), Priority (₹51,000)
@@ -147,10 +150,10 @@ Available Services for your reference:
 - Surbhi Kundli: 10-Yr Report (₹999)
 
 RULES:
-- Always greet with "Radhe Radhe 🙏" if it's the first response.
+- Always greet with "Radhe Radhe 🙏" at the start.
 - Keep your response conversational, warm, and under 4 short sentences.
 - NEVER offer free readings, free advice, or exact predictions.
-- End your response EXACTLY with this sentence: "Please click the 'Main Menu' button below to explore how Surbhi Ji can help you."
+- End your response EXACTLY with this meaning (translate to Hinglish/Hindi to match the user, but keep the exact quote 'Main Menu 📋'): "Please click the 'Main Menu 📋' button below to explore how Surbhi Ji can help you."
 `;
 
 // ==========================================
@@ -219,8 +222,13 @@ export async function POST(req: NextRequest) {
     const isStandardCommand = ["restart", "hi", "hello", "hi surbhi", "paid"].includes(lowerInput);
     const isInteractive = msgType === "list_selection" || msgType === "button_click";
     
-    // If user is explicitly asked for their problem (F2_HOOK), let the waFlow handle it
-    const isExpectingFreeText = prev.step === "F2_HOOK" || prev.step === "F1_START";
+    // If user is explicitly asked for their free question, flow handles it
+    const isExpectingFreeQuestion = prev.step === "F1_START";
+
+    // SMART INTERCEPTION: 
+    // If user was asked what's troubling them, and they reply with a short category (e.g. "Career", "Love") -> Flow handles it.
+    // BUT if they type a long emotional paragraph (e.g. "i want to get rid of my emotional pains") -> Gemini AI intercepts it!
+    const isShortIntentKeyword = prev.step === "F2_HOOK" && incomingText.trim().length <= 25;
 
     let finalReply = "";
     let finalButtons: string[] | undefined = undefined;
@@ -229,7 +237,7 @@ export async function POST(req: NextRequest) {
     let finalUrlButton: any = undefined;
     let finalNewState = prev;
 
-    if (isInteractive || isStandardCommand || isExpectingFreeText) {
+    if (isInteractive || isStandardCommand || isExpectingFreeQuestion || isShortIntentKeyword) {
       // 1. ROUTE TO PREDEFINED HARDCODED FLOW
       const result = nextMessage(incomingText, prev);
       finalReply = result.reply;
@@ -254,7 +262,7 @@ export async function POST(req: NextRequest) {
           });
           
           finalReply = response.text || "Radhe Radhe 🙏! How can I help you today?";
-          finalButtons = ["Main Menu 📋"]; // Updated to Main Menu!
+          finalButtons = ["Main Menu 📋"]; // Always present the correct menu button
           finalNewState = { step: "START", userData: prev.userData }; 
           
           aiSuccess = true;
@@ -274,7 +282,7 @@ export async function POST(req: NextRequest) {
       // 3. FINAL CATCH-ALL IF API IS RATE-LIMITED OR MODELS FAIL
       if (!aiSuccess) {
         finalReply = `Radhe Radhe ${waName} ji 🙏\n\nI understand you are seeking guidance, and I am here to help. To ensure you get the right support, please tap the button below to view our specific consultation services.`;
-        finalButtons = ["Main Menu 📋"]; // Updated to Main Menu!
+        finalButtons = ["Main Menu 📋"]; // Always present the correct menu button
         finalNewState = { step: "START", userData: prev.userData };
       }
     }
