@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { 
   Users, MessageSquare, Clock, MousePointer2, BarChart3, 
-  ArrowUpRight, RefreshCcw, X, Search, MessageCircle, ExternalLink,
-  ChevronDown, History, Zap, Target, TrendingUp, Activity, Plus, CheckCheck
+  RefreshCcw, Search, MessageCircle, Play,
+  Zap, Target, TrendingUp, Activity, Plus, CheckCheck, Send
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
@@ -21,7 +21,6 @@ interface ChatMessage {
   timestamp: string;
 }
 
-// Helper to translate Bot Steps into readable WhatsApp Bot Replies
 const getBotActionText = (step: string) => {
   switch(step) {
     case "START": return "Sent Language Selection Menu 🌐";
@@ -31,6 +30,7 @@ const getBotActionText = (step: string) => {
     case "F1_START": return "Confirmed Payment & Asked for Free Question 🎁";
     case "F1_FREE_QUESTION": return "Acknowledged Question. Analysis Started ⏳";
     case "F1_END": return "Sent 'Analysis in Progress' Notification 🔮";
+    case "PAUSED_BY_ADMIN": return "Bot Paused (Human Handoff Active) 🛑";
     default: return `Automated Workflow Action: ${step}`;
   }
 };
@@ -39,9 +39,13 @@ export default function AdminDashboard() {
   const [chats, setChats] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [showUserModal, setShowUserModal] = useState(false);
   const [userSearch, setUserSearch] = useState("");
-  const [expandedUsers, setExpandedUsers] = useState<Record<string, boolean>>({});
+  
+  const [selectedPhone, setSelectedPhone] = useState<string | null>(null);
+  const [inputTexts, setInputTexts] = useState<Record<string, string>>({});
+  const [sendingPhone, setSendingPhone] = useState<string | null>(null);
+  const [resumingPhone, setResumingPhone] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -70,7 +74,6 @@ export default function AdminDashboard() {
       } else {
         setHasMore(newChats.length >= 50); 
       }
-
     } catch (err) {
       console.error("Failed to load dashboard data");
     } finally {
@@ -85,8 +88,58 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  const toggleUser = (phone: string) => {
-    setExpandedUsers(prev => ({ ...prev, [phone]: !prev[phone] }));
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selectedPhone, chats]);
+
+  const handleSendManualMessage = async (phone: string) => {
+    const text = inputTexts[phone]?.trim();
+    if (!text) return;
+
+    setSendingPhone(phone);
+    try {
+      const res = await fetch("/api/admin/chats/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber: phone, message: text })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setChats(prev => [data.chat, ...prev]);
+        setInputTexts(prev => ({ ...prev, [phone]: "" }));
+      } else {
+        alert("Failed to send message. Please check Meta API logs.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error while sending message.");
+    } finally {
+      setSendingPhone(null);
+    }
+  };
+
+  const handleResumeBot = async (phone: string) => {
+    setResumingPhone(phone);
+    try {
+      const res = await fetch("/api/admin/chats/resume", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber: phone })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setChats(prev => [data.chat, ...prev]);
+      } else {
+        alert("Failed to resume bot.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error while resuming bot.");
+    } finally {
+      setResumingPhone(null);
+    }
   };
 
   const userStats = useMemo(() => {
@@ -94,18 +147,25 @@ export default function AdminDashboard() {
     chats.forEach((c: any) => {
       if (!users[c.phoneNumber]) {
         users[c.phoneNumber] = {
-          name: c.waName || "Unknown",
+          name: "Unknown",
           phone: c.phoneNumber,
           messages: 0,
           firstSeen: c.timestamp,
           lastActive: c.timestamp,
           currentStep: c.step,
-          isLead: c.step?.includes("CHECKOUT"),
-          isPaid: c.step?.includes("F1_"),
+          isLead: false,
+          isPaid: false,
+          isPaused: false,
           intents: new Set(),
           history: [] 
         };
       }
+      
+      // CRITICAL FIX: Only capture the name if it is an actual user, NOT the admin or system!
+      if (c.waName && c.waName !== "Admin" && c.waName !== "System") {
+        users[c.phoneNumber].name = c.waName;
+      }
+
       users[c.phoneNumber].messages += 1;
       users[c.phoneNumber].history.push(c);
       
@@ -117,10 +177,19 @@ export default function AdminDashboard() {
       if (new Date(c.timestamp) > new Date(users[c.phoneNumber].lastActive)) {
         users[c.phoneNumber].lastActive = c.timestamp;
         users[c.phoneNumber].currentStep = c.step;
-        if (c.step?.includes("CHECKOUT")) users[c.phoneNumber].isLead = true;
-        if (c.step?.includes("F1_")) users[c.phoneNumber].isPaid = true;
       }
+      
+      // Look through all their history to set persistent flags
+      if (c.step?.includes("CHECKOUT")) users[c.phoneNumber].isLead = true;
+      if (c.step?.includes("F1_")) users[c.phoneNumber].isPaid = true;
     });
+
+    // Check pause status based on the MOST RECENT message in their history
+    Object.values(users).forEach((user: any) => {
+      const sortedHistory = [...user.history].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      user.isPaused = sortedHistory[0]?.step === "PAUSED_BY_ADMIN" || sortedHistory[0]?.type === "admin_manual";
+    });
+
     return Object.values(users).sort((a: any, b: any) => 
       new Date(b.lastActive).getTime() - new Date(a.lastActive).getTime()
     );
@@ -152,6 +221,8 @@ export default function AdminDashboard() {
     u.phone.includes(userSearch)
   );
 
+  const selectedUser = userStats.find(u => u.phone === selectedPhone);
+
   if (loading) return (
     <div className="flex h-screen w-full items-center justify-center bg-[#F8F9FA]">
       <div className="flex flex-col items-center gap-4">
@@ -165,7 +236,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-[#F8F9FA] pb-20 font-sans text-slate-900 selection:bg-[#8B1E1E] selection:text-white">
       
       <nav className="sticky top-0 z-[100] border-b border-slate-200 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
+        <div className="mx-auto max-w-[1400px] px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-[#8B1E1E] flex items-center justify-center shadow-lg shadow-[#8B1E1E]/20">
               <BarChart3 size={18} className="text-white" />
@@ -191,302 +262,307 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      <main className="mx-auto max-w-7xl px-4 pt-8">
+      <main className="mx-auto max-w-[1400px] px-4 pt-8">
         
-        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard label="Total Interactions" val={chats.length} icon={MessageSquare} color="text-blue-600" bg="bg-blue-50" />
-          
-          <button 
-            onClick={() => setShowUserModal(true)}
-            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-left transition-all hover:border-[#8B1E1E] hover:shadow-2xl hover:shadow-[#8B1E1E]/10 active:scale-[0.98]"
-          >
-            <div className="flex items-center justify-between">
-              <div className="rounded-2xl bg-purple-50 p-3 text-purple-600 transition-colors group-hover:bg-[#8B1E1E] group-hover:text-white">
-                <Users size={24} />
-              </div>
-              <ArrowUpRight size={20} className="text-slate-300 transition-colors group-hover:text-[#8B1E1E]" />
-            </div>
-            <div className="mt-6">
-              <div className="text-3xl font-black text-slate-900">{userStats.length}</div>
-              <div className="text-xs font-bold uppercase tracking-widest text-slate-400">Total Audience</div>
-            </div>
-          </button>
-
+          <StatCard label="Unique Audience" val={userStats.length} icon={Users} color="text-purple-600" bg="bg-purple-50" />
           <StatCard label="Retention Rate" val={`${userStats.length > 0 ? ((userStats.filter(u => u.messages > 3).length / userStats.length) * 100).toFixed(0) : 0}%`} icon={Target} color="text-green-600" bg="bg-green-50" />
           <StatCard label="Sales Intent" val={chats.filter((c: any) => c.step?.includes("CHECKOUT")).length} icon={Zap} color="text-amber-600" bg="bg-amber-50" />
         </div>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          
-          {/* Charts Area */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
-                <TrendingUp size={16} className="text-[#8B1E1E]" /> Conversion Steps
-              </h3>
-              <div className="h-[250px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                    <XAxis type="number" hide />
-                    <YAxis dataKey="name" type="category" width={80} fontSize={9} fontWeight="800" axisLine={false} tickLine={false} />
-                    <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: '16px', border: 'none' }} />
-                    <Bar dataKey="count" radius={[0, 10, 10, 0]}>
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={index === 0 ? '#8B1E1E' : '#C8A84B'} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
-                <Clock size={16} className="text-blue-500" /> Hourly Engagement
-              </h3>
-              <div className="h-[180px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={hourlyData}>
-                    <defs>
-                      <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8B1E1E" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#8B1E1E" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="hour" fontSize={8} tickLine={false} axisLine={false} />
-                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none' }} />
-                    <Area type="monotone" dataKey="count" stroke="#8B1E1E" fillOpacity={1} fill="url(#colorCount)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className="rounded-[2rem] bg-gradient-to-br from-[#1A0A00] to-[#3D1600] p-8 text-white shadow-2xl relative overflow-hidden">
-              <div className="absolute top-[-10%] right-[-10%] h-32 w-32 rounded-full bg-[#C8A84B] opacity-20 blur-2xl" />
-              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C8A84B] mb-4">Market Prediction</h4>
-              <p className="text-sm font-medium leading-relaxed italic text-white/90">
-                Peak activity detected at {[...hourlyData].sort((a,b) => b.count - a.count)[0]?.hour || "N/A"}. 
-                Conversion rate is holding at {userStats.length > 0 ? ((chats.filter((c: any) => c.step?.includes("F1")).length / userStats.length) * 100).toFixed(1) : 0}%.
-              </p>
+        <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
+              <TrendingUp size={16} className="text-[#8B1E1E]" /> Conversion Steps
+            </h3>
+            <div className="h-[180px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                  <XAxis type="number" hide />
+                  <YAxis dataKey="name" type="category" width={80} fontSize={9} fontWeight="800" axisLine={false} tickLine={false} />
+                  <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: '12px', border: 'none', fontSize: '12px' }} />
+                  <Bar dataKey="count" radius={[0, 8, 8, 0]}>
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={index === 0 ? '#8B1E1E' : '#C8A84B'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Interaction Vault (Chat List) */}
-          <div className="lg:col-span-2">
-            <div className="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col h-full">
-              <div className="border-b border-slate-100 bg-slate-50/50 p-6 flex items-center justify-between">
-                <div>
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Audience Interaction Vault</h3>
-                  <p className="text-[9px] text-slate-400 font-bold mt-1">Real-time synchronized with WhatsApp Meta API</p>
-                </div>
-                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
-                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-                  <span className="text-[10px] font-black text-slate-600">LIVE</span>
-                </div>
-              </div>
-              
-              <div className="flex-1 overflow-y-auto max-h-[1000px] divide-y divide-slate-50">
-                {userStats.map((user: any) => (
-                  <div key={user.phone} className="group transition-all">
-                    
-                    {/* User List Item (Header) */}
-                    <div 
-                      onClick={() => toggleUser(user.phone)}
-                      className="flex items-center justify-between p-6 cursor-pointer hover:bg-slate-50/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600 font-black text-sm group-hover:bg-[#8B1E1E] group-hover:text-white transition-all shadow-sm">
-                            {user.name?.charAt(0)}
-                          </div>
-                          {user.isPaid && <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 border-2 border-white rounded-full" />}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-slate-800 text-sm">{user.name}</span>
-                            {user.isPaid ? (
-                              <span className="bg-green-50 text-green-700 text-[8px] font-black px-2 py-0.5 rounded-full border border-green-100 uppercase">Paid Client</span>
-                            ) : user.isLead ? (
-                              <span className="bg-amber-50 text-amber-700 text-[8px] font-black px-2 py-0.5 rounded-full border border-amber-100 uppercase">Lead</span>
-                            ) : null}
-                          </div>
-                          <div className="text-[11px] font-bold text-slate-400 tracking-tighter">+{user.phone} • {user.messages} Messages</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-6">
-                        <div className="hidden md:flex gap-1">
-                          {Array.from(user.intents).map((tag: any) => (
-                            <span key={tag} className="text-[8px] font-black bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md uppercase">{tag}</span>
-                          ))}
-                        </div>
-                        <div className={`p-2 rounded-full bg-slate-100 text-slate-400 transition-all ${expandedUsers[user.phone] ? 'rotate-180 bg-[#8B1E1E] text-white' : ''}`}>
-                          <ChevronDown size={16} />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* NEW: WhatsApp Web Style Chat View */}
-                    {expandedUsers[user.phone] && (
-                      <div className="bg-[#EFEAE2] border-t border-slate-200 animate-in slide-in-from-top-2 duration-300 relative overflow-hidden chat-bg-pattern">
-                        
-                        {/* Chat View Header */}
-                        <div className="bg-slate-100/90 backdrop-blur-sm border-b border-slate-200 p-3 px-6 flex justify-between items-center sticky top-0 z-10">
-                          <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-black text-slate-600">
-                              {user.name?.charAt(0)}
-                            </div>
-                            <span className="text-sm font-bold text-slate-800">{user.name} <span className="text-xs font-normal text-slate-500 ml-1">+{user.phone}</span></span>
-                          </div>
-                          <a href={`https://wa.me/${user.phone}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs font-bold text-green-600 hover:text-green-700 bg-white px-3 py-1.5 rounded-full shadow-sm border border-green-100 transition-colors">
-                            <MessageCircle size={14} /> WhatsApp Web
-                          </a>
-                        </div>
-
-                        {/* Chat Messages Container */}
-                        <div className="p-6 h-[400px] overflow-y-auto flex flex-col gap-4">
-                          <div className="flex justify-center mb-2">
-                            <span className="bg-white/80 text-slate-500 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg shadow-sm backdrop-blur-sm">
-                              Interaction History
-                            </span>
-                          </div>
-
-                          {/* Sort older messages to the top so it reads like a normal chat */}
-                          {[...user.history].sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()).map((msg: any) => {
-                            const timeString = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                            
-                            return (
-                              <div key={msg._id} className="flex flex-col gap-3 w-full">
-                                {/* Left Bubble: User's Message */}
-                                <div className="flex justify-start w-full">
-                                  <div className="bg-white text-slate-800 rounded-lg rounded-tl-none px-3 pt-2 pb-1 shadow-sm max-w-[85%] relative border border-slate-100 group">
-                                    {/* Action Tag Context */}
-                                    {msg.type && msg.type !== "text" && (
-                                      <div className="text-[9px] font-bold text-blue-500 uppercase mb-1 flex items-center gap-1">
-                                        <MousePointer2 size={10} /> {msg.type.replace("_", " ")}
-                                      </div>
-                                    )}
-                                    <p className="text-[13px] leading-relaxed break-words pr-8">{msg.message}</p>
-                                    <div className="text-[9px] text-slate-400 text-right mt-1 ml-4 flex items-center justify-end gap-1">
-                                      {timeString}
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Right Bubble: Simulated Bot Response based on Step */}
-                                <div className="flex justify-end w-full">
-                                  <div className="bg-[#D9FDD3] text-slate-800 rounded-lg rounded-tr-none px-3 pt-2 pb-1 shadow-sm max-w-[85%] relative border border-[#c3f0bb]">
-                                    <p className="text-[13px] leading-relaxed break-words pr-4">
-                                      <span className="text-[10px] font-black text-green-700 block mb-1 uppercase tracking-tight flex items-center gap-1">
-                                        <Zap size={10} className="fill-green-700" /> Surbhi AI Bot
-                                      </span>
-                                      {getBotActionText(msg.step)}
-                                    </p>
-                                    <div className="text-[9px] text-green-700/60 text-right mt-1 ml-4 flex items-center justify-end gap-1">
-                                      {timeString} <CheckCheck size={12} className="text-blue-500" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        
-                        {/* Chat Input Placeholder */}
-                        <div className="bg-[#F0F2F5] p-3 flex items-center gap-3 border-t border-slate-200">
-                           <div className="flex-1 bg-white rounded-full px-4 py-2 text-sm text-slate-400 italic border border-slate-200">
-                              Automated flow active. Manual reply feature coming soon...
-                           </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-                
-                {/* --- LOAD MORE SECTION --- */}
-                {hasMore && (
-                  <div className="p-8 flex justify-center bg-white">
-                    <button 
-                      onClick={() => fetchData(true)}
-                      disabled={refreshing}
-                      className="flex items-center gap-2 px-8 py-3 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#8B1E1E] transition-all disabled:opacity-50 active:scale-95"
-                    >
-                      <Plus size={16} />
-                      {refreshing ? "Fetching Archives..." : "Load Older Records"}
-                    </button>
-                  </div>
-                )}
-              </div>
+          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
+              <Clock size={16} className="text-blue-500" /> Hourly Engagement
+            </h3>
+            <div className="h-[180px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={hourlyData}>
+                  <defs>
+                    <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8B1E1E" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#8B1E1E" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="hour" fontSize={8} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', fontSize: '12px' }} />
+                  <Area type="monotone" dataKey="count" stroke="#8B1E1E" fillOpacity={1} fill="url(#colorCount)" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
+          </div>
+
+          <div className="rounded-[1.5rem] bg-gradient-to-br from-[#1A0A00] to-[#3D1600] p-6 text-white shadow-lg relative overflow-hidden flex flex-col justify-center">
+            <div className="absolute top-[-20%] right-[-10%] h-32 w-32 rounded-full bg-[#C8A84B] opacity-20 blur-2xl" />
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C8A84B] mb-3">Market Prediction</h4>
+            <p className="text-sm font-medium leading-relaxed italic text-white/90">
+              Peak activity detected at {[...hourlyData].sort((a,b) => b.count - a.count)[0]?.hour || "N/A"}. 
+              Conversion rate is holding at {userStats.length > 0 ? ((chats.filter((c: any) => c.step?.includes("F1")).length / userStats.length) * 100).toFixed(1) : 0}%.
+            </p>
           </div>
         </div>
-      </main>
 
-      {/* User Search CRM Modal */}
-      {showUserModal && (
-        <div className="fixed inset-0 z-[300] flex justify-end bg-slate-900/40 backdrop-blur-sm transition-all duration-500">
-          <div className="h-full w-full max-w-2xl animate-slide-left bg-white shadow-2xl flex flex-col border-l border-slate-200">
-            <div className="p-8 border-b border-slate-100 bg-[#FCF7EE]/30 flex items-center justify-between">
-              <div>
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight italic">User <span className="text-[#8B1E1E]">Vault</span></h2>
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-1">CRM View • {userStats.length} Contacts</p>
+        <div className="flex flex-col lg:flex-row h-[750px] rounded-[1.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden">
+          
+          <div className="w-full lg:w-[35%] flex flex-col h-full border-r border-slate-200 bg-white">
+            <div className="h-16 border-b border-slate-100 bg-slate-50/80 px-5 flex items-center justify-between shrink-0">
+              <h3 className="text-sm font-black text-slate-800">Messages</h3>
+              <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Live</span>
               </div>
-              <button onClick={() => setShowUserModal(false)} className="h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center">
-                <X size={28} className="text-slate-400" />
-              </button>
             </div>
 
-            <div className="px-8 py-4 border-b border-slate-50">
-              <div className="relative">
-                <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="p-3 bg-white border-b border-slate-100 shrink-0">
+              <div className="relative bg-[#F0F2F5] rounded-xl flex items-center px-3 py-2">
+                <Search size={16} className="text-slate-500 shrink-0" />
                 <input 
                   type="text" 
-                  placeholder="Search CRM..." 
-                  className="w-full rounded-2xl border-none bg-slate-100 py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all focus:ring-2 focus:ring-[#8B1E1E]/20"
+                  placeholder="Search or start new chat" 
+                  className="bg-transparent border-none outline-none w-full text-sm ml-3 text-slate-700 placeholder:text-slate-500"
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
                 />
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              {filteredUsers.map((u: any, i) => (
-                <div key={i} className="group flex items-center justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:border-[#8B1E1E] hover:shadow-xl">
-                  <div className="flex items-center gap-5">
-                    <div className="h-14 w-14 rounded-2xl bg-[#1A0A00] flex items-center justify-center text-[#C8A84B] font-black text-xl">
-                      {u.name.charAt(0)}
+            <div className="flex-1 overflow-y-auto bg-white">
+              {filteredUsers.map((user: any) => {
+                const isActive = selectedPhone === user.phone;
+                const lastMsg = [...user.history].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
+                const timeString = new Date(lastMsg?.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                return (
+                  <div 
+                    key={user.phone} 
+                    onClick={() => setSelectedPhone(user.phone)}
+                    className={`flex items-center gap-3 p-3 px-4 cursor-pointer border-b border-slate-50 transition-colors ${isActive ? 'bg-[#F0F2F5] border-l-4 border-l-[#8B1E1E]' : 'hover:bg-slate-50 border-l-4 border-l-transparent'}`}
+                  >
+                    <div className="relative shrink-0">
+                      <div className={`h-12 w-12 rounded-full flex items-center justify-center text-lg font-bold text-white shadow-sm ${isActive ? 'bg-[#8B1E1E]' : 'bg-slate-300'}`}>
+                        {user.name?.charAt(0)}
+                      </div>
+                      {user.isPaused && <div className="absolute top-0 right-0 h-3.5 w-3.5 bg-amber-400 border-2 border-white rounded-full" title="Bot Paused" />}
                     </div>
-                    <div>
-                      <h4 className="font-black text-slate-900 text-lg leading-tight">{u.name}</h4>
-                      <p className="text-xs font-bold text-slate-400">+{u.phone}</p>
-                      <div className="mt-3 flex gap-2">
-                         {u.isPaid && <span className="bg-green-100 text-green-700 text-[8px] font-black px-2 py-0.5 rounded-full uppercase">Client</span>}
-                         <span className="text-[10px] font-bold text-slate-300">{u.messages} Interactions</span>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-baseline mb-1">
+                        <h4 className="text-[15px] font-medium text-slate-900 truncate">{user.name}</h4>
+                        <span className="text-[11px] text-slate-500 shrink-0 ml-2">{timeString}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <p className="text-[13px] text-slate-500 truncate mr-2">
+                          {(lastMsg?.type === 'admin_manual' || lastMsg?.step === 'ADMIN_MANUAL') ? '✓ ' : ''}{lastMsg?.message}
+                        </p>
+                        {user.isPaused ? (
+                          <span className="shrink-0 bg-amber-100 text-amber-700 text-[9px] font-bold px-1.5 py-0.5 rounded-md">Paused</span>
+                        ) : user.isLead && !user.isPaid ? (
+                          <span className="shrink-0 bg-blue-50 text-blue-600 text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-blue-100">Lead</span>
+                        ) : null}
                       </div>
                     </div>
                   </div>
-                  <a href={`https://wa.me/${u.phone}`} target="_blank" rel="noreferrer" className="h-12 w-12 flex items-center justify-center rounded-2xl bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition-all">
-                    <MessageCircle size={22} />
-                  </a>
+                );
+              })}
+              
+              {hasMore && (
+                <div className="p-4 flex justify-center">
+                  <button 
+                    onClick={() => fetchData(true)}
+                    className="text-xs font-bold text-[#8B1E1E] hover:underline"
+                  >
+                    Load Older Chats
+                  </button>
                 </div>
-              ))}
+              )}
             </div>
           </div>
+
+          <div className="w-full lg:w-[65%] flex flex-col h-full bg-[#EFEAE2] relative chat-bg-pattern">
+            
+            {!selectedUser ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-white/50 backdrop-blur-sm">
+                <div className="h-24 w-24 rounded-full bg-slate-100 flex items-center justify-center mb-6">
+                  <MessageSquare size={40} className="text-slate-300" />
+                </div>
+                <h2 className="text-2xl font-light text-slate-600 mb-2">AstroDashboard Web</h2>
+                <p className="text-sm text-slate-400 max-w-sm">Select a user from the left panel to view their conversation history and send manual replies.</p>
+              </div>
+            ) : (
+              <>
+                <div className="h-16 bg-[#F0F2F5] border-b border-slate-200 px-5 flex items-center justify-between shrink-0 z-10 shadow-sm">
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-full bg-[#8B1E1E] flex items-center justify-center text-white font-bold shadow-sm">
+                      {selectedUser.name?.charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="text-[15px] font-medium text-slate-900 leading-tight">{selectedUser.name}</h3>
+                      <p className="text-[12px] text-slate-500">+{selectedUser.phone}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="hidden sm:flex gap-1 mr-2">
+                      {Array.from(selectedUser.intents).map((tag: any) => (
+                        <span key={tag} className="text-[9px] font-bold bg-white text-slate-500 border border-slate-200 px-2 py-0.5 rounded-md uppercase">{tag}</span>
+                      ))}
+                    </div>
+                    <a href={`https://wa.me/${selectedUser.phone}`} target="_blank" rel="noreferrer" title="Open in actual WhatsApp" className="text-slate-500 hover:text-green-600 transition-colors">
+                      <MessageCircle size={20} />
+                    </a>
+                  </div>
+                </div>
+
+                {/* PAUSED WARNING BANNER */}
+                {selectedUser.isPaused && (
+                  <div className="bg-amber-100 border-b border-amber-200 px-4 py-2 flex items-center justify-between z-10">
+                    <div className="flex items-center gap-2 text-amber-800 text-xs font-bold">
+                      <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+                      AI BOT IS PAUSED. Human control active.
+                    </div>
+                    <button 
+                      onClick={() => handleResumeBot(selectedUser.phone)}
+                      disabled={resumingPhone === selectedUser.phone}
+                      className="flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm disabled:opacity-50"
+                    >
+                      {resumingPhone === selectedUser.phone ? <RefreshCcw size={12} className="animate-spin" /> : <Play size={12} className="fill-white" />}
+                      Resume AI
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex-1 overflow-y-auto p-4 sm:p-8 flex flex-col gap-3">
+                  <div className="flex justify-center mb-4">
+                    <span className="bg-[#FFEECD] text-slate-600 text-[11px] px-3 py-1 rounded-lg shadow-sm">
+                      Messages are end-to-end synchronized with Meta API
+                    </span>
+                  </div>
+
+                  {[...selectedUser.history].sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()).map((msg: any) => {
+                    const timeString = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    const isAdminMessage = msg.type === "admin_manual" || msg.step === "ADMIN_MANUAL";
+                    const isSystemEvent = msg.type === "system_event";
+                    const shouldShowBotResponse = !isAdminMessage && !isSystemEvent && msg.step && msg.step !== "PAUSED_BY_ADMIN";
+
+                    if (isSystemEvent) {
+                      return (
+                        <div key={msg._id} className="flex justify-center my-2">
+                          <span className="bg-slate-800/80 text-white backdrop-blur-sm text-[10px] px-3 py-1 rounded-full shadow-sm">
+                            {msg.message}
+                          </span>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div key={msg._id} className="flex flex-col gap-2 w-full">
+                        
+                        {/* Left Bubble: User's Incoming Message */}
+                        {!isAdminMessage && (
+                          <div className="flex justify-start w-full">
+                            <div className="bg-white text-slate-900 text-[14px] rounded-lg rounded-tl-none px-3 pt-2 pb-1.5 shadow-sm max-w-[85%] sm:max-w-[70%] relative">
+                              {msg.type && msg.type !== "text" && (
+                                <div className="text-[10px] font-bold text-blue-500 mb-1 flex items-center gap-1">
+                                  <MousePointer2 size={12} /> {msg.type.replace("_", " ")}
+                                </div>
+                              )}
+                              <p className="leading-relaxed break-words pr-12">{msg.message}</p>
+                              <div className="text-[10px] text-slate-400 absolute bottom-1 right-2">
+                                {timeString}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Right Bubble: Admin Manual Text OR Automated Bot Response */}
+                        {(isAdminMessage || shouldShowBotResponse) && (
+                          <div className="flex justify-end w-full">
+                            <div className={`text-[14px] text-slate-900 rounded-lg rounded-tr-none px-3 pt-2 pb-1.5 shadow-sm max-w-[85%] sm:max-w-[70%] relative ${isAdminMessage ? 'bg-[#D1F4CC]' : 'bg-[#D9FDD3]'}`}>
+                              <span className={`text-[10px] font-bold block mb-1 tracking-tight flex items-center gap-1 ${isAdminMessage ? 'text-[#8B1E1E]' : 'text-green-700'}`}>
+                                {isAdminMessage ? (
+                                  <><Users size={12} className="fill-[#8B1E1E]" /> Human Admin</>
+                                ) : (
+                                  <><Zap size={12} className="fill-green-700" /> Surbhi AI Bot</>
+                                )}
+                              </span>
+                              <p className="leading-relaxed break-words pr-14">
+                                {isAdminMessage ? msg.message : getBotActionText(msg.step)}
+                              </p>
+                              <div className={`text-[10px] absolute bottom-1 right-2 flex items-center gap-1 ${isAdminMessage ? 'text-slate-500' : 'text-green-700/70'}`}>
+                                {timeString} <CheckCheck size={14} className={isAdminMessage ? 'text-blue-500' : 'text-blue-500'} />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                      </div>
+                    );
+                  })}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                <div className="bg-[#F0F2F5] px-4 py-3 flex items-center gap-3 shrink-0">
+                  <div className="flex-1 bg-white rounded-xl flex items-center px-4 py-2 sm:py-3 shadow-sm">
+                    <input 
+                      type="text" 
+                      placeholder="Type a manual message (Pauses the AI bot)..."
+                      value={inputTexts[selectedUser.phone] || ""}
+                      onChange={(e) => setInputTexts(prev => ({ ...prev, [selectedUser.phone]: e.target.value }))}
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleSendManualMessage(selectedUser.phone); }}
+                      className="w-full bg-transparent border-none outline-none text-sm text-slate-700"
+                      disabled={sendingPhone === selectedUser.phone}
+                    />
+                  </div>
+                  <button 
+                    onClick={() => handleSendManualMessage(selectedUser.phone)}
+                    disabled={!inputTexts[selectedUser.phone]?.trim() || sendingPhone === selectedUser.phone}
+                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-[#00A884] text-white flex items-center justify-center hover:bg-[#008f6f] disabled:opacity-50 transition-colors shrink-0 shadow-sm"
+                  >
+                    {sendingPhone === selectedUser.phone ? <RefreshCcw size={20} className="animate-spin" /> : <Send size={20} className="-ml-0.5" />}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      )}
+      </main>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes slide-left { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        .animate-slide-left { animation: slide-left 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .italic-font { font-family: 'Times New Roman', serif; }
         
-        /* Subtle WhatsApp Web Background Pattern Simulation */
         .chat-bg-pattern {
-           background-image: radial-gradient(#d1cbbd 1px, transparent 1px);
-           background-size: 20px 20px;
+           background-image: url("https://static.whatsapp.net/rsrc.php/v3/yl/r/r_QxI0T7QeQ.png");
+           background-size: cover;
+           background-repeat: repeat;
+           background-color: #EFEAE2;
         }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
       `}}/>
     </div>
   );
@@ -494,12 +570,16 @@ export default function AdminDashboard() {
 
 function StatCard({ label, val, icon: Icon, color, bg }: any) {
   return (
-    <div className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-lg">
-      <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${bg} ${color} transition-transform group-hover:scale-110`}>
-        <Icon size={24} />
+    <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-2xl font-black tracking-tight text-slate-900">{val}</div>
+          <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mt-1">{label}</div>
+        </div>
+        <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${bg} ${color} transition-transform group-hover:scale-110`}>
+          <Icon size={24} />
+        </div>
       </div>
-      <div className="text-3xl font-black tracking-tight text-slate-900">{val}</div>
-      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-1">{label}</div>
     </div>
   );
 }

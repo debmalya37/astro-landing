@@ -3,8 +3,14 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import mongoose from "mongoose";
 
+// CRITICAL FIX: Added `type: String` so Mongoose stops stripping it out!
 const Chat = mongoose.models.Chat || mongoose.model("Chat", new mongoose.Schema({
-  phoneNumber: String, waName: String, message: String, step: String, timestamp: Date
+  phoneNumber: String, 
+  waName: String, 
+  message: String, 
+  step: String, 
+  type: String, 
+  timestamp: Date
 }));
 
 export async function GET(request: Request) {
@@ -14,7 +20,7 @@ export async function GET(request: Request) {
     // Get pagination params from URL
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "200"); // Increased default limit
+    const limit = parseInt(searchParams.get("limit") || "200");
     const skip = (page - 1) * limit;
 
     const chats = await Chat.find()
