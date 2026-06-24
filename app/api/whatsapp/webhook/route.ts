@@ -8,13 +8,11 @@ import { GoogleGenAI } from "@google/genai";
 // ==========================================
 // 1. SINGLETON / GLOBAL SETUP
 // ==========================================
-// Persistent Redis connection
 const redis = new Redis(process.env.REDIS_URL!, {
   lazyConnect: true,
-  maxRetriesPerRequest: 1 // Faster fail for webhooks
+  maxRetriesPerRequest: 1 
 });
 
-// Cache MongoDB connection globally
 let isConnected = false;
 async function connectDB() {
   if (isConnected) return;
@@ -35,7 +33,6 @@ const ChatSchema = new mongoose.Schema({
 
 const Chat = mongoose.models.Chat || mongoose.model("Chat", ChatSchema);
 
-// Initialize Gemini Client
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // ==========================================
@@ -120,12 +117,11 @@ export async function sendWhatsAppMessage(
 // ==========================================
 // 3. SYSTEM INSTRUCTION & MODELS FOR GEMINI
 // ==========================================
-// OPTIMIZED FOR FREE TIER (15 Requests Per Minute)
 const MODELS = [
   'gemini-1.5-flash', 
-  'gemini-2.5-flash',                   // Fallback 2
-  'gemini-2.0-flash',        // Primary: Extremely stable, fast, handles Free Tier perfectly
-  'gemini-1.5-flash-8b'     // Fallback: Lighter version in case the main server is overloaded
+  'gemini-2.5-flash',                   
+  'gemini-2.0-flash',        
+  'gemini-1.5-flash-8b'     
 ];
 
 const GEMINI_SYSTEM_PROMPT = `
@@ -179,7 +175,6 @@ export async function POST(req: NextRequest) {
     const messageId = message.id;
     const waName = contact?.profile?.name || "Seeker";
 
-    // Fast Duplicate Check
     const isDuplicate = await redis.get(`msg_processed:${messageId}`);
     if (isDuplicate) return new NextResponse("OK", { status: 200 });
     
@@ -198,36 +193,23 @@ export async function POST(req: NextRequest) {
     const rawPrevState = await redis.get(`user_state:${from}`);
     const prev = rawPrevState ? JSON.parse(rawPrevState) : { step: "START", userData: { name: waName } };
     
-    // ==========================================
-    // CRITICAL FIX: ADMIN MANUAL CHAT HANDOFF & BUTTON MAPPING
-    // ==========================================
     let lowerInput = incomingText.toLowerCase();
 
-    // Map the new "Main Menu" button back to the "restart" command so waFlow understands it!
     if (lowerInput.includes("main menu")) {
       incomingText = "restart";
       lowerInput = "restart";
     }
     
-    // If the admin has paused this chat from the dashboard, block AI and Flow execution
     if (prev.step === "PAUSED_BY_ADMIN" && !["restart", "hi", "hello"].includes(lowerInput)) {
        await connectDB();
        await Chat.create({ phoneNumber: from, waName, message: incomingText, step: "PAUSED_BY_ADMIN", type: msgType, timestamp: new Date() });
        return new NextResponse("OK", { status: 200 }); 
     }
 
-    // ==========================================
-    // SMART ROUTING LOGIC (Flow vs AI Fallback)
-    // ==========================================
     const isStandardCommand = ["restart", "hi", "hello", "hi surbhi", "paid"].includes(lowerInput);
     const isInteractive = msgType === "list_selection" || msgType === "button_click";
     
-    // If user is explicitly asked for their free question, flow handles it
     const isExpectingFreeQuestion = prev.step === "F1_START";
-
-    // SMART INTERCEPTION: 
-    // If user was asked what's troubling them, and they reply with a short category (e.g. "Career", "Love") -> Flow handles it.
-    // BUT if they type a long emotional paragraph (e.g. "i want to get rid of my emotional pains") -> Gemini AI intercepts it!
     const isShortIntentKeyword = prev.step === "F2_HOOK" && incomingText.trim().length <= 25;
 
     let finalReply = "";
@@ -236,9 +218,9 @@ export async function POST(req: NextRequest) {
     let finalImage: string | undefined = undefined;
     let finalUrlButton: any = undefined;
     let finalNewState = prev;
+    let isAiResponse = false; // Flag to identify if Gemini answered
 
     if (isInteractive || isStandardCommand || isExpectingFreeQuestion || isShortIntentKeyword) {
-      // 1. ROUTE TO PREDEFINED HARDCODED FLOW
       const result = nextMessage(incomingText, prev);
       finalReply = result.reply;
       finalButtons = result.buttons;
@@ -247,8 +229,8 @@ export async function POST(req: NextRequest) {
       finalUrlButton = result.urlButton;
       finalNewState = result.newState;
     } else {
-      // 2. ROUTE TO GEMINI AI FALLBACK (WITH SMART FREE-TIER RETRY LOGIC)
       let aiSuccess = false;
+      isAiResponse = true;
 
       for (const modelName of MODELS) {
         try {
@@ -257,21 +239,19 @@ export async function POST(req: NextRequest) {
             contents: incomingText,
             config: {
               systemInstruction: GEMINI_SYSTEM_PROMPT,
-              temperature: 0.7, // Keeps the AI creative and empathetic
+              temperature: 0.7, 
             }
           });
           
           finalReply = response.text || "Radhe Radhe 🙏! How can I help you today?";
-          finalButtons = ["Main Menu 📋"]; // Always present the correct menu button
+          finalButtons = ["Main Menu 📋"]; 
           finalNewState = { step: "START", userData: prev.userData }; 
           
           aiSuccess = true;
-          break; // Exit the loop if the model succeeds
+          break; 
 
         } catch (geminiError: any) {
           console.warn(`[Gemini Fallback] Model ${modelName} failed:`, geminiError.message);
-          
-          // CRITICAL FREE TIER CHECK
           if (geminiError.status === 429 || geminiError.message?.includes("429") || geminiError.message?.includes("quota")) {
             console.error("[Gemini Fallback] Free Tier Rate Limit Hit (15 RPM)!");
             break; 
@@ -279,15 +259,14 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // 3. FINAL CATCH-ALL IF API IS RATE-LIMITED OR MODELS FAIL
       if (!aiSuccess) {
         finalReply = `Radhe Radhe ${waName} ji 🙏\n\nI understand you are seeking guidance, and I am here to help. To ensure you get the right support, please tap the button below to view our specific consultation services.`;
-        finalButtons = ["Main Menu 📋"]; // Always present the correct menu button
+        finalButtons = ["Main Menu 📋"]; 
         finalNewState = { step: "START", userData: prev.userData };
       }
     }
 
-    // BACKGROUND TASKS
+    // NEW: Log both the User's incoming message AND the Bot's exact outgoing reply!
     const backgroundTasks = async () => {
       await Promise.all([
         redis.set(`user_state:${from}`, JSON.stringify(finalNewState), "EX", 86400),
@@ -295,15 +274,35 @@ export async function POST(req: NextRequest) {
         redis.hset("wa_names", from, waName),
         (async () => {
           await connectDB();
-          await Chat.create({ phoneNumber: from, waName, message: incomingText, step: finalNewState.step, type: msgType, timestamp: new Date() });
+          
+          // 1. Log the User's incoming message
+          await Chat.create({ 
+            phoneNumber: from, 
+            waName, 
+            message: incomingText, 
+            step: finalNewState.step, 
+            type: msgType, 
+            timestamp: new Date() 
+          });
+
+          // 2. Log the Bot's exact outgoing reply
+          // Wait 1 second to ensure the bot message appears AFTER the user message chronologically
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          await Chat.create({ 
+            phoneNumber: from, 
+            waName: "Bot", 
+            message: finalReply, 
+            step: finalNewState.step, 
+            type: isAiResponse ? "bot_ai_response" : "bot_flow_response", 
+            timestamp: new Date() 
+          });
+
         })()
       ]);
     };
 
-    // Execute sending and background tasks
     await sendWhatsAppMessage(from, finalReply, { buttons: finalButtons, list: finalList, image: finalImage, urlButton: finalUrlButton });
     
-    // Start background tasks without awaiting them to block the response
     backgroundTasks();
 
     return new NextResponse("OK", { status: 200 });

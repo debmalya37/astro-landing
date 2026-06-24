@@ -21,20 +21,6 @@ interface ChatMessage {
   timestamp: string;
 }
 
-const getBotActionText = (step: string) => {
-  switch(step) {
-    case "START": return "Sent Language Selection Menu 🌐";
-    case "F2_INTENT": return "Sent Main Services Catalog 📋";
-    case "F2_HOOK": return "Sent Pricing & Plans Options 💳";
-    case "F2_CHECKOUT": return "Sent Secure Payment Link 🔗";
-    case "F1_START": return "Confirmed Payment & Asked for Free Question 🎁";
-    case "F1_FREE_QUESTION": return "Acknowledged Question. Analysis Started ⏳";
-    case "F1_END": return "Sent 'Analysis in Progress' Notification 🔮";
-    case "PAUSED_BY_ADMIN": return "Bot Paused (Human Handoff Active) 🛑";
-    default: return `Automated Workflow Action: ${step}`;
-  }
-};
-
 export default function AdminDashboard() {
   const [chats, setChats] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -161,12 +147,16 @@ export default function AdminDashboard() {
         };
       }
       
-      // CRITICAL FIX: Only capture the name if it is an actual user, NOT the admin or system!
-      if (c.waName && c.waName !== "Admin" && c.waName !== "System") {
+      // CRITICAL FIX: Ignore any name assigned to Bot, Admin, or System
+      if (c.waName && c.waName !== "Admin" && c.waName !== "System" && c.waName !== "Bot") {
         users[c.phoneNumber].name = c.waName;
       }
 
-      users[c.phoneNumber].messages += 1;
+      // Only count user messages towards the "Total Interactions" stat
+      if (c.waName !== "Admin" && c.waName !== "System" && c.waName !== "Bot") {
+        users[c.phoneNumber].messages += 1;
+      }
+      
       users[c.phoneNumber].history.push(c);
       
       const msg = c.message?.toLowerCase() || "";
@@ -179,12 +169,10 @@ export default function AdminDashboard() {
         users[c.phoneNumber].currentStep = c.step;
       }
       
-      // Look through all their history to set persistent flags
       if (c.step?.includes("CHECKOUT")) users[c.phoneNumber].isLead = true;
       if (c.step?.includes("F1_")) users[c.phoneNumber].isPaid = true;
     });
 
-    // Check pause status based on the MOST RECENT message in their history
     Object.values(users).forEach((user: any) => {
       const sortedHistory = [...user.history].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
       user.isPaused = sortedHistory[0]?.step === "PAUSED_BY_ADMIN" || sortedHistory[0]?.type === "admin_manual";
@@ -375,7 +363,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="flex justify-between items-center">
                         <p className="text-[13px] text-slate-500 truncate mr-2">
-                          {(lastMsg?.type === 'admin_manual' || lastMsg?.step === 'ADMIN_MANUAL') ? '✓ ' : ''}{lastMsg?.message}
+                          {(lastMsg?.type === 'admin_manual' || lastMsg?.waName === 'Bot') ? '✓ ' : ''}{lastMsg?.message}
                         </p>
                         {user.isPaused ? (
                           <span className="shrink-0 bg-amber-100 text-amber-700 text-[9px] font-bold px-1.5 py-0.5 rounded-md">Paused</span>
@@ -435,7 +423,6 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* PAUSED WARNING BANNER */}
                 {selectedUser.isPaused && (
                   <div className="bg-amber-100 border-b border-amber-200 px-4 py-2 flex items-center justify-between z-10">
                     <div className="flex items-center gap-2 text-amber-800 text-xs font-bold">
@@ -463,9 +450,8 @@ export default function AdminDashboard() {
                   {[...selectedUser.history].sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()).map((msg: any) => {
                     const timeString = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     
-                    const isAdminMessage = msg.type === "admin_manual" || msg.step === "ADMIN_MANUAL";
                     const isSystemEvent = msg.type === "system_event";
-                    const shouldShowBotResponse = !isAdminMessage && !isSystemEvent && msg.step && msg.step !== "PAUSED_BY_ADMIN";
+                    const isBotOrAdmin = msg.waName === "Admin" || msg.waName === "Bot";
 
                     if (isSystemEvent) {
                       return (
@@ -480,8 +466,8 @@ export default function AdminDashboard() {
                     return (
                       <div key={msg._id} className="flex flex-col gap-2 w-full">
                         
-                        {/* Left Bubble: User's Incoming Message */}
-                        {!isAdminMessage && (
+                        {/* User's Message (Left) */}
+                        {!isBotOrAdmin && (
                           <div className="flex justify-start w-full">
                             <div className="bg-white text-slate-900 text-[14px] rounded-lg rounded-tl-none px-3 pt-2 pb-1.5 shadow-sm max-w-[85%] sm:max-w-[70%] relative">
                               {msg.type && msg.type !== "text" && (
@@ -489,7 +475,7 @@ export default function AdminDashboard() {
                                   <MousePointer2 size={12} /> {msg.type.replace("_", " ")}
                                 </div>
                               )}
-                              <p className="leading-relaxed break-words pr-12">{msg.message}</p>
+                              <p className="leading-relaxed break-words pr-12 whitespace-pre-wrap">{msg.message}</p>
                               <div className="text-[10px] text-slate-400 absolute bottom-1 right-2">
                                 {timeString}
                               </div>
@@ -497,22 +483,24 @@ export default function AdminDashboard() {
                           </div>
                         )}
 
-                        {/* Right Bubble: Admin Manual Text OR Automated Bot Response */}
-                        {(isAdminMessage || shouldShowBotResponse) && (
+                        {/* Bot or Admin Message (Right) */}
+                        {isBotOrAdmin && (
                           <div className="flex justify-end w-full">
-                            <div className={`text-[14px] text-slate-900 rounded-lg rounded-tr-none px-3 pt-2 pb-1.5 shadow-sm max-w-[85%] sm:max-w-[70%] relative ${isAdminMessage ? 'bg-[#D1F4CC]' : 'bg-[#D9FDD3]'}`}>
-                              <span className={`text-[10px] font-bold block mb-1 tracking-tight flex items-center gap-1 ${isAdminMessage ? 'text-[#8B1E1E]' : 'text-green-700'}`}>
-                                {isAdminMessage ? (
+                            <div className={`text-[14px] text-slate-900 rounded-lg rounded-tr-none px-3 pt-2 pb-1.5 shadow-sm max-w-[85%] sm:max-w-[70%] relative ${msg.waName === 'Admin' ? 'bg-[#D1F4CC]' : 'bg-[#D9FDD3]'}`}>
+                              <span className={`text-[10px] font-bold block mb-1 tracking-tight flex items-center gap-1 ${msg.waName === 'Admin' ? 'text-[#8B1E1E]' : 'text-green-700'}`}>
+                                {msg.waName === 'Admin' ? (
                                   <><Users size={12} className="fill-[#8B1E1E]" /> Human Admin</>
+                                ) : msg.type === "bot_ai_response" ? (
+                                  <><Zap size={12} className="fill-green-700" /> Surbhi AI Generator</>
                                 ) : (
-                                  <><Zap size={12} className="fill-green-700" /> Surbhi AI Bot</>
+                                  <><Zap size={12} className="fill-green-700" /> Automated Flow</>
                                 )}
                               </span>
-                              <p className="leading-relaxed break-words pr-14">
-                                {isAdminMessage ? msg.message : getBotActionText(msg.step)}
+                              <p className="leading-relaxed break-words pr-14 whitespace-pre-wrap">
+                                {msg.message}
                               </p>
-                              <div className={`text-[10px] absolute bottom-1 right-2 flex items-center gap-1 ${isAdminMessage ? 'text-slate-500' : 'text-green-700/70'}`}>
-                                {timeString} <CheckCheck size={14} className={isAdminMessage ? 'text-blue-500' : 'text-blue-500'} />
+                              <div className={`text-[10px] absolute bottom-1 right-2 flex items-center gap-1 ${msg.waName === 'Admin' ? 'text-slate-500' : 'text-green-700/70'}`}>
+                                {timeString} <CheckCheck size={14} className={msg.waName === 'Admin' ? 'text-blue-500' : 'text-blue-500'} />
                               </div>
                             </div>
                           </div>
