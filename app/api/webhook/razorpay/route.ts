@@ -5,9 +5,6 @@ import mongoose from "mongoose";
 import { Resend } from "resend";
 import Redis from "ioredis";
 
-// REMOVED: import { connectDB } from "@/lib/mongodb"; 
-// We are now using the inline serverless cached version below.
-
 // ==========================================
 // 1. INITIALIZE SERVICES (With Caching)
 // ==========================================
@@ -24,7 +21,7 @@ const getRedis = () => {
   return redis;
 };
 
-// NEW: Serverless MongoDB Connection Cache (Fixes Vercel Timeout/Exhaustion)
+// Serverless MongoDB Connection Cache
 let cached = (global as any).mongoose;
 if (!cached) {
   cached = (global as any).mongoose = { conn: null, promise: null };
@@ -38,7 +35,7 @@ async function connectDB() {
     cached.promise = mongoose.connect(process.env.MONGODB_URI!, {
       bufferCommands: false,
       serverSelectionTimeoutMS: 5000, 
-      maxPoolSize: 10 // Prevents Vercel from crashing Atlas with too many connections
+      maxPoolSize: 10 
     }).then((mongoose) => {
       return mongoose;
     });
@@ -71,10 +68,22 @@ const OrderSchema = new mongoose.Schema({
 
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
 
+// NEW: Chat Schema to log payment confirmation messages to the CRM
+const ChatSchema = new mongoose.Schema({
+  phoneNumber: String,
+  waName: String,
+  message: String,
+  step: String,
+  type: String,
+  timestamp: { type: Date, default: Date.now }
+});
+
+const Chat = mongoose.models.Chat || mongoose.model("Chat", ChatSchema);
+
+
 // ==========================================
 // 3. WHATSAPP SENDER (UPDATED FOR TEMPLATES)
 // ==========================================
-// Added optional `templateData` parameter to bypass the 24-hour rule
 async function sendWhatsAppMessage(to: string, text: string, buttons?: string[], templateData?: any) {
   const phoneNumberId = process.env.WHATSAPP_PHONE_ID;
   const token = process.env.WHATSAPP_TOKEN;
@@ -127,7 +136,6 @@ async function sendWhatsAppMessage(to: string, text: string, buttons?: string[],
 
   if (!response.ok) {
     const err = await response.json();
-    // Changed from `throw new Error` to `console.error` so Razorpay Webhook doesn't endlessly retry if WA fails
     console.error(`WA API Error: ${JSON.stringify(err)}`);
   }
 }
@@ -228,7 +236,7 @@ async function triggerNotifications(order: any, paymentId: string) {
     waButtons = isHi ? ["प्रश्न पूछें"] : ["Ask Question"];
   }
 
-  // NEW: Prepare Template Data for Webhook
+  // Prepare Template Data for Webhook
   let templateName = "";
   if (isCareer) {
     templateName = isHi ? "payment_career_hi" : "payment_career_en";
@@ -241,6 +249,8 @@ async function triggerNotifications(order: any, paymentId: string) {
     language: isHi ? "hi" : "en",
     params: [order.customer.name || "Customer", reportType]
   };
+
+  const nextStep = isCareer ? "F1_START" : "F1_END";
 
   await Promise.allSettled([
     // Customer Email
@@ -290,13 +300,27 @@ async function triggerNotifications(order: any, paymentId: string) {
       `,
     }),
 
-    // WhatsApp Message (Passes the newly injected Template Data to bypass 24h rule)
+    // WhatsApp Message
     sendWhatsAppMessage(formattedPhone, replyMessage, waButtons, waTemplateData),
 
+    // NEW: Log the Payment Confirmation Message to the CRM (MongoDB)
+    (async () => {
+      await connectDB();
+      await Chat.create({
+        phoneNumber: formattedPhone,
+        waName: "Bot",
+        message: replyMessage,
+        step: nextStep,
+        type: "bot_flow_response", // Renders as an automated bot reply in the UI
+        timestamp: new Date()
+      });
+    })(),
+
+    // Update state in Redis
     getRedis().set(
       `user_state:${formattedPhone}`, 
       JSON.stringify({ 
-        step: isCareer ? "F1_START" : "F1_END", 
+        step: nextStep, 
         userData: { name: order.customer.name, intent: reportType, language: isHi ? "hi" : "en", challenge: order.challenge } 
       }), 
       "EX", 86400
