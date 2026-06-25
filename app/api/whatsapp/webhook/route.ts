@@ -267,43 +267,52 @@ export async function POST(req: NextRequest) {
     }
 
     // NEW: Log both the User's incoming message AND the Bot's exact outgoing reply!
+    // ==========================================
+    // CRITICAL FIX: CONSISTENT DATABASE SAVING
+    // ==========================================
+    
+    // Create timestamps right now, mathematically spaced by 1 second 
+    // so they sort perfectly without actually pausing the server.
+    const userTimestamp = new Date();
+    const botTimestamp = new Date(userTimestamp.getTime() + 1000); 
+
     const backgroundTasks = async () => {
+      // Connect to DB once before running promises
+      await connectDB();
+
       await Promise.all([
         redis.set(`user_state:${from}`, JSON.stringify(finalNewState), "EX", 86400),
         redis.hset("wa_last_interaction", from, Date.now().toString()),
         redis.hset("wa_names", from, waName),
-        (async () => {
-          await connectDB();
-          
-          // 1. Log the User's incoming message
-          await Chat.create({ 
-            phoneNumber: from, 
-            waName, 
-            message: incomingText, 
-            step: finalNewState.step, 
-            type: msgType, 
-            timestamp: new Date() 
-          });
+        
+        // 1. Log the User's incoming message
+        Chat.create({ 
+          phoneNumber: from, 
+          waName, 
+          message: incomingText, 
+          step: finalNewState.step, 
+          type: msgType, 
+          timestamp: userTimestamp 
+        }),
 
-          // 2. Log the Bot's exact outgoing reply
-          // Wait 1 second to ensure the bot message appears AFTER the user message chronologically
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          await Chat.create({ 
-            phoneNumber: from, 
-            waName: "Bot", 
-            message: finalReply, 
-            step: finalNewState.step, 
-            type: isAiResponse ? "bot_ai_response" : "bot_flow_response", 
-            timestamp: new Date() 
-          });
-
-        })()
+        // 2. Log the Bot's exact outgoing reply
+        Chat.create({ 
+          phoneNumber: from, 
+          waName: "Bot", 
+          message: finalReply, 
+          step: finalNewState.step, 
+          type: isAiResponse ? "bot_ai_response" : "bot_flow_response", 
+          timestamp: botTimestamp 
+        })
       ]);
     };
 
+    // First, send the actual WhatsApp message to the user
     await sendWhatsAppMessage(from, finalReply, { buttons: finalButtons, list: finalList, image: finalImage, urlButton: finalUrlButton });
     
-    backgroundTasks();
+    // CRITICAL: We MUST await the background tasks. 
+    // If we don't, Vercel/Next.js will kill the process before MongoDB finishes saving!
+    await backgroundTasks();
 
     return new NextResponse("OK", { status: 200 });
   } catch (error) {
