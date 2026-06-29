@@ -8,11 +8,13 @@ import { GoogleGenAI } from "@google/genai";
 // ==========================================
 // 1. SINGLETON / GLOBAL SETUP
 // ==========================================
+// Persistent Redis connection
 const redis = new Redis(process.env.REDIS_URL!, {
   lazyConnect: true,
-  maxRetriesPerRequest: 1 
+  maxRetriesPerRequest: 1 // Faster fail for webhooks
 });
 
+// Cache MongoDB connection globally
 let isConnected = false;
 async function connectDB() {
   if (isConnected) return;
@@ -33,6 +35,7 @@ const ChatSchema = new mongoose.Schema({
 
 const Chat = mongoose.models.Chat || mongoose.model("Chat", ChatSchema);
 
+// Initialize Gemini Client
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // ==========================================
@@ -131,9 +134,9 @@ Your ultimate goal is to convert the user into a client by making them feel hear
 CRITICAL INSTRUCTIONS:
 1. MATCH THE USER'S LANGUAGE & TONE: 
    - If they speak in English, reply in English.
-   - If they speak in Hindi, reply in Hindi.
-   - If they speak in HINGLISH (Hindi written with English alphabet, e.g., "mai bohot pareshaan hoon", "kuch samajh nahi aa raha"), you MUST reply in natural, warm HINGLISH (e.g., "Radhe Radhe 🙏 Main samajh sakti hoon ki aap kitne pareshan hain...").
-2. EMPATHY FIRST: If the user shares a problem (e.g., emotional pain, career stress), DO NOT jump straight to selling. Validate their feelings first (e.g., "I am so sorry you are going through this pain," or "Bohot dukh hota hai jab..."). 
+   - If they speak in Hindi (Devanagari script), reply in SIMPLE, EVERYDAY SPOKEN HINDI (Bol-chal ki bhasha). DO NOT use formal, pure, or difficult Hindi words (Shuddh Hindi). Use very common, casual words that everyone understands.
+   - If they speak in HINGLISH (Hindi written with English alphabet, e.g., "mai bohot pareshaan hoon"), you MUST reply in natural, warm HINGLISH (e.g., "Radhe Radhe 🙏 Main samajh sakti hoon ki aap kitne pareshan hain...").
+2. EMPATHY FIRST: If the user shares a problem (e.g., emotional pain, career stress), DO NOT jump straight to selling. Validate their feelings first (e.g., "I am so sorry you are going through this pain," or "Bohot dukh hota hai jab...", or "मैं समझ सकती हूँ कि यह समय आपके लिए मुश्किल है..."). 
 3. BRIDGE TO SERVICE: Gently explain that astrology is a tool for clarity, and Surbhi Ji can help them navigate this difficult time to find solutions.
 4. CALL TO ACTION: Always end your response by guiding them to the main menu.
 
@@ -149,7 +152,7 @@ RULES:
 - Always greet with "Radhe Radhe 🙏" at the start.
 - Keep your response conversational, warm, and under 4 short sentences.
 - NEVER offer free readings, free advice, or exact predictions.
-- End your response EXACTLY with this meaning (translate to Hinglish/Hindi to match the user, but keep the exact quote 'Main Menu 📋'): "Please click the 'Main Menu 📋' button below to explore how Surbhi Ji can help you."
+- End your response EXACTLY with this meaning (translate to simple Hindi/Hinglish to match the user, but keep the exact English quote 'Main Menu 📋'): "Please click the 'Main Menu 📋' button below to explore how Surbhi Ji can help you."
 `;
 
 // ==========================================
@@ -218,7 +221,7 @@ export async function POST(req: NextRequest) {
     let finalImage: string | undefined = undefined;
     let finalUrlButton: any = undefined;
     let finalNewState = prev;
-    let isAiResponse = false; // Flag to identify if Gemini answered
+    let isAiResponse = false; 
 
     if (isInteractive || isStandardCommand || isExpectingFreeQuestion || isShortIntentKeyword) {
       const result = nextMessage(incomingText, prev);
@@ -266,18 +269,13 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // NEW: Log both the User's incoming message AND the Bot's exact outgoing reply!
     // ==========================================
     // CRITICAL FIX: CONSISTENT DATABASE SAVING
     // ==========================================
-    
-    // Create timestamps right now, mathematically spaced by 1 second 
-    // so they sort perfectly without actually pausing the server.
     const userTimestamp = new Date();
     const botTimestamp = new Date(userTimestamp.getTime() + 1000); 
 
     const backgroundTasks = async () => {
-      // Connect to DB once before running promises
       await connectDB();
 
       await Promise.all([
@@ -311,7 +309,6 @@ export async function POST(req: NextRequest) {
     await sendWhatsAppMessage(from, finalReply, { buttons: finalButtons, list: finalList, image: finalImage, urlButton: finalUrlButton });
     
     // CRITICAL: We MUST await the background tasks. 
-    // If we don't, Vercel/Next.js will kill the process before MongoDB finishes saving!
     await backgroundTasks();
 
     return new NextResponse("OK", { status: 200 });
