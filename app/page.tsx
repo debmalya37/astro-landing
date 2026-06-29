@@ -381,66 +381,53 @@ const time = useCountdown();
         </div>
       </nav>
 
-      {/* ════════════════════════════════
-          HERO SECTION (Warm Gold Aesthetic)
-      ════════════════════════════════ */}
-  {/* ════════════════════════════════
-          HERO SECTION (Warm Gold Aesthetic)
-      ════════════════════════════════ */}
-      {/* ════════════════════════════════
-          HERO SECTION (Warm Gold Aesthetic)
-      ════════════════════════════════ */}
-      {/* ════════════════════════════════
-          HERO SECTION (Warm Gold Aesthetic)
-      ════════════════════════════════ */}
+      
+      
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-6 sm:py-10 lg:py-14" 
-               style={{ background: `linear-gradient(135deg, #fdf3da 0%, #fce8c0 40%, #f9d89a 100%)` }}>
+               style={{ background: ` background:  linear-gradient(160deg, oklch(0.98 0.02 92) 0%, oklch(0.95 0.03 82) 55%, oklch(0.91 0.05 78) 100%)` }}>
         
-        {/* Interactive 3D Cosmic Earth */}
-        {/* <CosmicEarthBackground /> */}
-
         <div className="max-w-7xl mx-auto px-4 sm:px-5 w-full relative z-10 grid lg:grid-cols-2 gap-2 sm:gap-8 lg:gap-12 items-center">
           
           {/* ========================================================
               LEFT TEXT (Headings & Subheadings)
               ======================================================== */}
           <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 text-[9px] sm:text-xs font-medium tracking-[0.2em] uppercase px-3 sm:px-4 py-1.5 rounded-full mb-3 lg:mb-6" 
-                 style={{ color: C.t1, background: "rgba(255,255,255,0.3)", border: `1px solid rgba(42,14,0,0.2)` }}>
-              ✦ India's Most Trusted Vedic Astrologer
+            <div className="inline-flex items-center gap-2 text-[9px] sm:text-xs font-semibold tracking-[0.15em] uppercase px-3 sm:px-4 py-1.5 rounded-full mb-3 lg:mb-6" 
+                 style={{ color: "#7A6B5D", border: `1px solid #E8DCC8` }}>
+              <span className="text-[#C29543] text-sm">✧</span> INDIA'S MOST TRUSTED VEDIC ASTROLOGER
             </div>
             
-            <h1 className="fraunces text-4xl sm:text-5xl lg:text-6xl leading-[1.1] font-medium text-[#2A0E00] mb-3 lg:mb-6">
-              Accurate Predictions For <br />
-              <em className="font-light italic text-[#4A2E10]">Love, Career & Wealth!</em>
+            <h1 className="fraunces text-4xl sm:text-5xl lg:text-[3.6rem] leading-[1.1] font-bold text-[#362114] mb-3 lg:mb-6">
+              Get the Clarity You <br className="hidden lg:block"/> Need <br />
+              <em className="font-medium italic text-[#C29543] lg:text-5xl">Before Your Next Big Move.</em>
             </h1>
             
-            <p className="text-sm sm:text-lg text-[#3D1600] font-medium max-w-lg mx-auto lg:mx-0 mb-0 lg:mb-8 leading-relaxed px-2 lg:px-0">
-              Feeling stuck in life or lost about your future? Celebrity astrologer Surbhi Gupta's Accurate Vedic Kundli Report reveals the answers hidden in your birth chart and exact timing for success.
+            <p className="text-sm sm:text-[1.1rem] text-[#7A6B5D] font-normal max-w-lg mx-auto lg:mx-0 mb-0 lg:mb-10 leading-relaxed px-2 lg:px-0">
+              Feeling confused about your future? This personalized Premium Vedic Kundli Report by celebrity astrologer <strong className="text-[#362114] font-semibold">Surbhi Gupta</strong> gives you clear guidance on your love life, career, finances, marriage, and the best time to make important decisions.
             </p>
 
             {/* DESKTOP CTA & BADGES (Hidden on Mobile) */}
             <div className="hidden lg:block">
-              <div className="flex flex-col sm:flex-row items-center justify-start gap-4">
-                <a href="#offer" className="btn-auto-shine w-auto px-8 py-4 rounded-full font-medium text-lg text-white shadow-[0_15px_30px_rgba(42,14,0,0.3)] hover:scale-105 transition-transform"
-                   style={{ background: C.dk2 }}>
-                  Get Your Personalized Kundali
+              <div className="flex flex-col sm:flex-row items-center justify-start gap-5">
+                <a href="#offer" className="btn-auto-shine w-auto px-8 py-4 rounded-full font-medium text-[1.05rem] text-white shadow-[0_15px_30px_rgba(54,33,20,0.2)] hover:scale-105 transition-transform flex items-center gap-2"
+                   style={{ background: "#362114" }}>
+                  Get Your Personalized Kundali <span className="text-[#C29543]">✧</span>
                 </a>
-                <div className="flex items-center gap-3 text-[#2A0E00] font-semibold text-sm">
-                  <span className="text-2xl">🎁</span> 
-                  <span className="text-left leading-tight">Includes 1 Free<br/>WhatsApp Question</span>
+                <div className="flex items-center gap-3 text-[#6B5B4C] font-medium text-sm">
+                  <span className="w-10 h-10 rounded-xl bg-[#F0E5D1] text-[#C29543] flex items-center justify-center text-xl shadow-sm">🎁</span> 
+                  <span className="text-left leading-snug">Includes 1 Free<br/>WhatsApp Question</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 mt-12 border-t border-[#4A2E10]/20 pt-8 max-w-lg mx-0">
+              <div className="grid grid-cols-3 gap-4 mt-14 border-t border-[#E8DCC8] pt-8 max-w-lg mx-0">
                 {[
-                  ["10 Lakh+", "Reports Delivered"],
-                  ["4.9/5 ★", "Average Rating"],
-                  ["Personalized", "Deep Analysis"]
+                  ["10 Lakh+", "REPORTS DELIVERED"],
+                  ["4.9/5 ★", "AVERAGE RATING"],
+                  ["Personalized", "DEEP ANALYSIS"]
                 ].map(([top, bot], i) => (
                   <div key={i} className="text-left">
-                    <div className="fraunces text-xl lg:text-2xl font-medium text-[#2A0E00]">{top}</div>
-                    <div className="text-[10px] lg:text-xs text-[#4A2E10] uppercase tracking-widest mt-1">{bot}</div>
+                    <div className="fraunces text-xl lg:text-2xl font-bold text-[#362114]">{top}</div>
+                    <div className="text-[10px] lg:text-xs text-[#9B8C7D] font-semibold uppercase tracking-widest mt-1">{bot}</div>
                   </div>
                 ))}
               </div>
@@ -448,119 +435,63 @@ const time = useCountdown();
           </div>
 
           {/* ========================================================
-              RIGHT VISUAL: Cosmic Wheel + Portrait + Floating Book 
+              RIGHT VISUAL: Hero Book (circular) + Portrait 
               ======================================================== */}
           <div className="relative flex justify-center lg:justify-end items-center h-[400px] sm:h-[480px] lg:h-[700px] mt-0 sm:mt-6 lg:mt-0 w-full overflow-hidden lg:overflow-visible perspective-1000 z-10">
-            
-            {/* 1. BACKGROUND: Massive Cosmic Wheel */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-[-25%] w-[400px] sm:w-[500px] lg:w-[750px] aspect-square z-0 pointer-events-none opacity-90 lg:opacity-100">
-              <svg className="w-full h-full drop-shadow-[0_0_40px_rgba(200,168,75,0.2)] animate-[spin_120s_linear_infinite]" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg"
-              shapeRendering="optimizeSpeed" 
-  textRendering="optimizeSpeed"
-  style={{ willChange: 'transform' }}
-              >
-                <defs>
-                  <radialGradient id="wbg" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#1A0500" stopOpacity="0.8"/>
-                    <stop offset="70%" stopColor="#3D1600" stopOpacity="0.7"/>
-                    <stop offset="100%" stopColor="#521F00" stopOpacity="0.4"/>
-                  </radialGradient>
-                </defs>
-                <circle cx="230" cy="230" r="220" fill="url(#wbg)" stroke="rgba(200,168,75,0.6)" strokeWidth="1.5"/>
-                <g className="wheel-outer-ring">
-                  <circle cx="230" cy="230" r="215" fill="none" stroke="rgba(200,168,75,0.3)" strokeWidth="0.5" strokeDasharray="4 8"/>
-                  <g fill="rgba(226,192,106,0.9)" fontSize="16" fontFamily="serif" textAnchor="middle">
-                    <text x="230" y="26">♈</text><text x="320" y="49">♉</text>
-                    <text x="390" y="119">♊</text><text x="415" y="214">♋</text>
-                    <text x="390" y="304">♌</text><text x="320" y="374">♍</text>
-                    <text x="230" y="439">♎</text><text x="140" y="414">♏</text>
-                    <text x="65"  y="349">♐</text><text x="32"  y="259">♑</text>
-                    <text x="58"  y="164">♒</text><text x="128" y="86">♓</text>
-                  </g>
-                </g>
-                <circle cx="230" cy="230" r="185" fill="none" stroke="rgba(200,168,75,0.2)" strokeWidth="1"/>
-                <circle cx="230" cy="230" r="155" fill="none" stroke="rgba(200,168,75,0.15)" strokeWidth="0.5"/>
-                <g stroke="rgba(200,168,75,0.2)" strokeWidth="1">
-                  <line x1="230" y1="45" x2="230" y2="415"/>
-                  <line x1="45"  y1="230" x2="415" y2="230"/>
-                  <line x1="90"  y1="90"  x2="370" y2="370"/>
-                  <line x1="370" y1="90"  x2="90"  y2="370"/>
-                </g>
-              </svg>
-            </div>
 
-            {/* 2. CENTER: Portrait */}
-            <div className="relative z-10 w-[200px] sm:w-[280px] lg:w-[360px] ml-6 sm:ml-10 lg:ml-0 lg:mr-0">
-              <div className="relative w-full aspect-[4/5] rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-[3px] lg:border-[4px] border-[#C8A84B]/40 shadow-[0_15px_40px_rgba(42,14,0,0.6)] lg:shadow-[0_25px_60px_rgba(42,14,0,0.6)] bg-[#2A0E00]">
-                <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
+            {/* STAGE */}
+            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-[-20%] w-[400px] sm:w-[500px] lg:w-[750px] aspect-square">
+
+              {/* 1. BACKGROUND: Hero Book */}
+              <div className="absolute inset-0 rounded-full overflow-hidden z-0 shadow-[0_0_50px_rgba(194,149,67,0.15)]">
                 <Image
-  src="/surbhi-gupta-portrait.jpg"
-  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer"
-  width={360}
-  height={450}
-  // guidline-change: add priority prop to disable lazy-loading (defaults loading="eager")
-  priority
-  // guidline-change: add fetchPriority="high" for immediate discovery/download
-  fetchPriority="high"
-  sizes="(max-width: 768px) 200px, 360px"
-  quality={50}
-  className="absolute inset-0 w-full h-full object-cover z-10"
-/>
-                <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
-                <div className="absolute bottom-3 lg:bottom-5 inset-x-0 text-center z-30">
-                  <div className="text-[#F5D98A] font-bold text-sm sm:text-xl lg:text-2xl drop-shadow-lg px-2 leading-tight">Celebrity Astrologer<br/>Surbhi Gupta</div>
-                  <div className="text-white/80 text-[8px] lg:text-xs uppercase tracking-widest font-bold mt-1">Vedic Astrologer</div>
-                </div>
+                  src="/hero-book.png"
+                  alt="Surbhi Gupta Premium Kundali Report Book"
+                  fill
+                  sizes="(max-width: 768px) 400px, 750px"
+                  quality={75}
+                  className="object-cover object-center"
+                />
+                <div className="absolute inset-0 rounded-full pointer-events-none border-[1px] border-[#E8DCC8]/30" style={{ boxShadow: 'inset 0 0 60px rgba(54,33,20,0.4)' }} />
               </div>
 
-              {/* Floating Badge (Trusted By) */}
-              <div className="absolute top-4 -right-6 sm:top-8 sm:-right-8 lg:-top-5 lg:-right-6 bg-white rounded-lg lg:rounded-xl py-1.5 px-3 lg:py-2 lg:px-5 shadow-[0_10px_20px_rgba(0,0,0,0.2)] flex items-center gap-1.5 lg:gap-2 border border-[#E8D8B8] z-30 animate-[float_5s_ease-in-out_infinite_0.5s]">
-                <div className="text-sm lg:text-xl drop-shadow-sm">⭐</div>
-                <div className="text-left">
-                  <div className="text-[#4A2E10] text-[7px] lg:text-[10px] font-bold uppercase tracking-widest leading-none">Trusted by</div>
-                  <div className="text-[#2A1400] text-[10px] sm:text-xs lg:text-sm font-extrabold mt-0.5">1.5 Lakh+</div>
-                </div>
-              </div>
-              
-              {/* Floating "Spots Left" Notification */}
-              <div className="absolute -top-6 -left-4 sm:-top-8 sm:-left-4 lg:-top-10 lg:-left-12 z-30 animate-[float_4s_ease-in-out_infinite_1s]">
-                <div className="bg-gradient-to-r from-[#A82020] to-[#8B1E1E] text-white text-[8px] sm:text-[10px] lg:text-xs font-bold tracking-widest px-3 py-1.5 lg:px-5 lg:py-2.5 rounded-full shadow-[0_10px_20px_rgba(168,32,32,0.4)] border border-[#FF8080]/30 flex items-center gap-1.5 lg:gap-2 whitespace-nowrap">
-                  <span className="animate-pulse">🔥</span> ONLY 17 SPOTS LEFT
-                </div>
-              </div>
-
-              {/* 3. FOREGROUND: Floating Premium Book */}
-              <div className="absolute -bottom-10 -left-20 sm:-bottom-10 sm:-left-16 lg:-bottom-8 lg:-left-40 z-40 animate-float transform -rotate-6 hover:rotate-0 transition-transform duration-700">
-                <div className="w-[110px] sm:w-[160px] lg:w-[220px] aspect-[1/1.6] rounded-xl rounded-l-md shadow-[10px_15px_30px_rgba(0,0,0,0.8)] lg:shadow-[10px_25px_50px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden border-r-[2px] border-y border-[#D8C49A]/30 border-l-[4px] lg:border-l-[6px] border-l-[#1A0505]"
-                     style={{ background: 'linear-gradient(160deg, #4A0E1A 0%, #1A0505 100%)' }}>
-                  
-                  <div className="absolute left-0 top-0 bottom-0 w-2 lg:w-3 bg-gradient-to-r from-transparent via-white/10 to-transparent mix-blend-overlay"></div>
-                  
-                  <div className="p-2 pt-3 sm:p-4 sm:pt-5 lg:p-5 lg:pt-6 text-center z-10 relative">
-                    <div className="text-[#C8A84B] text-[5px] sm:text-[7px] lg:text-[8px] font-bold tracking-[0.2em] uppercase mb-1 sm:mb-1.5 lg:mb-2">
-                      Premium<br/>Personalized
-                    </div>
-                    <h3 className="fraunces text-sm sm:text-lg lg:text-2xl font-bold text-white leading-tight">
-                      Kundali <br/><span className="text-[#E2C06A]">Report</span>
-                    </h3>
+              {/* 2. FOREGROUND: Portrait */}
+              <div className="absolute z-20 bottom-[3%] right-[0%] w-[30%] max-w-[220px]">
+                <div className="relative w-full aspect-[4/5] rounded-xl lg:rounded-2xl overflow-hidden border-[2px] lg:border-[3px] border-[#C29543]/40 shadow-[0_10px_25px_rgba(54,33,20,0.4)] lg:shadow-[0_15px_40px_rgba(54,33,20,0.4)] bg-[#362114]">
+                  <div className="absolute inset-0 bg-[#E8D8B8]"></div>
+                  <Image
+                    src="/surbhi-gupta-portrait.jpg"
+                    alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer"
+                    width={220}
+                    height={275}
+                    priority
+                    fetchPriority="high"
+                    sizes="(max-width: 768px) 120px, 220px"
+                    quality={60}
+                    className="absolute inset-0 w-full h-full object-cover z-10"
+                  />
+                  <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#20120B] to-transparent z-20"></div>
+                  <div className="absolute bottom-1.5 lg:bottom-3 inset-x-0 text-center z-30">
+                    <div className="text-[#E2C06A] font-bold text-[9px] sm:text-xs lg:text-[13px] drop-shadow-lg px-1 leading-tight">Celebrity Astrologer<br/><span className="text-white">Surbhi Gupta</span></div>
+                    <div className="text-white/80 text-[6px] lg:text-[8px] uppercase tracking-[0.2em] font-medium mt-1">Vedic Astrologer</div>
                   </div>
-
-                  <div className="flex-1 flex items-center justify-center relative z-10">
-                    <div className="absolute w-6 h-6 sm:w-10 sm:h-10 lg:w-16 lg:h-16 bg-[#7B42F6] rounded-full blur-xl lg:blur-2xl opacity-40"></div>
-                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-[#8B5CF6] to-[#5B21B6] transform rotate-45 rounded-lg lg:rounded-xl shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_5px_10px_rgba(0,0,0,0.5)] flex items-center justify-center border border-[#A78BFA]/50">
-                      <div className="transform -rotate-45 text-white/90 text-xs sm:text-base lg:text-xl font-light">✡</div>
-                    </div>
-                  </div>
-
-                  <div className="p-2 pb-3 sm:p-4 sm:pb-5 lg:p-5 lg:pb-6 text-center z-10 relative">
-                    <div className="text-white/40 line-through text-[6px] sm:text-[8px] lg:text-[10px] font-medium mb-0.5">₹2,999</div>
-                    <div className="flex items-center justify-center">
-                      <span className="text-[#E2C06A] text-[8px] sm:text-[10px] lg:text-sm font-bold mr-0.5">₹</span>
-                      <span className="text-[#E2C06A] fraunces text-sm sm:text-lg lg:text-2xl font-bold tracking-tight">999</span>
-                    </div>
-                  </div>
-
                 </div>
+
+                {/* Floating Badge */}
+                <div className="absolute -top-3 -right-4 sm:-top-4 sm:-right-5 bg-white rounded-full lg:rounded-full py-1.5 px-3 lg:py-2 lg:px-4 shadow-[0_8px_20px_rgba(54,33,20,0.15)] flex items-center gap-1.5 border border-[#E8DCC8] z-30 animate-[float_5s_ease-in-out_infinite_0.5s]">
+                  <div className="text-[10px] lg:text-sm drop-shadow-sm text-[#C29543]">⭐</div>
+                  <div className="text-left">
+                    <div className="text-[#362114] text-[8px] sm:text-[10px] lg:text-xs font-bold leading-none">Trusted by 1.5 Lakh+</div>
+                  </div>
+                </div>
+
+                {/* Floating "Spots Left" */}
+                <div className="absolute -top-6 -left-6 sm:-top-8 sm:-left-4 z-30 animate-[float_4s_ease-in-out_infinite_1s]">
+                  <div className="bg-[#D32F2F] text-white text-[7px] sm:text-[8px] lg:text-[10px] font-bold tracking-widest px-3 py-1.5 lg:px-4 lg:py-2 rounded-full shadow-[0_8px_16px_rgba(211,47,47,0.3)] flex items-center gap-1.5 whitespace-nowrap">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div> ONLY 17 SPOTS LEFT
+                  </div>
+                </div>
+
               </div>
 
             </div>
@@ -570,27 +501,27 @@ const time = useCountdown();
               MOBILE CTA & BADGES (Hidden on Desktop)
               ======================================================== */}
           <div className="block lg:hidden w-full pt-4 sm:pt-6 relative z-20">
-            <div className="flex flex-col items-center justify-center gap-3">
-              <a href="#offer" className="btn-auto-shine w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg text-white shadow-[0_10px_20px_rgba(42,14,0,0.3)] active:scale-95 transition-transform text-center"
-                 style={{ background: C.dk2 }}>
-                Get Your Personalized Kundali
+            <div className="flex flex-col items-center justify-center gap-4">
+              <a href="#offer" className="btn-auto-shine w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg text-white shadow-[0_10px_20px_rgba(54,33,20,0.2)] active:scale-95 transition-transform text-center flex items-center justify-center gap-2"
+                 style={{ background: "#362114" }}>
+                Get Your Personalized Kundali <span className="text-[#C29543]">✧</span>
               </a>
-              <div className="flex items-center justify-center gap-2 text-[#2A0E00] font-semibold text-xs">
-                <span className="text-xl">🎁</span> 
-                <span className="text-left leading-tight">Includes 1 Free<br/>WhatsApp Question</span>
+              <div className="flex items-center justify-center gap-3 text-[#6B5B4C] font-medium text-xs">
+                <span className="w-8 h-8 rounded-lg bg-[#F0E5D1] text-[#C29543] flex items-center justify-center text-base shadow-sm">🎁</span> 
+                <span className="text-left leading-snug">Includes 1 Free<br/>WhatsApp Question</span>
               </div>
             </div>
 
             {/* Mobile Trust Badges */}
-            <div className="grid grid-cols-3 gap-2 mt-6 border-t border-[#4A2E10]/20 pt-4 max-w-lg mx-auto">
+            <div className="grid grid-cols-3 gap-2 mt-8 border-t border-[#E8DCC8] pt-6 max-w-lg mx-auto">
               {[
-                ["10 Lakh+", "Reports Delivered"],
-                ["4.9/5 ★", "Average Rating"],
-                ["Personalized", "Deep Analysis"]
+                ["10 Lakh+", "REPORTS DELIVERED"],
+                ["4.9/5 ★", "AVERAGE RATING"],
+                ["Personalized", "DEEP ANALYSIS"]
               ].map(([top, bot], i) => (
                 <div key={i} className="text-center">
-                  <div className="fraunces text-base sm:text-lg font-medium text-[#2A0E00]">{top}</div>
-                  <div className="text-[7px] sm:text-[9px] text-[#4A2E10] uppercase tracking-widest mt-0.5">{bot}</div>
+                  <div className="fraunces text-lg sm:text-xl font-bold text-[#362114]">{top}</div>
+                  <div className="text-[8px] sm:text-[10px] text-[#9B8C7D] font-semibold uppercase tracking-widest mt-1">{bot}</div>
                 </div>
               ))}
             </div>
@@ -599,6 +530,166 @@ const time = useCountdown();
         </div>
       </section>
 
+{/* CELEBRITY TESTIMONIALS section to the second part after hero changes after client discussions */}
+
+<section className="relative overflow-hidden py-4 sm:py-8" style={{ background: C.dk }}>
+  <StarCanvas id="proofC" style={{ opacity: .5 }} />
+  {/* Hide large floating symbols on mobile to prevent overflow/distraction */}
+  <div className="hidden lg:block absolute right-[-30px] top-[20%] text-[24rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♀</div>
+  <div className="hidden lg:block absolute left-[-20px] bottom-[25%] text-[18rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♂</div>
+
+  {/* Global style injection for hiding scrollbar AND the infinite slide animation */}
+  <style dangerouslySetInnerHTML={{ __html: `
+    .hide-scroll::-webkit-scrollbar { display: none; } 
+    .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    @keyframes infinite-slide {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-infinite-slide {
+      animation: infinite-slide 25s linear infinite;
+    }
+    .animate-infinite-slide:hover {
+      animation-play-state: paused;
+    }
+  ` }} />
+
+  <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10">
+    
+    <div className="reveal text-center mb-10 lg:mb-[40px]">
+      <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>✦ Real People. Real Shifts.</div>
+      <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
+        15,000 Lives Touched.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Stars.</em>
+      </h2>
+    </div>
+
+    {/* CELEBRITY CAROUSEL (Mobile Swipeable / Desktop Scrollable) */}
+    <div className="reveal d1 mb-16 lg:mb-[80px]">
+      <div className="flex items-center gap-3 lg:gap-4 mb-6 lg:mb-8 max-w-[800px] mx-auto">
+        <div className="h-[1px] flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(200,168,75,0.3))" }} />
+        <div className="text-[0.65rem] lg:text-[0.8rem] font-medium tracking-[0.2em] uppercase text-center" style={{ color: C.g2 }}>Celebrity Consultations</div>
+        <div className="h-[1px] flex-1" style={{ background: "linear-gradient(270deg, transparent, rgba(200,168,75,0.3))" }} />
+      </div>
+
+      {/* Carousel Container */}
+      <div className="flex gap-4 lg:gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scroll px-2 -mx-2 animate-infinite-slide">
+        {[
+          { name: "Leading Politician", desc: "Muhurat & Strategy", img: "/celebs/4.jpeg" },
+          { name: "Leading Politician", desc: "Muhurat & Strategy", img: "/celebs/7.jpeg" },
+          // { name: "Bollywood Actor", desc: "Career Timing", img: "/celebs/5.jpeg" },
+          { name: "Top Industrialist", desc: "Business Expansion", img: "/celebs/6.jpeg" },
+          { name: "Cricket Icon", desc: "Injury & Comeback", img: "/celebs/11.png" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/8.jpg" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/8.png" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/9.jpeg" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/9.png" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/10.jpg" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/11.png" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/13.jpeg" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/14.jpeg" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/1.jpeg" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/2.jpeg" },
+          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/3.jpeg" },
+        ].map((celeb, i) => (
+          <div key={i} className="relative shrink-0 w-[140px] sm:w-[180px] lg:w-[220px] aspect-[3/4] rounded-2xl lg:rounded-[24px] overflow-hidden snap-center group transition-transform duration-300 hover:-translate-y-2" style={{ border: "1px solid rgba(200,168,75,.3)", background: C.dk2, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+            
+            {/* Image (Replace src with actual celeb images) */}
+            <div className="absolute inset-0 bg-[#3D1600] flex items-center justify-center text-4xl opacity-20 z-0">👤</div>
+            <Image 
+              src={celeb.img} 
+              alt={celeb.name} 
+              quality={50}
+              width={220} 
+              height={293} 
+              sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
+              className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 z-0"
+              priority={false}
+            />
+
+            {/* Dark Gradient Overlay for Text Readability */}
+            <div className="absolute inset-x-0 bottom-0 p-3 lg:p-5 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, rgba(20,5,0,0.6) 60%, transparent 100%)" }}>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    {/* Header */}
+    <div className="reveal text-center mb-10 lg:mb-[52px]">
+      <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>
+        ✦ As Featured In
+      </div>
+      <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
+        Making Headlines.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Press.</em>
+      </h2>
+    </div>
+  </div>
+
+  {/* CONTINUOUS AUTO-SLIDING NEWS GRID */}
+  {/* We place this outside the max-w container so it stretches full screen edge-to-edge */}
+  <div className="relative w-full overflow-hidden pb-6 pt-2">
+    
+    {/* Gradient Masks for smooth entry/exit fading */}
+    <div className="absolute inset-y-0 left-0 w-8 sm:w-16 lg:w-32 z-40 pointer-events-none" style={{ background: `linear-gradient(to right, ${C.dk}, transparent)` }} />
+    <div className="absolute inset-y-0 right-0 w-8 sm:w-16 lg:w-32 z-40 pointer-events-none" style={{ background: `linear-gradient(to left, ${C.dk}, transparent)` }} />
+
+    {/* Sliding Container */}
+    <div className="flex w-full mx-4 animate-infinite-slide gap-4 lg:gap-6 px-4">
+      {/* We duplicate the array to create a seamless infinite loop */}
+      {[
+        { id: 2, publisher: "Hindustan Times", date: "Sep 2024", img: "/news/002.jpg" },
+        { id: 3, publisher: "Mid-Day", date: "Aug 2024", img: "/news/003.jpg" },
+        { id: 4, publisher: "Zee News", date: "Jul 2024", img: "/news/004.jpg" },
+        { id: 6, publisher: "India Today", date: "May 2024", img: "/narendra-modi.jpg" },
+        { id: 9, publisher: "Firstpost", date: "Feb 2024", img: "/news/009.png" },
+        // Duplicated items for infinite effect
+        { id: 22, publisher: "Hindustan Times", date: "Sep 2024", img: "/news/002.jpg" },
+        { id: 23, publisher: "Mid-Day", date: "Aug 2024", img: "/news/003.jpg" },
+        { id: 24, publisher: "Zee News", date: "Jul 2024", img: "/news/004.jpg" },
+        { id: 26, publisher: "India Today", date: "May 2024", img: "/narendra-modi.jpg" },
+        { id: 29, publisher: "Firstpost", date: "Feb 2024", img: "/news/009.png" },
+      ].map((news, i) => (
+        <div 
+          key={news.id} 
+          className="group relative shrink-0 w-[260px] sm:w-[320px] lg:w-[380px] rounded-[18px] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5" 
+          style={{ background: C.dk, border: "1px solid rgba(200,168,75,.15)", boxShadow: "0 10px 30px rgba(0,0,0,0.3)" }}
+        >
+          {/* Image Container */}
+          <div className="relative w-full aspect-[4/3] bg-[#2A0E00] overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-10">📰</div>
+            
+            <Image 
+              src={news.img} 
+              alt={`News snippet from ${news.publisher}`} 
+              width={400} 
+              height={300}
+              quality={50}
+              sizes="(max-width: 768px) 260px, (max-width: 1200px) 320px, 380px"
+              className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 z-10"
+            />
+            
+            <div className="absolute inset-x-0 bottom-0 h-2/3 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, transparent 100%)" }} />
+          </div>
+
+          {/* Publisher Info */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5 z-30 flex items-end justify-between">
+            <div>
+              <div className="text-[0.6rem] lg:text-[0.65rem] font-medium tracking-wider uppercase mb-1" style={{ color: C.g }}>Media Coverage</div>
+              <div className="fraunces text-[1.05rem] lg:text-[1.15rem] font-medium text-white leading-tight">{news.publisher}</div>
+            </div>
+            <div className="text-[0.6rem] lg:text-[0.65rem] px-2 py-1 rounded border whitespace-nowrap" style={{ color: C.td4, borderColor: "rgba(255,255,255,0.15)", background: "rgba(0,0,0,0.4)" }}>
+              {news.date}
+            </div>
+          </div>
+          
+          <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#C8A84B]/40 rounded-[18px] transition-colors duration-300 z-40 pointer-events-none" />
+        </div>
+      ))}
+    </div>
+  </div>
+
+</section>
      {/* ════════════════════════════════
           WHAT CAN IT SOLVE? (Interactive 3D Hover Cards)
       ════════════════════════════════ */}
@@ -1196,153 +1287,7 @@ const time = useCountdown();
         </div>
       </section>
 
-<section className="relative overflow-hidden py-4 sm:py-8" style={{ background: C.dk }}>
-        <StarCanvas id="proofC" style={{ opacity: .5 }} />
-        {/* Hide large floating symbols on mobile to prevent overflow/distraction */}
-        <div className="hidden lg:block absolute right-[-30px] top-[20%] text-[24rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♀</div>
-        <div className="hidden lg:block absolute left-[-20px] bottom-[25%] text-[18rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♂</div>
 
-        {/* Global style injection just for hiding scrollbar in the carousel */}
-        <style dangerouslySetInnerHTML={{ __html: `.hide-scroll::-webkit-scrollbar { display: none; } .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }` }} />
-
-        <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10">
-          
-          <div className="reveal text-center mb-10 lg:mb-[40px]">
-            <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>✦ Real People. Real Shifts.</div>
-            <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
-              15,000 Lives Touched.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Stars.</em>
-            </h2>
-          </div>
-
-          {/* CELEBRITY CAROUSEL (Mobile Swipeable / Desktop Scrollable) */}
-          <div className="reveal d1 mb-16 lg:mb-[80px]">
-            <div className="flex items-center gap-3 lg:gap-4 mb-6 lg:mb-8 max-w-[800px] mx-auto">
-              <div className="h-[1px] flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(200,168,75,0.3))" }} />
-              <div className="text-[0.65rem] lg:text-[0.8rem] font-medium tracking-[0.2em] uppercase text-center" style={{ color: C.g2 }}>Celebrity Consultations</div>
-              <div className="h-[1px] flex-1" style={{ background: "linear-gradient(270deg, transparent, rgba(200,168,75,0.3))" }} />
-            </div>
-
-            {/* Carousel Container */}
-            <div className="flex overflow-x-auto gap-4 lg:gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scroll px-2 -mx-2">
-              {[
-                { name: "Leading Politician", desc: "Muhurat & Strategy", img: "/celebs/4.jpeg" },
-                { name: "Bollywood Actor", desc: "Career Timing", img: "/celebs/5.jpeg" },
-                { name: "Top Industrialist", desc: "Business Expansion", img: "/celebs/6.jpeg" },
-                { name: "Cricket Icon", desc: "Injury & Comeback", img: "/celebs/11.png" },
-                { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/8.png" },
-              ].map((celeb, i) => (
-                <div key={i} className="relative shrink-0 w-[140px] sm:w-[180px] lg:w-[220px] aspect-[3/4] rounded-2xl lg:rounded-[24px] overflow-hidden snap-center group transition-transform duration-300 hover:-translate-y-2" style={{ border: "1px solid rgba(200,168,75,.3)", background: C.dk2, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
-                  
-                  {/* Image (Replace src with actual celeb images) */}
-                  <div className="absolute inset-0 bg-[#3D1600] flex items-center justify-center text-4xl opacity-20 z-0">👤</div>
-                  <Image 
-  src={celeb.img} 
-  alt={celeb.name} 
-  quality={50}
-  // 1. Define dimensions based on the container aspect ratio (3:4)
-  width={220} // The max width in your CSS
-  height={293} // Matches the 3/4 aspect ratio (220 / 3 * 4)
-  // 2. Responsive 'sizes' are crucial for carousel images
-  sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
-  // 3. Keep your existing cinematic/hover styling
-  className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 z-0"
-  // 4. Set priority to false (or just omit it) because it's further down the page
-  priority={false}
-/>
-
-                  {/* Dark Gradient Overlay for Text Readability */}
-                  <div className="absolute inset-x-0 bottom-0 p-3 lg:p-5 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, rgba(20,5,0,0.6) 60%, transparent 100%)" }}>
-                    {/* <div className="text-[0.55rem] lg:text-[0.65rem] font-medium mb-1 tracking-wider uppercase" style={{ color: C.g }}>✦ {celeb.desc}</div> */}
-                    {/* <div className="fraunces text-[0.9rem] lg:text-[1.2rem] font-medium text-white leading-tight">{celeb.name}</div> */}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-              <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10">
-          
-          {/* Header */}
-          <div className="reveal text-center mb-10 lg:mb-[52px]">
-            <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>
-              ✦ As Featured In
-            </div>
-            <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
-              Making Headlines.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Press.</em>
-            </h2>
-          </div>
-
-          {/* News Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-            {[
-              // { id: 1, publisher: "The Times of India", date: "Oct 2024", img: "/news/001.jpg" },
-              { id: 2, publisher: "Hindustan Times", date: "Sep 2024", img: "/news/002.jpg" },
-              { id: 3, publisher: "Mid-Day", date: "Aug 2024", img: "/news/003.jpg" },
-              { id: 4, publisher: "Zee News", date: "Jul 2024", img: "/news/004.jpg" },
-              // { id: 5, publisher: "Deccan Chronicle", date: "Jun 2024", img: "/news/005.jpg" },
-              { id: 6, publisher: "India Today", date: "May 2024", img: "/narendra-modi.jpg" },
-              // { id: 7, publisher: "The Tribune", date: "Apr 2024", img: "/news/007.jpg" },
-              // { id: 8, publisher: "NDTV", date: "Mar 2024", img: "/news/008.jpg" },
-              { id: 9, publisher: "Firstpost", date: "Feb 2024", img: "/news/009.png" },
-              // { id: 5, publisher: "Deccan Chronicle", date: "Jun 2024", img: "/news/010.jpg" },
-              // { id: 6, publisher: "India Today", date: "May 2024", img: "/news/011.jpg" },
-              // { id: 7, publisher: "The Tribune", date: "Apr 2024", img: "/news/012.jpg" },
-              // { id: 8, publisher: "NDTV", date: "Mar 2024", img: "/news/012.jpg" },
-              // { id: 9, publisher: "Firstpost", date: "Feb 2024", img: "/news/013.jpg" },
-            ]
-              // If showAllNews is false, only show the first 6. If true, show all.
-              .map((news, i) => (
-                <div 
-                  key={news.id} 
-                  className={`reveal${i > 0 && i < 3 ? " d"+i : ""} group relative rounded-[18px] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5`} 
-                  style={{ background: C.dk, border: "1px solid rgba(200,168,75,.15)", boxShadow: "0 10px 30px rgba(0,0,0,0.3)" }}
-                >
-                  {/* Image Container */}
-                  <div className="relative w-full aspect-[4/3] bg-[#2A0E00] overflow-hidden">
-                    {/* Placeholder icon just in case image doesn't load */}
-                    <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-10">📰</div>
-                    
-                    <Image 
-  src={news.img} 
-  alt={`News snippet from ${news.publisher}`} 
-  // 1. Define dimensions to prevent Layout Shift (CLS)
-  width={400} 
-  height={300}
-  quality={50}
-  // 2. Add 'sizes' so Next.js generates smaller versions for mobile
-  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-  // 3. Keep your existing cinematic styling
-  className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 z-10"
-  // 4. Optimization: Standard <img> doesn't need 'loading="lazy"' here 
-  // because Next.js handles it automatically for images below the fold.
-/>
-                    
-                    {/* Gradient Overlay for bottom text */}
-                    <div className="absolute inset-x-0 bottom-0 h-2/3 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, transparent 100%)" }} />
-                  </div>
-
-                  {/* Publisher Info (Overlayed at bottom) */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5 z-30 flex items-end justify-between">
-                    <div>
-                      <div className="text-[0.6rem] lg:text-[0.65rem] font-medium tracking-wider uppercase mb-1" style={{ color: C.g }}>Media Coverage</div>
-                      <div className="fraunces text-[1.05rem] lg:text-[1.15rem] font-medium text-white leading-tight">{news.publisher}</div>
-                    </div>
-                    <div className="text-[0.6rem] lg:text-[0.65rem] px-2 py-1 rounded border" style={{ color: C.td4, borderColor: "rgba(255,255,255,0.15)", background: "rgba(0,0,0,0.4)" }}>
-                      {news.date}
-                    </div>
-                  </div>
-                  
-                  {/* Glow effect on hover */}
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#C8A84B]/40 rounded-[18px] transition-colors duration-300 z-40 pointer-events-none" />
-                </div>
-            ))}
-          </div>
-
-          
-
-        </div>
-          
-        </div>
-      </section>
 
       {/* ════════════════════════════════
           TESTIMONIALS (Real Transformations)

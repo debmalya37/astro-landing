@@ -13,6 +13,8 @@ body {
   /* Next.js Font fallback logic */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+ 
+
 }
 
 /* Paper texture - Optimized with pointer-events-none */
