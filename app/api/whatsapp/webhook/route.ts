@@ -8,13 +8,11 @@ import { GoogleGenAI } from "@google/genai";
 // ==========================================
 // 1. SINGLETON / GLOBAL SETUP
 // ==========================================
-// Persistent Redis connection
 const redis = new Redis(process.env.REDIS_URL!, {
   lazyConnect: true,
-  maxRetriesPerRequest: 1 // Faster fail for webhooks
+  maxRetriesPerRequest: 1 
 });
 
-// Cache MongoDB connection globally
 let isConnected = false;
 async function connectDB() {
   if (isConnected) return;
@@ -34,18 +32,16 @@ const ChatSchema = new mongoose.Schema({
 });
 
 const Chat = mongoose.models.Chat || mongoose.model("Chat", ChatSchema);
-
-// Initialize Gemini Client
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // ==========================================
-// 2. WHATSAPP SENDER HELPER
+// 2. WHATSAPP SENDER HELPER (FIXED TO RETURN STATUS)
 // ==========================================
 export async function sendWhatsAppMessage(
   to: string, 
   text: string, 
   options?: { buttons?: string[], list?: any, image?: string, urlButton?: { text: string; url: string } }
-) {
+): Promise<boolean> {
   const phoneNumberId = process.env.WHATSAPP_PHONE_ID!;
   const token = process.env.WHATSAPP_TOKEN!;
   const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
@@ -88,8 +84,21 @@ export async function sendWhatsAppMessage(
       }
     };
   } else if (options?.list) {
+    // SAFEGUARD: Auto-truncate row titles to 24 characters right before sending to prevent API 131009 Crashes
+    const sanitizedSections = options.list.sections?.map((section: any) => ({
+      ...section,
+      rows: section.rows?.map((row: any) => ({
+        ...row,
+        title: row.title.substring(0, 24)
+      }))
+    }));
+
     payload.type = "interactive";
-    payload.interactive = { type: "list", body: { text: text }, action: options.list };
+    payload.interactive = { 
+      type: "list", 
+      body: { text: text }, 
+      action: { ...options.list, sections: sanitizedSections } 
+    };
   } else if (options?.buttons && options.buttons.length > 0) {
     payload.type = "interactive";
     payload.interactive = {
@@ -113,8 +122,15 @@ export async function sendWhatsAppMessage(
 
   try {
     const response = await fetch(url, { ...fetchOptions, body: JSON.stringify(payload) });
-    if (!response.ok) console.error("Meta API Error:", await response.json());
-  } catch (error) { console.error("Failed to send WA message:", error); }
+    if (!response.ok) {
+      console.error("Meta API Error:", await response.json());
+      return false; // Return false so background tasks aren't processed
+    }
+    return true; // Successfully delivered
+  } catch (error) { 
+    console.error("Failed to send WA message:", error); 
+    return false;
+  }
 }
 
 // ==========================================
@@ -122,12 +138,12 @@ export async function sendWhatsAppMessage(
 // ==========================================
 const MODELS = [
   'gemini-1.5-flash', 
-  'gemini-2.5-flash',                   
+  'gemini-2.5-flash',                    
   'gemini-2.0-flash',        
   'gemini-1.5-flash-8b'     
 ];
 
-const GEMINI_SYSTEM_PROMPT = `
+const GEMINI_SYSTEM_PROMPT =  `
 You are the official, deeply empathetic AI assistant for Celebrity Astrologer Surbhi Gupta.
 Your ultimate goal is to convert the user into a client by making them feel heard, validated, and understood.
 
@@ -154,7 +170,6 @@ RULES:
 - NEVER offer free readings, free advice, or exact predictions.
 - End your response EXACTLY with this meaning (translate to simple Hindi/Hinglish to match the user, but keep the exact English quote 'Main Menu 📋'): "Please click the 'Main Menu 📋' button below to explore how Surbhi Ji can help you."
 `;
-
 // ==========================================
 // 4. HANDLERS
 // ==========================================
@@ -269,15 +284,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ==========================================
-    // CRITICAL FIX: CONSISTENT DATABASE SAVING
-    // ==========================================
     const userTimestamp = new Date();
     const botTimestamp = new Date(userTimestamp.getTime() + 1000); 
 
     const backgroundTasks = async () => {
       await connectDB();
-
       await Promise.all([
         redis.set(`user_state:${from}`, JSON.stringify(finalNewState), "EX", 86400),
         redis.hset("wa_last_interaction", from, Date.now().toString()),
@@ -285,31 +296,23 @@ export async function POST(req: NextRequest) {
         
         // 1. Log the User's incoming message
         Chat.create({ 
-          phoneNumber: from, 
-          waName, 
-          message: incomingText, 
-          step: finalNewState.step, 
-          type: msgType, 
-          timestamp: userTimestamp 
+          phoneNumber: from, waName, message: incomingText, step: finalNewState.step, type: msgType, timestamp: userTimestamp 
         }),
 
-        // 2. Log the Bot's exact outgoing reply
+        // 2. Log the Bot's outgoing message
         Chat.create({ 
-          phoneNumber: from, 
-          waName: "Bot", 
-          message: finalReply, 
-          step: finalNewState.step, 
-          type: isAiResponse ? "bot_ai_response" : "bot_flow_response", 
-          timestamp: botTimestamp 
+          phoneNumber: from, waName: "Bot", message: finalReply, step: finalNewState.step, type: isAiResponse ? "bot_ai_response" : "bot_flow_response", timestamp: botTimestamp 
         })
       ]);
     };
 
-    // First, send the actual WhatsApp message to the user
-    await sendWhatsAppMessage(from, finalReply, { buttons: finalButtons, list: finalList, image: finalImage, urlButton: finalUrlButton });
+    // CRITICAL CONTROL: Execute sending first and inspect response status
+    const messageDelivered = await sendWhatsAppMessage(from, finalReply, { buttons: finalButtons, list: finalList, image: finalImage, urlButton: finalUrlButton });
     
-    // CRITICAL: We MUST await the background tasks. 
-    await backgroundTasks();
+    // ONLY update state and log history if message delivery was successful
+    if (messageDelivered) {
+      await backgroundTasks();
+    }
 
     return new NextResponse("OK", { status: 200 });
   } catch (error) {

@@ -16,19 +16,17 @@ export type FlowState = {
   userData: UserData;
 };
 
-// Helper: Check if the selected service is Career related
 function isCareerService(intent: string = "") {
   const lowerIntent = intent.toLowerCase();
   return lowerIntent.includes("career") || lowerIntent.includes("business") || lowerIntent.includes("करियर") || lowerIntent.includes("व्यापार");
 }
 
-// Helper: Dynamic Career Questions for the 1 Free Question Bonus
 function getCareerQuestions(isHi: boolean) {
   if (isHi) {
     return [
       { id: "c_q1", title: "नौकरी कब मिलेगी?", description: "नई नौकरी या प्रमोशन का समय" },
       { id: "c_q2", title: "नौकरी या व्यापार?", description: "मेरे लिए क्या बेहतर है?" },
-      { id: "c_q3", title: "आर्थिक स्थिति", description: "धन लाभ और करियर स्थिरता" }
+      { id: "c_q3", title: "आर्थिक स्थिति", description: "धन लाभ और स्थिर करियर" }
     ];
   } else {
     return [
@@ -39,7 +37,6 @@ function getCareerQuestions(isHi: boolean) {
   }
 }
 
-// Helper: Generate Dynamic Plans
 function getServicePlans(intent: string = "", isHi: boolean) {
   const lower = intent.toLowerCase();
 
@@ -112,10 +109,10 @@ function getServicePlans(intent: string = "", isHi: boolean) {
     return [{
       title: isHi ? "समाधान चुनें" : "Choose Solution",
       rows: isHi ? [
-        { id: "p1", title: "पीडीएफ रिपोर्ट ₹999 (₹̶2̶,̶9̶9̶9̶)", description: "रिपोर्ट विस्तृत पीडीएफ रिपोर्ट + 1 निःशुल्क परामर्श प्रश्न" },
+        { id: "p1", title: "PDF रिपोर्ट (₹999)", description: "रिपोर्ट विस्तृत पीडीएफ रिपोर्ट + 1 निःशुल्क प्रश्न" },
         { id: "p2", title: "व्यक्तिगत कॉल (₹11,000)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
       ] : [
-        { id: "p1", title: `PDF Report ₹999 (₹̶2̶,̶9̶9̶9̶)", description: "Detailed PDF Report + 1 Free Consultation Question` },
+        { id: "p1", title: "PDF Report (₹999)", description: "Detailed PDF Report + 1 Free Question" },
         { id: "p2", title: "1-on-1 Call (₹11,000)", description: "Personal consultation call with Surbhi ji" }
       ]
     }];
@@ -125,18 +122,17 @@ function getServicePlans(intent: string = "", isHi: boolean) {
   return [{
     title: isHi ? "कुंडली योजनाएं" : "Kundli Plans",
     rows: isHi ? [
-      { id: "p1", title: "10-साल रिपोर्ट ₹999 (₹̶2̶,̶9̶9̶9̶)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट" },
+      { id: "p1", title: "10-साल रिपोर्ट (₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट" },
       { id: "p2", title: "रिपोर्ट+Q (₹2,999)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" }, 
       { id: "p3", title: "कॉल सहित (₹11,000)", description: "रिपोर्ट + 30 मिनट कॉल परामर्श" }
     ] : [
-      { id: "p1", title: "10-Yr Report + 1Q ₹999 (₹̶2̶,̶9̶9̶9̶)", description: "Detailed astrological prediction report + Ask 1 question via chat" },
+      { id: "p1", title: "10-Yr Report (₹999)", description: "Detailed astrological prediction report + Ask 1 question via chat" },
       { id: "p2", title: "Report + 1Q (₹2,999)", description: "10-Year Report + Ask 1 question via chat" },
       { id: "p3", title: "With Call (₹11,000)", description: "Report + 1 Q + 30-Min Call Consultation" }
     ]
   }];
 }
 
-// Added urlButton to the return type
 export function nextMessage(
   input: string,
   state: FlowState
@@ -154,7 +150,6 @@ export function nextMessage(
   const isHi = data.language === "hi";
   const userName = data.name && data.name !== "Seeker" ? data.name : "";
 
-  // Logic to detect if the user clicked a Service Title instead of a Plan
   const serviceNames = [
     "surbhi consultation", "surbhi kundli", "numerology report", 
     "couple match making", "baby name report", "career", "love", "health", "money", "family",
@@ -162,21 +157,19 @@ export function nextMessage(
   ];
   const isSelectingNewService = serviceNames.some(s => lowerMsg.includes(s.toLowerCase()));
 
-  // FIX: Force Step back to Hook if they pick a service while in checkout
   if (isSelectingNewService && (currentState.step === "F2_CHECKOUT" || currentState.step === "F2_HOOK")) {
     currentState.step = "F2_HOOK";
   }
 
   if (lowerMsg === "restart" || lowerMsg === "hi" || lowerMsg === "hello" || lowerMsg === "hi surbhi") {
     return {
-      reply: `🙏 Namaste and welcome🙏\n\nLet us know which language are you more comfortable talking with; our expert will connect with you in the same language 👇\n\n🙏 नमस्ते और स्वागत है  🙏\n\nकृपया बताएं कि आप किस भाषा में बात करना अधिक पसंद करेंगे; हमारे विशेषज्ञ आपसे उसी भाषा में जुड़ेंगे 👇`,
+      reply: `🙏 Namaste and welcome🙏\n\nLet us know which language are you more comfortable talking with; our expert will connect with you in the same language 👇\n\n🙏 नमस्ते और स्वागत है   🙏\n\nकृपया बताएं कि आप किस भाषा में बात करना अधिक पसंद करेंगे; हमारे विशेषज्ञ आपसे उसी भाषा में जुड़ेंगे 👇`,
       buttons: ["English 🇬🇧", "हिंदी 🇮🇳"],
       image: imgWelcome,
       newState: { step: "F2_INTENT", userData: { name: userName } },
     };
   }
 
-  // Testing shortcut
   if (lowerMsg === "paid") {
     if (isCareerService(data.intent)) {
       return {
@@ -199,7 +192,7 @@ export function nextMessage(
   switch (currentState.step) {
     case "START":
       return {
-        reply: `🙏 Namaste and welcome🙏\n\nLet us know which language are you more comfortable talking with; our expert will connect with you in the same language 👇\n\n🙏 नमस्ते और स्वागत है  🙏\n\nकृपया बताएं कि आप किस भाषा में बात करना अधिक पसंद करेंगे; हमारे विशेषज्ञ आपसे उसी भाषा में जुड़ेंगे 👇`,
+        reply: `🙏 Namaste and welcome🙏\n\nLet us know which language are you more comfortable talking with; our expert will connect with you in the same language 👇\n\n🙏 नमस्ते और स्वागत है   🙏\n\nकृपया बताएं कि आप किस भाषा में बात करना अधिक पसंद करेंगे; हमारे विशेषज्ञ आपसे उसी भाषा में जुड़ेंगे 👇`,
         buttons: ["English 🇬🇧", "हिंदी 🇮🇳"],
         image: imgWelcome,
         newState: { step: "F2_INTENT", userData: data },
@@ -219,7 +212,7 @@ export function nextMessage(
             {
               title: isHindi ? "विशिष्ट समस्याएं" : "Specific Problems",
               rows: isHindi ? [
-                { id: "career", title: "करियर और व्यापार", description: "नौकरी, पदोन्नति और व्यवसाय" },
+                { id: "career", title: "करियर और व्यापार", description: "नौकरी, पदोन्नति and व्यवसाय" },
                 { id: "love", title: "विवाह और रिश्ते", description: "प्रेम समस्याओं का समाधान" },
                 { id: "money", title: "धन और वित्त", description: "आर्थिक स्थिति और धन लाभ" },
                 { id: "health", title: "स्वास्थ्य समस्याएं", description: "स्वास्थ्य और उपाय" },
@@ -259,7 +252,6 @@ export function nextMessage(
       let hookReply = "";
       const selectedIntent = msg.toLowerCase();
 
-      // Hook Logic based on the document's tone
       if (selectedIntent.includes("career") || selectedIntent.includes("business") || selectedIntent.includes("love") || selectedIntent.includes("marriage") || selectedIntent.includes("money") || selectedIntent.includes("health") || selectedIntent.includes("family") || selectedIntent.includes("करियर") || selectedIntent.includes("व्यापार") || selectedIntent.includes("प्रेम") || selectedIntent.includes("विवाह") || selectedIntent.includes("धन") || selectedIntent.includes("स्वास्थ्य") || selectedIntent.includes("परिवार")) {
         hookReply = isHi 
           ? `मैं *${msg}* को लेकर आपकी चिंता समझता हूँ। 🌟\nसुरभि जी एक विस्तृत 10-वर्षीय भविष्यवाणी रिपोर्ट और एक महत्वपूर्ण प्रश्न पर मार्गदर्शन के साथ स्पष्टता प्राप्त करने में आपकी मदद कर सकती हैं।\n\n🔒 पूरी तरह से निजी और गोपनीय\n📱 24 घंटे के भीतर WhatsApp पर साझा किया जाएगा\n\n👇 कृपया अपना विकल्प चुनें:`
@@ -316,7 +308,7 @@ export function nextMessage(
     case "F1_START":
       return {
         reply: isHi
-          ? "✨ *उत्तम।*\n\nवादे के अनुसार, अब आप अपने करियर से संबंधित अपना 1 मुफ़्त प्रश्न पूछ सकते हैं। कृपया नीचे दिए गए विकल्पों में से चुनें 👇"
+          ? "✨ *उत्तम।*\n\nवादे के अनुसार, अब आप अपने क्यरियर से संबंधित अपना 1 मुफ़्त प्रश्न पूछ सकते हैं। कृपया नीचे दिए गए विकल्पों में से चुनें 👇"
           : "✨ *Perfect.*\n\nAs promised, you can now ask your 1 FREE question related to your career. Please select an option below 👇",
         list: {
           button: isHi ? "प्रश्न चुनें" : "Select Question",
