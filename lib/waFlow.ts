@@ -122,7 +122,7 @@ function getServicePlans(intent: string = "", isHi: boolean) {
   return [{
     title: isHi ? "कुंडली योजनाएं" : "Kundli Plans",
     rows: isHi ? [
-      { id: "p1", title: "10-साल रिपोर्ट (₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट" },
+      { id: "p1", title: "10-साल रिपोर्ट (₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट + 1 व्यक्तिगत प्रश्न" },
       { id: "p2", title: "रिपोर्ट+Q (₹2,999)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" }, 
       { id: "p3", title: "कॉल सहित (₹11,000)", description: "रिपोर्ट + 30 मिनट कॉल परामर्श" }
     ] : [
