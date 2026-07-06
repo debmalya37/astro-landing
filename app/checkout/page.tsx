@@ -70,12 +70,17 @@ function CheckoutContent() {
   const serviceName = urlService ? decodeURIComponent(urlService) : "Premium Personalized Kundali";
   const planName = urlPlan ? decodeURIComponent(urlPlan) : "10-Year Report (₹999)";
 
-  // Tracking flag to prevent multiple "Form Start" events
   const hasStartedForm = useRef(false);
 
-  // Check if matchmaking or 1Q logic
   const isMatchmaking = serviceName.toLowerCase().includes("couple match making");
-  const showQuestionDropdown = serviceName === "Surbhi Kundli" && planName.includes("Report + 1Q");
+  
+  // FIXED: Dynamic detection for ANY plan containing 1Q, 1 Question, or Hindi equivalents
+  const planNameLower = planName.toLowerCase();
+  const showQuestionDropdown = 
+    planNameLower.includes("1q") || 
+    planNameLower.includes("1 q") || 
+    planNameLower.includes("question") || 
+    planNameLower.includes("प्रश्न");
 
   let basePrice = 999;
   const priceMatch = planName.match(/₹([\d,]+)/);
@@ -97,18 +102,17 @@ function CheckoutContent() {
   }, [serviceName, basePrice]);
 
   const [form, setForm] = useState({
-    name: "",      // Partner 1 Name
-    email: "",     // Main Email
-    phone: "",     // Main WhatsApp
+    name: "",      
+    email: "",     
+    phone: "",     
     reportType: fullReportType, 
-    dob: "",       // Partner 1 DOB
-    tob: "",       // Partner 1 TOB
-    city: "",      // Partner 1 City
-    pinCode: "",   // Main Pin
-    gender: "",    // Partner 1 Gender
+    dob: "",       
+    tob: "",       
+    city: "",      
+    pinCode: "",   
+    gender: "",    
     language: "hindi",
     challenge: isMatchmaking ? "Matchmaking Analysis Request" : "",
-    // Partner 2 Details
     partnerName: "",
     partnerDob: "",
     partnerTob: "",
@@ -127,7 +131,6 @@ function CheckoutContent() {
     document.body.appendChild(script);
   }, []);
 
-  // Track user starting to fill the form
   const trackFormStart = () => {
     if (!hasStartedForm.current) {
       if (window.fbq) {
@@ -141,12 +144,11 @@ function CheckoutContent() {
   };
 
   const handleChange = (e: any) => {
-    trackFormStart(); // Trigger tracking on first input
+    trackFormStart();
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handlePayment = async () => {
-    // Analytics: Track the attempt to pay (Submit Button Click)
     if (window.fbq) {
       window.fbq('trackCustom', 'ClickPaySecurely', {
         content_name: form.reportType,
@@ -160,7 +162,6 @@ function CheckoutContent() {
       return;
     }
 
-    // Validation
     const commonFields = form.email && form.phone && form.dob && form.name;
     const matchmakingFields = form.partnerName && form.partnerDob;
 
@@ -169,7 +170,6 @@ function CheckoutContent() {
       return;
     }
 
-    // Existing Pixel Event
     if (window.fbq) {
       window.fbq('track', 'AddPaymentInfo', {
         content_name: form.reportType,
@@ -181,16 +181,15 @@ function CheckoutContent() {
     setLoading(true);
 
     try {
-  const res = await fetch("/api/create-order", {
-    method: "POST",
-    // 3. Send both amount AND form data to the create-order API
-    body: JSON.stringify({ 
-      amount: finalAmount, 
-      form: form 
-    }),
-  });
+      const res = await fetch("/api/create-order", {
+        method: "POST",
+        body: JSON.stringify({ 
+          amount: finalAmount, 
+          form: form 
+        }),
+      });
   
-  const order = await res.json();
+      const order = await res.json();
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -200,7 +199,6 @@ function CheckoutContent() {
         description: form.reportType, 
         order_id: order.id,
         handler: async function (response: any) {
-          // Analytics: Track standard Purchase event on success
           if (window.fbq) {
             window.fbq('track', 'Purchase', {
               value: finalAmount,
@@ -210,11 +208,11 @@ function CheckoutContent() {
           }
 
           await fetch("/api/payment-success", {
-         method: "POST",
-         body: JSON.stringify({ ...response, form, finalAmount }),
-       });
-       window.location.href = "/success";
-    },
+            method: "POST",
+            body: JSON.stringify({ ...response, form, finalAmount }),
+          });
+          window.location.href = "/success";
+        },
         prefill: { name: form.name, email: form.email, contact: form.phone },
         theme: { color: "#8B1E1E" },
       };
@@ -248,7 +246,7 @@ function CheckoutContent() {
           <li className="flex items-start gap-3 font-medium">✓ 100% Confidential</li>
           <li className="flex items-start gap-3 font-medium">✓ Personal Guidance by Surbhi's Team</li>
         </ul>
-          <div className="mt-8 bg-[#FFFBF0] border border-[#C8A84B]/30 rounded-xl p-4 flex items-center gap-3">
+        <div className="mt-8 bg-[#FFFBF0] border border-[#C8A84B]/30 rounded-xl p-4 flex items-center gap-3">
           <span className="text-2xl">🔒</span>
           <p className="text-xs text-[#4A2E10] leading-relaxed font-medium">
             <strong>100% Secure Checkout.</strong> Your personal details are encrypted and kept strictly confidential.
@@ -263,14 +261,12 @@ function CheckoutContent() {
         </h3>
 
         <div className="space-y-6">
-          {/* Main Contact Section (Always Visible) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div><Label>Main WhatsApp Number</Label><input name="phone" placeholder="+91 98765 43210" className={inputClass} onChange={handleChange} onFocus={trackFormStart} /></div>
             <div><Label>Main Email Address</Label><input name="email" type="email" placeholder="john@example.com" className={inputClass} onChange={handleChange} onFocus={trackFormStart} /></div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            
             <div>
               <Label>Selected Package</Label>
               <input 
@@ -290,7 +286,6 @@ function CheckoutContent() {
             </div>
           </div>
 
-          {/* Partner 1 Section (Standard fields repurposed) */}
           <div className="space-y-5 pt-4">
             <h4 className="font-bold text-[#8B1E1E] text-sm uppercase tracking-widest border-l-4 border-[#8B1E1E] pl-3">
               {isMatchmaking ? "Person 1 Details (You)" : "Birth Details"}
@@ -329,7 +324,6 @@ function CheckoutContent() {
             </div>
           </div>
 
-          {/* Partner 2 Section (Only visible in Matchmaking mode) */}
           {isMatchmaking && (
             <div className="space-y-5 pt-6 border-t border-[#E8D8B8]/30">
               <h4 className="font-bold text-[#8B1E1E] text-sm uppercase tracking-widest border-l-4 border-[#8B1E1E] pl-3">
@@ -352,9 +346,9 @@ function CheckoutContent() {
             </div>
           )}
 
-          {/* Question Dropdown for Standard Services */}
-          {!isMatchmaking && showQuestionDropdown && (
-            <div>
+          {/* FIXED: Dropdown now appears for ANY plan that includes a question */}
+          {showQuestionDropdown && (
+            <div className="pt-2">
               <Label>Select Your 1 Primary Question</Label>
               <select name="challenge" className={`${inputClass} border-2 border-[#C8A84B]/30`} onChange={handleChange} value={form.challenge}>
                 <option value="">-- Choose your question --</option>
@@ -371,7 +365,7 @@ function CheckoutContent() {
 
           {/* New Challenge TextArea: Shows only when dropdown is hidden and NOT matchmaking */}
           {!isMatchmaking && !showQuestionDropdown && (
-            <div className="animate-in fade-in slide-in-from-top-2 duration-500">
+            <div className="animate-in fade-in slide-in-from-top-2 duration-500 pt-2">
                 <Label>Current Challenge You Are Facing</Label>
                 <textarea 
                   name="challenge"

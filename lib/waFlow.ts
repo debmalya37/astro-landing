@@ -109,24 +109,24 @@ function getServicePlans(intent: string = "", isHi: boolean) {
     return [{
       title: isHi ? "समाधान चुनें" : "Choose Solution",
       rows: isHi ? [
-        { id: "p1", title: "PDF रिपोर्ट (₹999)", description: "रिपोर्ट विस्तृत पीडीएफ रिपोर्ट + 1 निःशुल्क प्रश्न" },
+        { id: "p1", title: "PDF रिपोर्ट + 1Q (₹999)", description: "रिपोर्ट विस्तृत पीडीएफ रिपोर्ट + 1 निःशुल्क प्रश्न " },
         { id: "p2", title: "व्यक्तिगत कॉल (₹11,000)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
       ] : [
-        { id: "p1", title: "PDF Report (₹999)", description: "Detailed PDF Report + 1 Free Question" },
+        { id: "p1", title: "PDF Report + 1Q (₹999)", description: "Detailed PDF Report + 1 Free Question on Whatsapp" },
         { id: "p2", title: "1-on-1 Call (₹11,000)", description: "Personal consultation call with Surbhi ji" }
       ]
     }];
   }
 
-  // 6. Default: Surbhi Kundli
+  // 6. Default: Surbhi  kundali 
   return [{
     title: isHi ? "कुंडली योजनाएं" : "Kundli Plans",
     rows: isHi ? [
-      { id: "p1", title: "10-साल रिपोर्ट (₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट + 1 व्यक्तिगत प्रश्न" },
+      { id: "p1", title: "10-साल रिपोर्ट + 1Q (₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट + 1 व्यक्तिगत प्रश्न" },
       { id: "p2", title: "रिपोर्ट+Q (₹2,999)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" }, 
       { id: "p3", title: "कॉल सहित (₹11,000)", description: "रिपोर्ट + 30 मिनट कॉल परामर्श" }
     ] : [
-      { id: "p1", title: "10-Yr Report (₹999)", description: "Detailed astrological prediction report + Ask 1 question via chat" },
+      { id: "p1", title: "10-Yr Report + 1Q (₹999)", description: "Detailed astrological prediction report + Ask 1 question via chat" },
       { id: "p2", title: "Report + 1Q (₹2,999)", description: "10-Year Report + Ask 1 question via chat" },
       { id: "p3", title: "With Call (₹11,000)", description: "Report + 1 Q + 30-Min Call Consultation" }
     ]
@@ -151,7 +151,7 @@ export function nextMessage(
   const userName = data.name && data.name !== "Seeker" ? data.name : "";
 
   const serviceNames = [
-    "surbhi consultation", "surbhi kundli", "numerology report", 
+    "surbhi consultation", "surbhi  kundali ", "numerology report", 
     "couple match making", "baby name report", "career", "love", "health", "money", "family",
     "सुरभि गुप्ता परामर्श", "सुरभि कुंडली", "अंकशास्त्र रिपोर्ट", "कुंडली मिलान", "बच्चों के नाम की रिपोर्ट"
   ];
@@ -192,7 +192,7 @@ export function nextMessage(
   switch (currentState.step) {
     case "START":
       return {
-        reply: `🙏 Namaste and welcome🙏\n\nLet us know which language are you more comfortable talking with; our expert will connect with you in the same language 👇\n\n🙏 नमस्ते और स्वागत है   🙏\n\nकृपया बताएं कि आप किस भाषा में बात करना अधिक पसंद करेंगे; हमारे विशेषज्ञ आपसे उसी भाषा में जुड़ेंगे 👇`,
+        reply: `🙏 Namaste and welcome🙏\n\n Please select your language 👇\n\n🙏 नमस्ते और स्वागत है   🙏\n\n कृपया अपनी भाषा चुनें 👇`,
         buttons: ["English 🇬🇧", "हिंदी 🇮🇳"],
         image: imgWelcome,
         newState: { step: "F2_INTENT", userData: data },
@@ -228,14 +228,14 @@ export function nextMessage(
             {
               title: isHindi ? "प्रीमियम सेवाएं" : "Premium Services",
               rows: isHindi ? [
-                { id: "surbhi_consultation", title: "सुरभि गुप्ता परामर्श", description: "व्यक्तिगत मार्गदर्शन" },
                 { id: "surbhi_kundli", title: "सुरभि कुंडली", description: "आपकी व्यक्तिगत कुंडली" },
+                { id: "surbhi_consultation", title: "सुरभि गुप्ता परामर्श", description: "व्यक्तिगत मार्गदर्शन" },
                 { id: "numerology_report", title: "अंकशास्त्र रिपोर्ट", description: "नाम सुझाव और व्याख्या" },
                 { id: "couple_match_making", title: "कुंडली मिलान", description: "सफल विवाह के लिए" },
                 { id: "baby_name_report", title: "बच्चों के नाम की रिपोर्ट", description: "सार्थक नामों के सुझाव" }
               ] : [
+                { id: "surbhi_kundli", title: "Surbhi  kundali ", description: "Your cosmic blueprint" },
                 { id: "surbhi_consultation", title: "Surbhi Consultation", description: "Personalized guidance" },
-                { id: "surbhi_kundli", title: "Surbhi Kundli", description: "Your cosmic blueprint" },
                 { id: "numerology_report", title: "Numerology Report", description: "Name suggestions & meaning" },
                 { id: "couple_match_making", title: "Couple Match Making", description: "Kundali Milan for marriage" },
                 { id: "baby_name_report", title: "Baby Name Report", description: "Meaningful baby names" }
@@ -259,11 +259,11 @@ export function nextMessage(
       } else if (selectedIntent.includes("kundli") || selectedIntent.includes("कुंडली")) {
         hookReply = isHi
           ? `🌙 आपने सुरभि कुंडली का चयन किया है।\nकभी-कभी हम जिन उत्तरों की तलाश कर रहे होते हैं वे उन पैटर्नों में छिपे होते हैं जिन्हें हम खुद नहीं देख सकते।\nसुरभि जी व्यक्तिगत रूप से आपके जन्म विवरण का अध्ययन करेंगी और आपके जीवन के महत्वपूर्ण चरणों को कवर करते हुए एक विस्तृत 10-वर्षीय भविष्यवाणी रिपोर्ट तैयार करेंगी।\n✨ एक विशेष पेशकश के रूप में, वह व्यक्तिगत रूप से एक ऐसे प्रश्न का उत्तर भी देंगी जो आपके दिल के सबसे करीब है।\n\n👇 शुरू करने के लिए नीचे एक विकल्प चुनें।`
-          : `🌙 You have selected Surbhi Kundli.\nSometimes the answers we're looking for are hidden in patterns we cannot see ourselves.\nSurbhi Ji will personally study your birth details and prepare a detailed 10-Year Prediction Report covering important phases of your life.\n✨ As a special offering, she will also personally answer one question that is closest to your heart.\n\n👇 To begin, choose an option below.`;
+          : `🌙 You have selected Surbhi  kundali .\nSometimes the answers we're looking for are hidden in patterns we cannot see ourselves.\nSurbhi Ji will personally study your birth details and prepare a detailed 10-Year Prediction Report covering important phases of your life.\n✨ As a special offering, she will also personally answer one question that is closest to your heart.\n\n👇 To begin, choose an option below.`;
       } else {
         hookReply = isHi
-          ? `💼 कभी-कभी यह अधिक मेहनत करने के बारे में नहीं है। यह सही दिशा जानने के बारे में है।\n*${msg}* के संबंध में स्पष्टता प्राप्त करने में आपकी मदद करने के लिए, हम इन सेवाओं की सलाह देते हैं:\n\n👇 नीचे एक विकल्प चुनें।\n(यदि आपको कोई अन्य सेवा चाहिए तो MORE टाइप करें)`
-          : `💼 Sometimes it's not about working harder. It's about knowing the right direction.\nTo help you gain clarity regarding *${msg}*, we recommend these services:\n\n👇 Choose an option below.\n(Need a different service? Reply MORE.)`;
+          ? `💼 ${msg} को लेकर सही मार्गदर्शन पाने के लिए, हम ये सेवाएँ सुझाते हैं।\n\n 👇 नीचे अपना पसंदीदा विकल्प चुनें। \n\n कोई दूसरी सेवा देखनी है? बस MORE टाइप करें।`
+          : `💼 It's about knowing the right direction.\nTo help you gain clarity regarding *${msg}*, we recommend these services:\n\n👇 Choose an option below.\n(Need a different service? Reply MORE.)`;
       }
 
       return {
@@ -282,12 +282,12 @@ export function nextMessage(
       const checkoutUrl = `${paymentLink}?service=${encodedService}&plan=${encodedPlan}`;
 
       const selectedService = (data.intent || "").toLowerCase();
-      const isSurbhiKundli = selectedService.includes("surbhi kundli") || selectedService.includes("सुरभि कुंडली");
+      const isSurbhiKundli = selectedService.includes("surbhi  kundali ") || selectedService.includes("सुरभि कुंडली");
       const checkoutImage = isSurbhiKundli ? `${baseUrl}/surbhi-15.png` : `${baseUrl}/surbhi-16.png`;
       
       let checkoutMsg = isHi
-        ? `धन्यवाद! 🌟\n\nअपना परामर्श शुरू करने और अपनी गोपनीयता सुरक्षित करने के लिए, कृपया नीचे दिए गए *'Start My Kundli'* बटन पर क्लिक करें 👇`
-        : `Thank you! 🌟\n\nTo begin your consultation and secure your privacy, please click the *'Start My Kundli'* button below 👇`;
+        ? `धन्यवाद! 🌟\n\nअब अपनी कुंडली की शुरुआत करने के लिए, नीचे दिए गए *'Start My Kundli'* बटन पर क्लिक करें।\nआपकी सभी जानकारी पूरी तरह सुरक्षित और गोपनीय रहेगी। 🙏👇`
+        : `Thank you! 🌟\n\nTo begin your consultation and secure your privacy, please click the *'Start My  kundali '* button below 👇`;
         
       if (isCareerService(data.intent)) {
         checkoutMsg += isHi 
@@ -299,7 +299,7 @@ export function nextMessage(
         reply: checkoutMsg,
         image: checkoutImage, 
         urlButton: {
-          text: isHi ? "Start My Kundli" : "Start My Kundli",
+          text: isHi ? "Start My  kundali " : "Start My  kundali ",
           url: checkoutUrl
         },
         newState: { step: "F2_CHECKOUT", userData: data },
