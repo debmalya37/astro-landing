@@ -109,7 +109,7 @@ function getServicePlans(intent: string = "", isHi: boolean) {
     return [{
       title: isHi ? "समाधान चुनें" : "Choose Solution",
       rows: isHi ? [
-        { id: "p1", title: "PDF रिपोर्ट + 1Q (₹999)", description: "रिपोर्ट विस्तृत पीडीएफ रिपोर्ट + 1 निःशुल्क प्रश्न " },
+        { id: "p1", title: "PDF रिपोर्ट+1Q (₹999)", description: "रिपोर्ट विस्तृत पीडीएफ रिपोर्ट + 1 निःशुल्क प्रश्न " },
         { id: "p2", title: "व्यक्तिगत कॉल (₹11,000)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
       ] : [
         { id: "p1", title: "PDF Report + 1Q (₹999)", description: "Detailed PDF Report + 1 Free Question on Whatsapp" },
@@ -122,7 +122,7 @@ function getServicePlans(intent: string = "", isHi: boolean) {
   return [{
     title: isHi ? "कुंडली योजनाएं" : "Kundli Plans",
     rows: isHi ? [
-      { id: "p1", title: "10-साल रिपोर्ट + 1Q (₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट + 1 व्यक्तिगत प्रश्न" },
+      { id: "p1", title: "10-साल रिपोर्ट+1Q(₹999)", description: "विस्तृत ज्योतिषीय भविष्यवाणी रिपोर्ट + 1 व्यक्तिगत प्रश्न" }, 
       { id: "p2", title: "रिपोर्ट+Q (₹2,999)", description: "रिपोर्ट + WhatsApp पर 1 व्यक्तिगत प्रश्न" }, 
       { id: "p3", title: "कॉल सहित (₹11,000)", description: "रिपोर्ट + 30 मिनट कॉल परामर्श" }
     ] : [
