@@ -109,8 +109,8 @@ function getServicePlans(intent: string = "", isHi: boolean) {
     return [{
       title: isHi ? "समाधान चुनें" : "Choose Solution",
       rows: isHi ? [
-        { id: "p1", title: "PDF रिपोर्ट+1Q (₹999)", description: "रिपोर्ट विस्तृत पीडीएफ रिपोर्ट + 1 निःशुल्क प्रश्न " },
-        { id: "p2", title: "व्यक्तिगत कॉल (₹11,000)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
+        { id: "p1", title: "PDFरिपोर्ट+1Q(₹999)", description: "रिपोर्ट विस्तृत पीडीएफ रिपोर्ट + 1 निःशुल्क प्रश्न " },
+        { id: "p2", title: "व्यक्तिगत कॉल(₹11,000)", description: "सुरभि जी के साथ व्यक्तिगत कॉल" }
       ] : [
         { id: "p1", title: "PDF Report + 1Q (₹999)", description: "Detailed PDF Report + 1 Free Question on Whatsapp" },
         { id: "p2", title: "1-on-1 Call (₹11,000)", description: "Personal consultation call with Surbhi ji" }
