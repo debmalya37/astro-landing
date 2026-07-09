@@ -506,8 +506,8 @@ const time = useCountdown();
             src="/report-book.png"
             alt="Floating Premium Kundali Report"
             width={280}
-            height={392}
-            className="w-full h-full object-contain"
+            height={300}
+            className="w-full object-cover"
           />
         </div>
 
