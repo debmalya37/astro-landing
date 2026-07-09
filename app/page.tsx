@@ -564,7 +564,7 @@ const time = useCountdown();
   </div>
   
   {/* CHANGED: leading-relaxed to leading-[1.9] for extra vertical spacing between lines */}
-  <h2 className="Georgia text-2xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.9] tracking-[-0.02em]" style={{ color: C.td1 }}>
+  <h2 className="Georgia text-2xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.2] md:leading-[1.2] tracking-[-0.02em]" style={{ color: C.td1 }}>
     Trusted by <em className="font-sans" >1,50,000+</em> Individuals for <br/> 
     <em className="block mt-0 md:mt-4" style={{ fontStyle: "italic", color: C.g2 }}>Accurate Premium  Surbhi Kundali  Reports</em>
   </h2>
@@ -639,7 +639,7 @@ const time = useCountdown();
     ✦ As Featured In
   </div>
   
-  <h2 className="Georgia text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.9] tracking-[-0.02em]" style={{ color: C.td1 }}>
+  <h2 className="Georgia text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.2] tracking-[-0.02em]" style={{ color: C.td1 }}>
     Making Headlines.<br />
     <em className="block mt-0 md:mt-4" style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Press.</em>
   </h2>

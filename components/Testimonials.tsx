@@ -86,7 +86,7 @@ export default function TestimonialsSection() {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-[#FCF7EE] relative overflow-hidden">
+    <section className="py-4 md:py-10 bg-[#FCF7EE] relative overflow-hidden">
       
       {/* Background Ambient Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#C5A880] rounded-full blur-[120px] opacity-10 pointer-events-none"></div>
