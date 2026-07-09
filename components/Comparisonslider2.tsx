@@ -60,7 +60,7 @@ function ComparisonSlider2() {
           
           {/* Top Right: After Text */}
           <div className="text-right max-w-sm ml-auto z-10 pl-12">
-            <h3 className="fraunces text-2xl lg:text-4xl font-bold text-[#A0F0C8] mb-4 lg:mb-6">AFTER Smart Kundli</h3>
+            <h3 className="fraunces text-2xl lg:text-4xl font-bold text-[#A0F0C8] mb-4 lg:mb-6">AFTER Premium Surbhi Kundali</h3>
             <ul className="space-y-4 lg:space-y-5">
               {[
                 { t: "Crystal Clarity", d: "Understand exactly WHY things happen" },
@@ -113,7 +113,7 @@ function ComparisonSlider2() {
           
           {/* Top Left: Before Text */}
           <div className="text-left max-w-sm z-10 pr-12">
-            <h3 className="fraunces text-2xl lg:text-4xl font-bold text-[#FF8080] mb-4 lg:mb-6">BEFORE Smart Kundli</h3>
+            <h3 className="fraunces text-2xl lg:text-4xl font-bold text-[#FF8080] mb-4 lg:mb-6">BEFORE Premium Surbhi Kundali </h3>
             <ul className="space-y-4 lg:space-y-5">
               {[
                 { t: "Constant Confusion", d: "Not knowing why bad things happen" },

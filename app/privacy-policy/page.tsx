@@ -82,7 +82,7 @@ export default function PrivacyPolicy() {
               </h2>
               <p className="mb-2">Your data is strictly used for the fulfillment of services:</p>
               <ul className="list-disc pl-5 space-y-2 text-[#6B4423]">
-                <li>To generate personalized Kundli (birth charts) and astrological readings.</li>
+                <li>To generate personalized  kundali  (birth charts) and astrological readings.</li>
                 <li>To provide customer support and respond to your WhatsApp inquiries.</li>
                 <li>To process transactions and send order confirmations.</li>
               </ul>

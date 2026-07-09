@@ -1,41 +1,43 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Outfit } from "next/font/google"; // Use your brand fonts
+import { Cormorant_Garamond, DM_Serif_Display, Karla } from "next/font/google"; // CHANGED: Replaced existing fonts with Cormorant Garamond and Karla
 import Script from "next/script";
 import "./globals.css";
 
 // 1. Optimize Font Loading
-// 'swap' prevents invisible text; 'variable' allows Tailwind usage
-const fraunces = Fraunces({
- subsets: ["latin"],
- variable: "--font-fraunces",
- display: "swap",
+// Set up both fonts as CSS variables to hook clean local system fallbacks
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-serif",
+  display: "swap",
 });
 
-const outfit = Outfit({
- subsets: ["latin"],
- variable: "--font-outfit",
- display: "swap",
+const karla = Karla({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
 export const viewport: Viewport = {
- themeColor: "#1A0A00", // Matches your deep cosmic brown
- width: "device-width",
- initialScale: 1,
+  themeColor: "#1A0A00", 
+  width: "device-width",
+  initialScale: 1,
 };
 
 export const metadata: Metadata = {
- title: "Celebrity Astrologer Surbhi Gupta - Personalized Astrology Reports",
- description: "Unveil the secrets of your future with Surbhi Gupta. Personalized astrology, career guidance, and love compatibility analysis.",
- alternates: {
-  canonical: "https://surabhiastrology.com",
- },
+  title: "Celebrity Astrologer Surbhi Gupta - Personalized Astrology Reports",
+  description: "Unveil the secrets of your future with Surbhi Gupta. Personalized astrology, career guidance, and love compatibility analysis.",
+  alternates: {
+    canonical: "https://surabhiastrology.com",
+  },
 };
 
 declare global {
- interface Window {
- fbq: any;
- _fbq: any;
- }
+  interface Window {
+    fbq: any;
+    _fbq: any;
+  }
 }
 
 export default function RootLayout({
@@ -44,7 +46,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${outfit.variable}`}>
+    // CHANGED: Linked the HTML tag to inject both variables into the layout tree
+    <html lang="en" className={`${cormorantGaramond.variable} ${karla.variable}`}>
       <head>
         {/* GLOBAL GOOGLE TAG MANAGER (GTM) CODES */}
         <Script id="google-tag-manager" strategy="afterInteractive">
@@ -70,7 +73,6 @@ export default function RootLayout({
               s.parentNode.insertBefore(t,s)}(window,document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
               
-              // Move init inside an idle period to improve mobile TBT (Total Blocking Time)
               (window.requestIdleCallback || window.setTimeout)(function() {
                 fbq('init', '1836254097051134'); 
                 fbq('track', 'PageView');
@@ -79,7 +81,11 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={`${fraunces.variable} ${outfit.variable} antialiased font-outfit`}>
+      {/* CHANGED: Configured the baseline body stack utilizing your precise font variables and cross-platform fallback priorities */}
+      <body 
+        className="antialiased" 
+        style={{ fontFamily: `var(--font-sans), ui-sans-serif, system-ui, sans-serif` }}
+      >
         {/* GTM FALLBACK LAYER FOR BROWSERS WITH RUNTIME JAVASCRIPT DISABLED */}
         <noscript>
           <iframe 

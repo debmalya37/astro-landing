@@ -42,7 +42,7 @@ export default function HowItWorksSection() {
   ];
 
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden" style={{ background: '#1A0A00' }}>
+    <section className="py-16 md:py-24 relative overflow-hidden bg-gradient-to-b from-[#b8560f] to-[#e8871e]">
       
       {/* Subtle Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[300px] bg-[#C8A84B] opacity-[0.03] rounded-full blur-[100px] pointer-events-none"></div>
@@ -53,13 +53,13 @@ export default function HowItWorksSection() {
         <div className="text-center mb-16 lg:mb-24 reveal">
           <div className="inline-flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-[1px] bg-[#C8A84B]"></div>
-            <span className="text-[#C8A84B] text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase">
+            <span className="text-[#f7d778] text-[10px] sm:text-sm font-bold tracking-[0.2em] uppercase">
               Simple & Fast
             </span>
             <div className="w-8 h-[1px] bg-[#C8A84B]"></div>
           </div>
-          <h2 className="fraunces text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
-            Your Kundali in <span className="italic text-[#E2C06A] block sm:inline">5 Simple Steps</span>
+          <h2 className="Georgia text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight">
+            Your Surbhi Kundali in <span className="italic text-[#f4e9de] block sm:inline"> <em className="font-mono" >5</em> Simple Steps</span>
           </h2>
         </div>
 

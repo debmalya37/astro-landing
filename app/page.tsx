@@ -61,7 +61,7 @@ const GlobalStyles = () => (
       -webkit-font-smoothing: antialiased; 
     }
 
-    .fraunces { font-family: 'Fraunces', serif; }
+    .Georgia { font-family: 'Georgia', serif; }
     
     /* Paper noise overlay for premium texture */
     body::before {
@@ -243,7 +243,7 @@ function FaqItem({ q, a, delay = "" }: { q: string; a: string; delay?: string })
 /* ─── 3D COSMIC EARTH BACKGROUND ─── */
 
 
-// Make sure to add the 'Fraunces' font family in your tailwind config or global CSS.
+// Make sure to add the 'Georgia' font family in your tailwind config or global CSS.
 
 
 // export default CelebrityEndorsementSection;
@@ -269,6 +269,7 @@ function useReveal() {
 export default function NewLandingPage() {
   useReveal();
   const [stickyVisible, setStickyVisible] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
 const [reportImgError, setReportImgError] = useState(false);
 const countdown = useCountdown();
 const time = useCountdown();
@@ -324,14 +325,14 @@ const time = useCountdown();
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Use the new ann-dot-gold class for gold pulse */}
           <div className="ann-dot-gold" />
-          <span>🔥 Launch:&nbsp;<strong style={{ color: C.g3 }}>{spots} of 1,000 spots remain</strong></span>
+          <span>🔥 Launch:&nbsp;<strong style={{ color: C.g3 }}>Don't Miss Out! Only 56 Spots Left </strong></span>
         </div>
         
-        <span className="hidden sm:inline">&nbsp;at ₹999 — includes&nbsp;</span>
-        
+        <span className="hidden sm:inline">&nbsp;— Get Your Premium  Surbhi Kundali  for  ₹999 <del className='text-white/65'>₹2999</del>&nbsp; </span>
+         
         {/* Switched to gold accent for '1 FREE Question' for better premium feel against red */}
         <span style={{ color: C.g3, fontWeight: 700 }}>
-          <span className="sm:hidden">+ </span>1 FREE Question <span className="hidden sm:inline">Answered on WhatsApp</span>
+          <span className="sm:hidden">+ </span>+ 1 FREE <span className="hidden sm:inline">WhatsApp Question →</span>
         </span>
         
         <a 
@@ -364,19 +365,19 @@ const time = useCountdown();
     fetchPriority="high"
   />
   {/* Fallback text */}
-  <div className="hidden fraunces text-[1.15rem] sm:text-[1.35rem] font-bold" style={{ color: C.t1 }}>
+  <div className="hidden Georgia text-[1.15rem] sm:text-[1.35rem] font-bold" style={{ color: C.t1 }}>
     Celebrity Astrologer Surbhi <em style={{ fontStyle: "italic", color: C.g }}>Gupta</em>
   </div>
 </Link>
         
         <div className="hidden md:flex items-center gap-2 text-sm font-medium" style={{ color: C.t2 }}>
-          <span className="text-[#C8A000] tracking-widest text-lg">★★★★★</span> 4.9/5 • 5,000+ Reports
+          <span className="text-[#C8A000] tracking-widest text-lg">★★★★★</span> 4.9/5 • 1,50,000+ Reports
         </div>
         
         <div className="flex items-center gap-4">
           <a href="#offer" className="btn-auto-shine rounded-full font-medium px-6 py-2.5 text-sm shadow-md transition-transform hover:scale-105"
              style={{ background: C.dk2, color: C.g3 }}>
-            Get Kundali <span className="hidden sm:inline">— ₹999</span>
+            Get Premium Surbhi Kundali <span className="hidden sm:inline">— ₹999</span>
           </a>
         </div>
       </nav>
@@ -386,222 +387,161 @@ const time = useCountdown();
         {/* ════════════════════════════════
           HERO SECTION (Warm Gold Aesthetic)
       ════════════════════════════════ */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-6 sm:py-10 lg:py-14" 
-               style={{ background: `linear-gradient(135deg, #fdf3da 0%, #fce8c0 40%, #f9d89a 100%)` }}>
-        
-        {/* Interactive 3D Cosmic Earth */}
-        {/* <CosmicEarthBackground /> */}
+      <section 
+  className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-6 sm:py-10 lg:py-14" 
+  style={{ background: `linear-gradient(160deg, #FFFFFF 0%, #FDF7EC 55%, #F3E8D6 100%)` }}
+>
+  <div className="max-w-7xl mx-auto px-4 sm:px-5 w-full relative z-10 grid lg:grid-cols-2 gap-2 sm:gap-8 lg:gap-12 items-center">
+    
+    {/* ========================================================
+        LEFT TEXT 
+        ======================================================== */}
+    <div className="text-center lg:text-left">
+      <div className="inline-flex items-center gap-2 text-[9px] sm:text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-3 lg:mb-6 shadow-sm border border-[#C5A880]/40 bg-white/60 text-[#84623F] backdrop-blur-sm">
+        ✦ India's Most Trusted Vedic Astrologer
+      </div>
+      
+      <h1 className="font-serif text-4xl sm:text-5xl lg:text-[3.6rem] leading-[1.15] font-semibold text-[#2D1B11] mb-4 lg:mb-6 tracking-tight">
+        Accurate <em className="italic font-medium text-[#e78523]">Predictions</em> For<br />
+        <em className="font-semibold italic text-[#ab6015] lg:text-5xl drop-shadow-sm">Love, Career & Wealth!</em>
+      </h1>
+      
+      <p className="text-sm sm:text-lg text-[#5A4538] font-medium max-w-lg mx-auto lg:mx-0 mb-6 lg:mb-8 leading-relaxed px-2 lg:px-0">
+        Feeling stuck in life or lost about your future? Celebrity Astrologer Surbhi Gupta's Accurate Vedic Surbhi Kundali Report reveals the answers hidden in your birth chart and exact timing for success.
+      </p>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-5 w-full relative z-10 grid lg:grid-cols-2 gap-2 sm:gap-8 lg:gap-12 items-center">
-          
-          {/* ========================================================
-              LEFT TEXT (Headings & Subheadings)
-              ======================================================== */}
-          <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 text-[9px] sm:text-xs font-medium tracking-[0.2em] uppercase px-3 sm:px-4 py-1.5 rounded-full mb-3 lg:mb-6" 
-                 style={{ color: C.t1, background: "rgba(255,255,255,0.3)", border: `1px solid rgba(42,14,0,0.2)` }}>
-              ✦ India's Most Trusted Vedic Astrologer
-            </div>
-            
-            <h1 className="fraunces text-4xl sm:text-5xl lg:text-6xl leading-[1.1] font-medium text-[#2A0E00] mb-3 lg:mb-6">
-              Accurate Predictions For <br />
-              <em className="font-light italic text-[#4A2E10]">Love, Career & Wealth!</em>
-            </h1>
-            
-            <p className="text-sm sm:text-lg text-[#3D1600] font-medium max-w-lg mx-auto lg:mx-0 mb-0 lg:mb-8 leading-relaxed px-2 lg:px-0">
-              Feeling stuck in life or lost about your future? Celebrity astrologer Surbhi Gupta's Accurate Vedic Kundli Report reveals the answers hidden in your birth chart and exact timing for success.
-            </p>
-
-            {/* DESKTOP CTA & BADGES (Hidden on Mobile) */}
-            <div className="hidden lg:block">
-              <div className="flex flex-col sm:flex-row items-center justify-start gap-4">
-                <a href="#offer" className="btn-auto-shine w-auto px-8 py-4 rounded-full font-medium text-lg text-white shadow-[0_15px_30px_rgba(42,14,0,0.3)] hover:scale-105 transition-transform"
-                   style={{ background: C.dk2 }}>
-                  Get Your Personalized Kundali
-                </a>
-                <div className="flex items-center gap-3 text-[#2A0E00] font-semibold text-sm">
-                  <span className="text-2xl">🎁</span> 
-                  <span className="text-left leading-tight">Includes 1 Free<br/>WhatsApp Question</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 mt-12 border-t border-[#4A2E10]/20 pt-8 max-w-lg mx-0">
-                {[
-                  ["5,000+", "Reports Delivered"],
-                  ["4.9/5 ★", "Average Rating"],
-                  ["Personalized", "Deep Analysis"]
-                ].map(([top, bot], i) => (
-                  <div key={i} className="text-left">
-                    <div className="fraunces text-xl lg:text-2xl font-medium text-[#2A0E00]">{top}</div>
-                    <div className="text-[10px] lg:text-xs text-[#4A2E10] uppercase tracking-widest mt-1">{bot}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+      <div className="hidden lg:block">
+        <div className="flex flex-col sm:flex-row items-center justify-start gap-5">
+          <a 
+            href="#offer" 
+            className="btn-auto-shine w-auto px-8 py-4 rounded-full font-semibold text-lg text-[#FDF7EC] shadow-[0_15px_30px_rgba(89,28,28,0.3)] hover:shadow-[0_20px_40px_rgba(89,28,28,0.5)] hover:scale-105 transition-all duration-300 border border-[#7A2A2A]"
+            style={{ background: 'linear-gradient(135deg, #7A1F1F 0%, #4A0D0D 100%)' }}
+          >
+            Get Premium Surbhi Kundali
+          </a>
+          <div className="flex items-center gap-3 text-[#2D1B11] font-bold text-sm bg-white/40 px-4 py-2 rounded-xl border border-white/50 shadow-sm">
+            <span className="text-2xl drop-shadow-md">🎁</span> 
+            <span className="text-left leading-tight">Includes 1 Free<br/><span className="text-[#128C7E]">WhatsApp</span> Question</span>
           </div>
-
-          {/* ========================================================
-              RIGHT VISUAL: Cosmic Wheel + Portrait + Floating Book 
-              ======================================================== */}
-          <div className="relative flex justify-center lg:justify-end items-center h-[400px] sm:h-[480px] lg:h-[700px] mt-0 sm:mt-6 lg:mt-0 w-full overflow-hidden lg:overflow-visible perspective-1000 z-10">
-            
-            {/* 1. BACKGROUND: Massive Cosmic Wheel */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-[-25%] w-[400px] sm:w-[500px] lg:w-[750px] aspect-square z-0 pointer-events-none opacity-90 lg:opacity-100">
-              <svg className="w-full h-full drop-shadow-[0_0_40px_rgba(200,168,75,0.2)] animate-[spin_120s_linear_infinite]" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg"
-              shapeRendering="optimizeSpeed" 
-  textRendering="optimizeSpeed"
-  style={{ willChange: 'transform' }}
-              >
-                <defs>
-                  <radialGradient id="wbg" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#1A0500" stopOpacity="0.8"/>
-                    <stop offset="70%" stopColor="#3D1600" stopOpacity="0.7"/>
-                    <stop offset="100%" stopColor="#521F00" stopOpacity="0.4"/>
-                  </radialGradient>
-                </defs>
-                <circle cx="230" cy="230" r="220" fill="url(#wbg)" stroke="rgba(200,168,75,0.6)" strokeWidth="1.5"/>
-                <g className="wheel-outer-ring">
-                  <circle cx="230" cy="230" r="215" fill="none" stroke="rgba(200,168,75,0.3)" strokeWidth="0.5" strokeDasharray="4 8"/>
-                  <g fill="rgba(226,192,106,0.9)" fontSize="16" fontFamily="serif" textAnchor="middle">
-                    <text x="230" y="26">♈</text><text x="320" y="49">♉</text>
-                    <text x="390" y="119">♊</text><text x="415" y="214">♋</text>
-                    <text x="390" y="304">♌</text><text x="320" y="374">♍</text>
-                    <text x="230" y="439">♎</text><text x="140" y="414">♏</text>
-                    <text x="65"  y="349">♐</text><text x="32"  y="259">♑</text>
-                    <text x="58"  y="164">♒</text><text x="128" y="86">♓</text>
-                  </g>
-                </g>
-                <circle cx="230" cy="230" r="185" fill="none" stroke="rgba(200,168,75,0.2)" strokeWidth="1"/>
-                <circle cx="230" cy="230" r="155" fill="none" stroke="rgba(200,168,75,0.15)" strokeWidth="0.5"/>
-                <g stroke="rgba(200,168,75,0.2)" strokeWidth="1">
-                  <line x1="230" y1="45" x2="230" y2="415"/>
-                  <line x1="45"  y1="230" x2="415" y2="230"/>
-                  <line x1="90"  y1="90"  x2="370" y2="370"/>
-                  <line x1="370" y1="90"  x2="90"  y2="370"/>
-                </g>
-              </svg>
-            </div>
-
-            {/* 2. CENTER: Portrait */}
-            <div className="relative z-10 w-[200px] sm:w-[280px] lg:w-[360px] ml-6 sm:ml-10 lg:ml-0 lg:mr-0">
-              <div className="relative w-full aspect-[4/5] rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-[3px] lg:border-[4px] border-[#C8A84B]/40 shadow-[0_15px_40px_rgba(42,14,0,0.6)] lg:shadow-[0_25px_60px_rgba(42,14,0,0.6)] bg-[#2A0E00]">
-                <div className="absolute inset-0 bg-[#E8D8B8]"></div> 
-                <Image
-  src="/surbhi-gupta-portrait.jpg"
-  alt="Celebrity Astrologer Surbhi Gupta - Trusted Astrologer"
-  width={360}
-  height={450}
-  // guidline-change: add priority prop to disable lazy-loading (defaults loading="eager")
-  priority
-  // guidline-change: add fetchPriority="high" for immediate discovery/download
-  fetchPriority="high"
-  sizes="(max-width: 768px) 200px, 360px"
-  quality={50}
-  className="absolute inset-0 w-full h-full object-cover z-10"
-/>
-                <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#1A0A00] to-transparent z-20"></div>
-                <div className="absolute bottom-3 lg:bottom-5 inset-x-0 text-center z-30">
-                  <div className="text-[#F5D98A] font-bold text-sm sm:text-xl lg:text-2xl drop-shadow-lg px-2 leading-tight">Celebrity Astrologer<br/>Surbhi Gupta</div>
-                  <div className="text-white/80 text-[8px] lg:text-xs uppercase tracking-widest font-bold mt-1">Vedic Astrologer</div>
-                </div>
-              </div>
-
-              {/* Floating Badge (Trusted By) */}
-              <div className="absolute top-4 -right-6 sm:top-8 sm:-right-8 lg:-top-5 lg:-right-6 bg-white rounded-lg lg:rounded-xl py-1.5 px-3 lg:py-2 lg:px-5 shadow-[0_10px_20px_rgba(0,0,0,0.2)] flex items-center gap-1.5 lg:gap-2 border border-[#E8D8B8] z-30 animate-[float_5s_ease-in-out_infinite_0.5s]">
-                <div className="text-sm lg:text-xl drop-shadow-sm">⭐</div>
-                <div className="text-left">
-                  <div className="text-[#4A2E10] text-[7px] lg:text-[10px] font-bold uppercase tracking-widest leading-none">Trusted by</div>
-                  <div className="text-[#2A1400] text-[10px] sm:text-xs lg:text-sm font-extrabold mt-0.5">1.5 Lakh+</div>
-                </div>
-              </div>
-              
-              {/* Floating "Spots Left" Notification */}
-              <div className="absolute -top-6 -left-4 sm:-top-8 sm:-left-4 lg:-top-10 lg:-left-12 z-30 animate-[float_4s_ease-in-out_infinite_1s]">
-                <div className="bg-gradient-to-r from-[#A82020] to-[#8B1E1E] text-white text-[8px] sm:text-[10px] lg:text-xs font-bold tracking-widest px-3 py-1.5 lg:px-5 lg:py-2.5 rounded-full shadow-[0_10px_20px_rgba(168,32,32,0.4)] border border-[#FF8080]/30 flex items-center gap-1.5 lg:gap-2 whitespace-nowrap">
-                  <span className="animate-pulse">🔥</span> ONLY 17 SPOTS LEFT
-                </div>
-              </div>
-
-              {/* 3. FOREGROUND: Floating Premium Book */}
-              <div className="absolute -bottom-10 -left-20 sm:-bottom-10 sm:-left-16 lg:-bottom-8 lg:-left-40 z-40 animate-float transform -rotate-6 hover:rotate-0 transition-transform duration-700">
-                <div className="w-[110px] sm:w-[160px] lg:w-[220px] aspect-[1/1.6] rounded-xl rounded-l-md shadow-[10px_15px_30px_rgba(0,0,0,0.8)] lg:shadow-[10px_25px_50px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden border-r-[2px] border-y border-[#D8C49A]/30 border-l-[4px] lg:border-l-[6px] border-l-[#1A0505]"
-                     style={{ background: 'linear-gradient(160deg, #4A0E1A 0%, #1A0505 100%)' }}>
-                  
-                  <div className="absolute left-0 top-0 bottom-0 w-2 lg:w-3 bg-gradient-to-r from-transparent via-white/10 to-transparent mix-blend-overlay"></div>
-                  
-                  <div className="p-2 pt-3 sm:p-4 sm:pt-5 lg:p-5 lg:pt-6 text-center z-10 relative">
-                    <div className="text-[#C8A84B] text-[5px] sm:text-[7px] lg:text-[8px] font-bold tracking-[0.2em] uppercase mb-1 sm:mb-1.5 lg:mb-2">
-                      Premium<br/>Personalized
-                    </div>
-                    <h3 className="fraunces text-sm sm:text-lg lg:text-2xl font-bold text-white leading-tight">
-                      Kundali <br/><span className="text-[#E2C06A]">Report</span>
-                    </h3>
-                  </div>
-
-                  <div className="flex-1 flex items-center justify-center relative z-10">
-                    <div className="absolute w-6 h-6 sm:w-10 sm:h-10 lg:w-16 lg:h-16 bg-[#7B42F6] rounded-full blur-xl lg:blur-2xl opacity-40"></div>
-                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-[#8B5CF6] to-[#5B21B6] transform rotate-45 rounded-lg lg:rounded-xl shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_5px_10px_rgba(0,0,0,0.5)] flex items-center justify-center border border-[#A78BFA]/50">
-                      <div className="transform -rotate-45 text-white/90 text-xs sm:text-base lg:text-xl font-light">✡</div>
-                    </div>
-                  </div>
-
-                  <div className="p-2 pb-3 sm:p-4 sm:pb-5 lg:p-5 lg:pb-6 text-center z-10 relative">
-                    <div className="text-white/40 line-through text-[6px] sm:text-[8px] lg:text-[10px] font-medium mb-0.5">₹2,999</div>
-                    <div className="flex items-center justify-center">
-                      <span className="text-[#E2C06A] text-[8px] sm:text-[10px] lg:text-sm font-bold mr-0.5">₹</span>
-                      <span className="text-[#E2C06A] fraunces text-sm sm:text-lg lg:text-2xl font-bold tracking-tight">999</span>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* ========================================================
-              MOBILE CTA & BADGES (Hidden on Desktop)
-              ======================================================== */}
-          <div className="block lg:hidden w-full pt-4 sm:pt-6 relative z-20">
-            <div className="flex flex-col items-center justify-center gap-3">
-              <a href="#offer" className="btn-auto-shine w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg text-white shadow-[0_10px_20px_rgba(42,14,0,0.3)] active:scale-95 transition-transform text-center"
-                 style={{ background: C.dk2 }}>
-                Get Your Personalized Kundali
-              </a>
-              <div className="flex items-center justify-center gap-2 text-[#2A0E00] font-semibold text-xs">
-                <span className="text-xl">🎁</span> 
-                <span className="text-left leading-tight">Includes 1 Free<br/>WhatsApp Question</span>
-              </div>
-            </div>
-
-            {/* Mobile Trust Badges */}
-            <div className="grid grid-cols-3 gap-2 mt-6 border-t border-[#4A2E10]/20 pt-4 max-w-lg mx-auto">
-              {[
-                ["5,000+", "Reports Delivered"],
-                ["4.9/5 ★", "Average Rating"],
-                ["Personalized", "Deep Analysis"]
-              ].map(([top, bot], i) => (
-                <div key={i} className="text-center">
-                  <div className="fraunces text-base sm:text-lg font-medium text-[#2A0E00]">{top}</div>
-                  <div className="text-[7px] sm:text-[9px] text-[#4A2E10] uppercase tracking-widest mt-0.5">{bot}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
-      </section>
+
+        <div className="grid grid-cols-3 gap-4 mt-12 border-t border-[#C5A880]/30 pt-8 max-w-lg mx-0">
+          {[
+            ["1,50,000+", "Reports Delivered"],
+            ["4.9/5 ★", "Average Rating"],
+            ["100% Custom", "Deep Analysis"]
+          ].map(([top, bot], i) => (
+            <div key={i} className="text-left">
+              <div className="font-georia text-xl lg:text-xl font-bold text-[#2D1B11]">{top}</div>
+              <div className="text-[10px] lg:text-xs text-[#8B6B52] font-semibold uppercase tracking-widest mt-1">{bot}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+   {/* ========================================================
+    RIGHT VISUAL: YouTube Video Facade + Bottom-Left Floating Book
+    ======================================================== */}
+    <div className="relative flex justify-center lg:justify-end items-center h-[460px] sm:h-[540px] lg:h-[720px] mt-6 lg:mt-0 w-full z-10">
+      
+      {/* 1. MAIN CONTAINER WRAPPER */}
+      <div className="relative w-[320px] sm:w-[420px] lg:w-[520px] aspect-[4/5]">
+        
+        {/* MAIN BIG YOUTUBE SHORT (Optimized Facade Pattern for PageSpeed) */}
+        <div 
+          className="relative w-full h-full rounded-[2.5rem] overflow-hidden shadow-[0_30px_70px_rgba(45,27,17,0.45),0_10px_20px_rgba(0,0,0,0.15)] hover:scale-[1.02] hover:-translate-y-2 transition-all duration-500 ease-out group cursor-pointer bg-[#2A0E00]"
+          onClick={() => setShowVideo(true)}
+        >
+          {!showVideo ? (
+            <>
+              {/* High-Res YouTube Thumbnail (Loaded unoptimized to bypass next.config.js restrictions) */}
+              <Image
+                src="/thumbnail.png" 
+                alt="Surbhi Gupta Astrological Insights"
+                width={1280}
+                height={720}
+                className="object-contain object-bottom scale-[1.01] opacity-90 group-hover:opacity-100 transition-opacity"
+                priority
+              />
+              
+              {/* Premium Play Button Overlay */}
+              <div className="absolute top-40 inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-all duration-300">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)] group-hover:bg-white/30 group-hover:scale-110 group-hover:shadow-[0_8px_40px_rgba(0,0,0,0.4)] transition-all duration-300 border-2 border-white/50">
+  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white translate-x-1 drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M8 5v14l11-7z"/>
+  </svg>
+</div>
+              </div>
+            </>
+          ) : (
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/OgVIfcZQ8CM?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full rounded-[2.5rem]"
+            ></iframe>
+          )}
+
+          {/* Soft internal edge lighting overlay (Remains active even over the iframe) */}
+          <div className="absolute inset-0 rounded-[2.5rem] ring-1 ring-black/10 pointer-events-none mix-blend-overlay shadow-[inset_0_0_40px_rgba(0,0,0,0.3)]" />
+        </div>
+
+        {/* Floating Badge (Trusted By) */}
+        <div className="absolute top-4 -right-6 sm:top-8 sm:-right-8 lg:-top-5 lg:-right-6 bg-white rounded-lg lg:rounded-xl py-1.5 px-3 lg:py-2 lg:px-5 shadow-[0_10px_20px_rgba(0,0,0,0.2)] flex items-center gap-1.5 lg:gap-2 border border-[#E8D8B8] z-30 animate-[float_5s_ease-in-out_infinite_0.5s] pointer-events-none">
+          <div className="text-sm lg:text-xl drop-shadow-sm">⭐</div>
+          <div className="text-left">
+            <div className="text-[#4A2E10] text-[7px] lg:text-[10px] font-bold uppercase tracking-widest leading-none">Trusted by</div>
+            <div className="text-[#2A1400] text-[10px] sm:text-xs lg:text-sm font-extrabold mt-0.5">1.5 Lakh+</div>
+          </div>
+        </div>
+
+        {/* 2. FLOATING SMALL BOOK (report-book.png) - Anchored perfectly to the Bottom-Left */}
+        <div className="absolute -bottom-6 -left-12 sm:-bottom-8 sm:-left-16 lg:-bottom-12 lg:-left-24 z-20 animate-float transition-all duration-700 w-[160px] sm:w-[220px] lg:w-[280px] aspect-[1/1.4] drop-shadow-[25px_30px_50px_rgba(26,15,10,0.5)] pointer-events-none">
+          <Image
+            src="/report-book.png"
+            alt="Floating Premium Kundali Report"
+            width={280}
+            height={392}
+            
+            className="w-full h-full object-contain"
+          />
+        </div>
+
+        {/* Floating "Spots Left" Notification */}
+        <div className="absolute -top-6 -left-4 sm:-top-8 sm:-left-4 lg:-top-10 lg:-left-12 z-30 animate-[float_4s_ease-in-out_infinite_1s] pointer-events-none">
+          <div className="bg-gradient-to-r from-[#A82020] to-[#8B1E1E] text-white text-[8px] sm:text-[10px] lg:text-xs font-bold tracking-widest px-3 py-1.5 lg:px-5 lg:py-2.5 rounded-full shadow-[0_10px_20px_rgba(168,32,32,0.4)] border border-[#FF8080]/30 flex items-center gap-1.5 lg:gap-2 whitespace-nowrap">
+            <span className="animate-pulse">🔥</span> ONLY 56 SPOTS LEFT
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Mobile CTA */}
+    <div className="block lg:hidden w-full pt-6 sm:pt-8 relative z-20">
+      <div className="flex flex-col items-center justify-center gap-4">
+        <a href="#offer" className="btn-auto-shine w-full sm:w-auto px-6 sm:px-8 py-4 rounded-full font-semibold text-base sm:text-lg text-[#FDF7EC] shadow-[0_12px_24px_rgba(89,28,28,0.4)] active:scale-95 transition-transform text-center border border-[#7A2A2A]" style={{ background: 'linear-gradient(135deg, #7A1F1F 0%, #4A0D0D 100%)' }}>
+          Get Your Premium Surbhi Kundali
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 {/* CELEBRITY TESTIMONIALS section to the second part after hero changes after client discussions */}
 
-<section className="relative overflow-hidden py-4 sm:py-8" style={{ background: C.dk }}>
+<section className="relative overflow-hidden py-16 lg:py-24 bg-gradient-to-b from-[#b8560f] to-[#e8871e]">
   <StarCanvas id="proofC" style={{ opacity: .5 }} />
   {/* Hide large floating symbols on mobile to prevent overflow/distraction */}
   <div className="hidden lg:block absolute right-[-30px] top-[20%] text-[24rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♀</div>
   <div className="hidden lg:block absolute left-[-20px] bottom-[25%] text-[18rem] opacity-[0.025] pointer-events-none leading-none font-serif" style={{ color: C.g }}>♂</div>
 
-  {/* Global style injection for hiding scrollbar AND the infinite slide animation */}
+  {/* Global style injection for marquee sliding tracks */}
   <style dangerouslySetInnerHTML={{ __html: `
     .hide-scroll::-webkit-scrollbar { display: none; } 
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
@@ -611,102 +551,113 @@ const time = useCountdown();
       100% { transform: translateX(-50%); }
     }
     .animate-infinite-slide {
-      animation: infinite-slide 25s linear infinite;
+      animation: infinite-slide 35s linear infinite;
     }
     .animate-infinite-slide:hover {
       animation-play-state: paused;
     }
   ` }} />
 
-  <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10">
-    
-    <div className="reveal text-center mb-10 lg:mb-[40px]">
-      <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>✦ Real People. Real Shifts.</div>
-      <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
-        5,000 Lives Touched.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Stars.</em>
-      </h2>
+  {/* MAIN TEXT CONTAINER */}
+ <div className="reveal text-center mb-12 lg:mb-16">
+  <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-6" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>
+    ✦ Real People. Real Shifts.
+  </div>
+  
+  {/* CHANGED: leading-relaxed to leading-[1.9] for extra vertical spacing between lines */}
+  <h2 className="Georgia text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.9] tracking-[-0.02em]" style={{ color: C.td1 }}>
+    Trusted by <em className="font-sans" >1,50,000+</em> Individuals for <br/> 
+    <em className="block mt-4" style={{ fontStyle: "italic", color: C.g2 }}>Accurate Premium  Surbhi Kundali  Reports</em>
+  </h2>
+</div>
+
+  {/* CELEBRITY CAROUSEL (NOW AUTO-SCROLLING MARQUEE) */}
+  <div className="reveal d1 mb-16 lg:mb-[90px] relative w-full overflow-hidden">
+    <div className="flex items-center gap-3 lg:gap-4 mb-10 max-w-[800px] mx-auto px-5">
+      <div className="h-[1px] flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(200,168,75,0.3))" }} />
+      <div className="text-[0.65rem] lg:text-[0.8rem] font-medium tracking-[0.2em] uppercase text-center whitespace-nowrap" style={{ color: C.g2 }}>Celebrity Consultations</div>
+      <div className="h-[1px] flex-1" style={{ background: "linear-gradient(270deg, transparent, rgba(200,168,75,0.3))" }} />
     </div>
 
-    {/* CELEBRITY CAROUSEL (Mobile Swipeable / Desktop Scrollable) */}
-    <div className="reveal d1 mb-16 lg:mb-[80px]">
-      <div className="flex items-center gap-3 lg:gap-4 mb-6 lg:mb-8 max-w-[800px] mx-auto">
-        <div className="h-[1px] flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(200,168,75,0.3))" }} />
-        <div className="text-[0.65rem] lg:text-[0.8rem] font-medium tracking-[0.2em] uppercase text-center" style={{ color: C.g2 }}>Celebrity Consultations</div>
-        <div className="h-[1px] flex-1" style={{ background: "linear-gradient(270deg, transparent, rgba(200,168,75,0.3))" }} />
-      </div>
+    {/* Side Mask Fades for the Celebrity Marquee */}
+    <div className="absolute inset-y-0 left-0 w-12 sm:w-24 lg:w-40 z-30 pointer-events-none" style={{ background: `linear-gradient(90deg, #ab500f, #E85D1F), transparent)` }} />
+    <div className="absolute inset-y-0 right-0 w-12 sm:w-24 lg:w-40 z-30 pointer-events-none" style={{ background: `linear-gradient(90deg, #ab500f, #E85D1F), transparent)` }} />
 
-      {/* Carousel Container */}
-      <div className="flex gap-4 lg:gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scroll px-2 -mx-2 animate-infinite-slide">
-        {[
-          { name: "Leading Politician", desc: "Muhurat & Strategy", img: "/celebs/4.jpeg" },
-          { name: "Leading Politician", desc: "Muhurat & Strategy", img: "/celebs/7.jpeg" },
-          // { name: "Bollywood Actor", desc: "Career Timing", img: "/celebs/5.jpeg" },
-          { name: "Top Industrialist", desc: "Business Expansion", img: "/celebs/6.jpeg" },
-          { name: "Cricket Icon", desc: "Injury & Comeback", img: "/celebs/11.png" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/8.jpg" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/8.png" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/9.jpeg" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/9.png" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/10.jpg" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/11.png" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/13.jpeg" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/14.jpeg" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/1.jpeg" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/2.jpeg" },
-          { name: "Global CEO", desc: "Wealth Yogas", img: "/celebs/3.jpeg" },
-        ].map((celeb, i) => (
-          <div key={i} className="relative shrink-0 w-[140px] sm:w-[180px] lg:w-[220px] aspect-[3/4] rounded-2xl lg:rounded-[24px] overflow-hidden snap-center group transition-transform duration-300 hover:-translate-y-2" style={{ border: "1px solid rgba(200,168,75,.3)", background: C.dk2, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
-            
-            {/* Image (Replace src with actual celeb images) */}
-            <div className="absolute inset-0 bg-[#3D1600] flex items-center justify-center text-4xl opacity-20 z-0">👤</div>
-            <Image 
-              src={celeb.img} 
-              alt={celeb.name} 
-              quality={50}
-              width={220} 
-              height={293} 
-              sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
-              className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 z-0"
-              priority={false}
-            />
-
-            {/* Dark Gradient Overlay for Text Readability */}
-            <div className="absolute inset-x-0 bottom-0 p-3 lg:p-5 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, rgba(20,5,0,0.6) 60%, transparent 100%)" }}>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-    
-    {/* Header */}
-    <div className="reveal text-center mb-10 lg:mb-[52px]">
-      <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>
-        ✦ As Featured In
-      </div>
-      <h2 className="fraunces text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.12] tracking-[-0.02em]" style={{ color: C.td1 }}>
-        Making Headlines.<br /><em style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Press.</em>
-      </h2>
+    {/* Continuous Sliding Track */}
+    <div className="flex w-max animate-infinite-slide gap-4 lg:gap-6 px-4">
+      {[
+        { name: "Leading Politician", img: "/celebs/4.jpeg" },
+        { name: "Leading Politician", img: "/celebs/7.jpeg" },
+        { name: "Top Industrialist", img: "/celebs/6.jpeg" },
+        { name: "Cricket Icon", img: "/celebs/11.png" },
+        { name: "Global CEO", img: "/celebs/8.jpg" },
+        { name: "Global CEO", img: "/celebs/8.png" },
+        { name: "Global CEO", img: "/celebs/9.jpeg" },
+        { name: "Global CEO", img: "/celebs/9.png" },
+        { name: "Global CEO", img: "/celebs/10.jpg" },
+        { name: "Global CEO", img: "/celebs/13.jpeg" },
+        { name: "Global CEO", img: "/celebs/14.jpeg" },
+        { name: "Global CEO", img: "/celebs/1.jpeg" },
+        { name: "Global CEO", img: "/celebs/2.jpeg" },
+        { name: "Global CEO", img: "/celebs/3.jpeg" },
+        // Duplicated items array for seamless looping matching layout execution
+        { name: "Leading Politician", img: "/celebs/4.jpeg" },
+        { name: "Leading Politician", img: "/celebs/7.jpeg" },
+        { name: "Top Industrialist", img: "/celebs/6.jpeg" },
+        { name: "Cricket Icon", img: "/celebs/11.png" },
+        { name: "Global CEO", img: "/celebs/8.jpg" },
+        { name: "Global CEO", img: "/celebs/8.png" },
+        { name: "Global CEO", img: "/celebs/9.jpeg" },
+        { name: "Global CEO", img: "/celebs/9.png" },
+        { name: "Global CEO", img: "/celebs/10.jpg" },
+        { name: "Global CEO", img: "/celebs/13.jpeg" },
+        { name: "Global CEO", img: "/celebs/14.jpeg" },
+        { name: "Global CEO", img: "/celebs/1.jpeg" },
+        { name: "Global CEO", img: "/celebs/2.jpeg" },
+        { name: "Global CEO", img: "/celebs/3.jpeg" },
+      ].map((celeb, i) => (
+        <div key={i} className="relative shrink-0 w-[140px] sm:w-[180px] lg:w-[220px] aspect-[3/4] rounded-2xl lg:rounded-[24px] overflow-hidden group transition-transform duration-300 hover:-translate-y-2" style={{ border: "1px solid rgba(200,168,75,.3)", background: C.dk2, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+          <div className="absolute inset-0 bg-[#3D1600] flex items-center justify-center text-4xl opacity-20 z-0">👤</div>
+          <Image 
+            src={celeb.img} 
+            alt={celeb.name} 
+            quality={50}
+            width={220} 
+            height={293} 
+            sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
+            className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 z-0"
+            priority={false}
+          />
+          <div className="absolute inset-x-0 bottom-0 p-3 lg:p-5 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, rgba(20,5,0,0.6) 60%, transparent 100%)" }} />
+        </div>
+      ))}
     </div>
   </div>
+  
+  {/* PRESS HEADER */}
+  <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10 text-center mb-12 lg:mb-16">
+  <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-6" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>
+    ✦ As Featured In
+  </div>
+  
+  <h2 className="Georgia text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.9] tracking-[-0.02em]" style={{ color: C.td1 }}>
+    Making Headlines.<br />
+    <em className="block mt-4" style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Press.</em>
+  </h2>
+</div> 
 
-  {/* CONTINUOUS AUTO-SLIDING NEWS GRID */}
-  {/* We place this outside the max-w container so it stretches full screen edge-to-edge */}
-  <div className="relative w-full overflow-hidden pb-6 pt-2">
-    
-    {/* Gradient Masks for smooth entry/exit fading */}
-    <div className="absolute inset-y-0 left-0 w-8 sm:w-16 lg:w-32 z-40 pointer-events-none" style={{ background: `linear-gradient(to right, ${C.dk}, transparent)` }} />
-    <div className="absolute inset-y-0 right-0 w-8 sm:w-16 lg:w-32 z-40 pointer-events-none" style={{ background: `linear-gradient(to left, ${C.dk}, transparent)` }} />
+ 
+   <div className="relative w-full overflow-hidden pb-6 pt-2">
+    <div className="absolute inset-y-0 left-0 w-8 sm:w-16 lg:w-32 z-40 pointer-events-none" style={{ background: `linear-gradient(90deg, #ab500f, #E85D1F), transparent)` }} />
+    <div className="absolute inset-y-0 right-0 w-8 sm:w-16 lg:w-32 z-40 pointer-events-none" style={{ background: `linear-gradient(90deg, #ab500f, #E85D1F), transparent)` }} />
 
-    {/* Sliding Container */}
-    <div className="flex w-full mx-4 animate-infinite-slide gap-4 lg:gap-6 px-4">
-      {/* We duplicate the array to create a seamless infinite loop */}
+    <div className="flex w-max animate-infinite-slide gap-4 lg:gap-6 px-4">
       {[
         { id: 2, publisher: "Hindustan Times", date: "Sep 2024", img: "/news/002.jpg" },
         { id: 3, publisher: "Mid-Day", date: "Aug 2024", img: "/news/003.jpg" },
         { id: 4, publisher: "Zee News", date: "Jul 2024", img: "/news/004.jpg" },
         { id: 6, publisher: "India Today", date: "May 2024", img: "/narendra-modi.jpg" },
         { id: 9, publisher: "Firstpost", date: "Feb 2024", img: "/news/009.png" },
-        // Duplicated items for infinite effect
         { id: 22, publisher: "Hindustan Times", date: "Sep 2024", img: "/news/002.jpg" },
         { id: 23, publisher: "Mid-Day", date: "Aug 2024", img: "/news/003.jpg" },
         { id: 24, publisher: "Zee News", date: "Jul 2024", img: "/news/004.jpg" },
@@ -718,10 +669,8 @@ const time = useCountdown();
           className="group relative shrink-0 w-[260px] sm:w-[320px] lg:w-[380px] rounded-[18px] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5" 
           style={{ background: C.dk, border: "1px solid rgba(200,168,75,.15)", boxShadow: "0 10px 30px rgba(0,0,0,0.3)" }}
         >
-          {/* Image Container */}
           <div className="relative w-full aspect-[4/3] bg-[#2A0E00] overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-10">📰</div>
-            
             <Image 
               src={news.img} 
               alt={`News snippet from ${news.publisher}`} 
@@ -731,27 +680,23 @@ const time = useCountdown();
               sizes="(max-width: 768px) 260px, (max-width: 1200px) 320px, 380px"
               className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 z-10"
             />
-            
             <div className="absolute inset-x-0 bottom-0 h-2/3 z-20" style={{ background: "linear-gradient(to top, rgba(20,5,0,0.95) 0%, transparent 100%)" }} />
           </div>
 
-          {/* Publisher Info */}
           <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5 z-30 flex items-end justify-between">
             <div>
               <div className="text-[0.6rem] lg:text-[0.65rem] font-medium tracking-wider uppercase mb-1" style={{ color: C.g }}>Media Coverage</div>
-              <div className="fraunces text-[1.05rem] lg:text-[1.15rem] font-medium text-white leading-tight">{news.publisher}</div>
+              <div className="Georgia text-[1.05rem] lg:text-[1.15rem] font-medium text-white leading-tight">{news.publisher}</div>
             </div>
             <div className="text-[0.6rem] lg:text-[0.65rem] px-2 py-1 rounded border whitespace-nowrap" style={{ color: C.td4, borderColor: "rgba(255,255,255,0.15)", background: "rgba(0,0,0,0.4)" }}>
               {news.date}
             </div>
           </div>
-          
           <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#C8A84B]/40 rounded-[18px] transition-colors duration-300 z-40 pointer-events-none" />
         </div>
       ))}
     </div>
   </div>
-
 </section>
      {/* ════════════════════════════════
           WHAT CAN IT SOLVE? (Interactive 3D Hover Cards)
@@ -759,18 +704,18 @@ const time = useCountdown();
       <section className=" py-8 md:py-14  bg-[#FCF7EE]">
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-16 reveal">
-            <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400] mb-4">What Can Premium Kundali Solve for You?</h2>
-            <p className="text-lg text-[#4A2E10] max-w-2xl mx-auto">Get absolute clarity and powerful remedies for the most pressing challenges in your life.</p>
+            <h2 className="Georgia text-4xl lg:text-5xl font-medium text-[#2A1400] mb-4">What Can Premium Surbhi Kundali Solve for You?</h2>
+            <p className="text-lg text-[#4A2E10] max-w-2xl mx-auto">Discover what your birth chart reveals and receive personalized guidance to make confident decisions in every area of life.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
             {[
-              { title: "Struggling in Business?", desc: "Manifest Success – Amplify remedies that actually WORK for success.", img: "https://static.vecteezy.com/system/resources/thumbnails/066/700/531/small_2x/tired-indian-business-man-suffering-from-headache-problem-tension-migraine-stress-at-home-office-video.jpg" },
-              { title: "Relationship Conflicts?", desc: "Peace & Harmony – Align your life with cosmic energies for stronger bonds.", img: "https://gerardcounseling.com/wp-content/uploads/2012/03/communication-problems.jpg" },
-              { title: "Financial Struggle?", desc: "Obstacle Removal – Align your energies for prosperity & stability.", img: "https://media.swncdn.com/cms/CW/28319-finances-man-struggle-challenge.1200w.tn.jpg" },
-              { title: "Health Issues?", desc: "Fix dosh – Identify planetary imbalances & remedies for well-being.", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ5Vn-8_svgUyFHnNtgyrsPQGw1ncZuDWMAQ&s" },
-              { title: "Kundli Matchmaking?", desc: "Beyond Compatibility – We don't just match; we provide solutions to any mismatch!", img: "https://www.jyotishdham.com/cdn/shop/articles/Kundali_Match.png?v=1764230492" },
-              { title: "Enlighten Baby Future?", desc: "Give Direction – Align your child's life towards ultimate success.", img: "https://media.istockphoto.com/id/2166738474/photo/mother-looking-away-contemplating-and-carrying-her-baby-daughter-at-home.jpg?s=612x612&w=0&k=20&c=ZY-Tst9DAjFg35m06lLrAaMCEM_8kynHkUHptGp5vO0=" },
+              { title: "Struggling in Business?", desc: "Manifest Success – Amplify remedies that actually WORK for success.", img: "https://i.pinimg.com/736x/c4/cf/2b/c4cf2b4327960aa0b380fbbe43719da1.jpg" },
+              { title: "Relationship Conflicts?", desc: "Peace & Harmony – Align your life with cosmic energies for stronger bonds.", img: "https://i.pinimg.com/1200x/af/be/eb/afbeebf69dd7f2c87ce1f4b34e34443f.jpg" },
+              { title: "Financial Struggle?", desc: "Obstacle Removal – Align your energies for prosperity & stability.", img: "https://i.pinimg.com/736x/f2/40/ca/f240ca19fad2cf25c39ea3ca5fff74f7.jpg" },
+              { title: "Health Issues?", desc: "Fix dosh – Identify planetary imbalances & remedies for well-being.", img: "https://i.pinimg.com/1200x/01/0b/31/010b3193289bf097bba2062c943734a5.jpg" },
+              { title: "Kundali Matchmaking?", desc: "Beyond Compatibility – We don't just match; we provide solutions to any mismatch!", img: "https://i.pinimg.com/736x/1f/00/89/1f00892745e611a85baecaa72ae3a895.jpg" },
+              { title: "Enlighten Baby Future?", desc: "Give Direction – Align your child's life towards ultimate success.", img: "https://i.pinimg.com/736x/65/90/d7/6590d77c14d037afde320222419247b6.jpg" },
             ].map((item, i) => (
               <div 
                 key={i} 
@@ -794,7 +739,7 @@ const time = useCountdown();
                 <div className="absolute inset-x-0 bottom-0 p-8 lg:p-10 flex flex-col justify-end">
                   
                   {/* Title */}
-                  <h3 className="fraunces text-2xl lg:text-3xl font-medium text-[#F5D98A] transform transition-transform duration-500 ease-out group-hover:-translate-y-2">
+                  <h3 className="Georgia text-2xl lg:text-3xl font-medium text-[#F5D98A] transform transition-transform duration-500 ease-out group-hover:-translate-y-2">
                     {item.title}
                   </h3>
                   
@@ -823,7 +768,7 @@ const time = useCountdown();
           
           <div className="mt-20 text-center reveal">
             <a href="#offer" className="btn-auto-shine inline-block bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-12 py-5 rounded-2xl font-medium text-xl shadow-[0_15px_30px_rgba(200,168,75,0.3)] hover:-translate-y-2 transition-transform duration-300">
-              Fix Your Problems with Premium Kundali NOW!
+              Fix Your Problems with Premium  Surbhi Kundali NOW!
             </a>
           </div>
         </div>
@@ -835,16 +780,16 @@ const time = useCountdown();
           BEFORE VS AFTER (Interactive Image Slider)
       ════════════════════════════════ */}
 
-    <section className=" py-8 md:py-14 " style={{ background: '#1A0A00' }}>
+    <section className=" py-8 md:py-14 bg-gradient-to-b from-[#fae8dc] to-[#e4c0c0]">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-5">
         <div className="text-center mb-12 reveal">
-          <div className="inline-block bg-white/5 text-[#E2C06A] text-[10px] sm:text-xs font-medium tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-6 border border-[#E2C06A]/30">
+          <div className="inline-block bg-white/40 text-[#cc831c] text-[10px] sm:text-xs font-medium tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-6 border border-[#E2C06A]/30">
             The Transformation
           </div>
-          <h2 className="fraunces text-4xl lg:text-5xl font-medium text-white mb-6">
-            Life Before vs After Your <span className="italic text-[#E2C06A]">Kundali Report</span>
+          <h2 className="Georgia text-4xl lg:text-5xl font-medium text-black/80 mb-6">
+            Life Before vs  After Your <span className="italic text-[#e89b1f]">Surbhi Kundali Report</span>
           </h2>
-          <p className="text-white/60 max-w-2xl mx-auto text-sm sm:text-base">
+          <p className="text-black/80 max-w-2xl mx-auto text-base sm:text-lg">
             Drag the slider to see the difference cosmic alignment makes. Don't let confusion hold you back from the life you were destined to live.
           </p>
         </div>
@@ -920,13 +865,13 @@ const time = useCountdown();
               </div>
               
               {/* Title */}
-              <h2 className="fraunces text-[28px] leading-none sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#E2C06A] mb-1 sm:mb-2 drop-shadow-md uppercase tracking-wide">
+              <h2 className="Georgia text-[28px] leading-none sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#E2C06A] mb-1 sm:mb-2 drop-shadow-md uppercase tracking-wide">
                 Narendra Modi
               </h2>
               
               {/* Subtitle */}
               <h3 className="text-[#E8D8B8] font-serif text-xs sm:text-sm md:text-lg lg:text-xl italic mb-3 sm:mb-4 md:mb-6 px-2">
-                Prime Ministerial Astrological Insights
+                Prime Minister of India
               </h3>
               
               {/* Description Line */}
@@ -956,7 +901,7 @@ const time = useCountdown();
           <div className="reveal order-2 lg:order-1 relative">
             <div className="absolute inset-0 bg-[#E8D8B8] rounded-[2rem] transform translate-x-4 translate-y-4"></div>
             <Image 
-  src="/surbhi-gupta-portrait.jpg" 
+  src="/smart-kundli.png" 
   alt="Celebrity Astrologer Surbhi Gupta" 
   width={600}           // Provide the maximum expected width
   height={750}          // Matches your aspect-[4/5] ratio
@@ -966,16 +911,16 @@ const time = useCountdown();
   sizes="(max-width: 768px) 100vw, 50vw" // Helps browser choose the right size
 />
             <div className="absolute bottom-10 left-[-20px] z-20 bg-white p-6 rounded-2xl shadow-xl border border-[#E8D8B8] reveal d3">
-              <div className="fraunces text-2xl font-medium text-[#2A1400]">35+ Years</div>
+              <div className="Georgia text-2xl font-medium text-[#2A1400]">35+ Years</div>
               <div className="text-sm font-semibold text-[#C8A84B] uppercase tracking-wider">Mastering the Stars</div>
             </div>
           </div> 
 
           {/* Timeline content */}
           <div className="reveal order-1 lg:order-2">
-            <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400] mb-6">Who Should Get a <br/>Janam Kundli Made?</h2>
+            <h2 className="Georgia text-4xl lg:text-5xl font-medium text-[#2A1400] mb-6">Who Should Get a<br/> Premium Surbhi Kundali Report ?</h2>
             <p className="text-[#4A2E10] text-lg mb-12 leading-relaxed">
-              Anyone facing a dilemma in life can have your Kundli guide your next steps. It helps you understand the right timing, make better decisions, and move forward with confidence.
+              Anyone facing a dilemma in life can have your Surbhi Kundali  guide your next steps. It helps you understand the right timing, make better decisions, and move forward with confidence.
             </p>
 
             <div className="relative timeline-line">
@@ -991,7 +936,7 @@ const time = useCountdown();
                     {item.step}
                   </div>
                   <div className="pt-1.5">
-                    <h3 className="fraunces text-xl font-medium text-[#2A1400] mb-1">{item.title}</h3>
+                    <h3 className="Georgia text-xl font-medium text-[#2A1400] mb-1">{item.title}</h3>
                     <p className="text-[#4A2E10] text-sm leading-relaxed">{item.desc}</p>
                   </div>
                 </div>
@@ -1000,7 +945,7 @@ const time = useCountdown();
             
             <div className="mt-12 reveal">
               <a href="#offer" className="btn-auto-shine inline-block bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-10 py-4 rounded-xl font-medium text-lg shadow-[0_10px_20px_rgba(200,168,75,0.3)] hover:-translate-y-1 transition-transform">
-                Order Yours Now
+                Order My Surbhi Kundali Now
               </a>
             </div>
           </div>
@@ -1013,7 +958,7 @@ const time = useCountdown();
       <section className=" py-8 md:py-14  bg-[#FCF7EE] relative overflow-hidden">
         <div className="max-w-[1300px] mx-auto px-5 relative z-10">
           
-          {/* Section Header */}
+          
           <div className="text-center mb-16 reveal">
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="w-12 h-[1px] bg-[#C8A84B]"></div>
@@ -1022,81 +967,89 @@ const time = useCountdown();
               </span>
               <div className="w-12 h-[1px] bg-[#C8A84B]"></div>
             </div>
-            <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400]">
-              What's Inside Your Premium Kundali
+            <h2 className="Georgia text-4xl lg:text-5xl font-medium text-[#2A1400]">
+              What's Inside Your Premium  Surbhi Kundali
             </h2>
           </div>
 
-          {/* TOP ROW: 5 Dark Cinematic Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5 mb-6">
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 lg:gap-2 mb-6">
             {[
               {
                 badge: "CORE", badgeColor: "text-[#F5D98A] bg-[#F5D98A]/10 border-[#F5D98A]/30",
                 icon: "📜",
-                title: "Dosh & Dasha Analysis",
-                desc: "Complete planetary period report with remedies",
+                title: "Personality & Life Analysis",
+                desc: "Discover your true nature, characteristics, strengths, and life path.",
                 bg: "from-[#3A1010] to-[#1A0505]", // Deep Burgundy
                 glow: "rgba(255, 100, 100, 0.15)"
               },
               {
                 badge: "CORE", badgeColor: "text-[#F5D98A] bg-[#F5D98A]/10 border-[#F5D98A]/30",
                 icon: "🧘‍♂️",
-                title: "All Yog Report",
-                desc: "Raj Yoga, Gajkesari & all formed yogas",
+                title: "10-Year Predictions",
+                desc: "Year-by-year guidance for your most important life events.",
                 bg: "from-[#0A1A3A] to-[#050A1A]", // Deep Navy
                 glow: "rgba(100, 150, 255, 0.15)"
               },
               {
                 badge: "SPECIAL", badgeColor: "text-[#E2C06A] bg-[#E2C06A]/10 border-[#E2C06A]/30",
                 icon: "💎",
-                title: "Gemstone Recommendation",
-                desc: "When, why & how to wear — by top gemologists",
+                title: "Gemstone & Rudraksha",
+                desc: "Personalized recommendations with complete wearing guidance.",
+                bg: "from-[#2A2A0A] to-[#101005]", // Deep Olive Gold
+                glow: "rgba(255, 215, 0, 0.15)"
+              },
+              {
+                badge: "SPECIAL", badgeColor: "text-[#E2C06A] bg-[#E2C06A]/10 border-[#E2C06A]/30",
+                icon: "💎",
+                title: "Remedies & Puja Guidance",
+                desc: "Practical Vedic remedies to help reduce challenges and enhance positive results.",
                 bg: "from-[#2A2A0A] to-[#101005]", // Deep Olive Gold
                 glow: "rgba(255, 215, 0, 0.15)"
               },
               {
                 badge: "SPECIAL", badgeColor: "text-[#E2C06A] bg-[#E2C06A]/10 border-[#E2C06A]/30",
                 icon: "🪔",
-                title: "Puja Recommendation",
-                desc: "Targeted pujas to counter your specific doshas",
+                title: "Marriage, Career & Wealth",
+                desc: "Clear insights into relationships, success, and finances.",
                 bg: "from-[#0A2A1A] to-[#05100A]", // Deep Forest
                 glow: "rgba(100, 255, 150, 0.15)"
               },
               {
                 badge: "SPECIAL", badgeColor: "text-[#E2C06A] bg-[#E2C06A]/10 border-[#E2C06A]/30",
                 icon: "🔢",
-                title: "Remedies",
-                desc: "Numerology — personality, nature & behaviors",
+                title: "Dosha & Yoga Analysis",
+                desc: "Detailed analysis of Shani, Mangalik, Kaal Sarp, Raj Yog & more.",
                 bg: "from-[#2A103A] to-[#10051A]", // Deep Indigo/Purple
                 glow: "rgba(200, 100, 255, 0.15)"
               }
             ].map((card, i) => (
               <div 
                 key={i} 
-                className={`reveal d${(i % 5) + 1} relative rounded-3xl p-6 lg:p-5 xl:p-6 flex flex-col items-center text-center overflow-hidden border border-white/5 shadow-xl hover:-translate-y-2 transition-transform duration-300 group`}
+                className={`reveal d${(i % 6) + 1} relative rounded-3xl p-6 lg:p-5 xl:p-6 flex flex-col items-center text-center overflow-hidden border border-white/5 shadow-xl hover:-translate-y-2 transition-transform duration-300 group`}
                 style={{ background: `linear-gradient(145deg, var(--tw-gradient-stops))` }}
               >
-                {/* Dynamic Background Tailwind Classes applied via style map */}
+                
                 <div className={`absolute inset-0 bg-gradient-to-br ${card.bg} opacity-90`}></div>
                 
-                {/* Floating Badge */}
+                
                 <div className={`absolute top-4 right-4 text-[9px] font-medium tracking-widest px-2 py-1 rounded-md border ${card.badgeColor} z-10`}>
                   {card.badge}
                 </div>
 
-                {/* Icon with Subtle Glowing Aura */}
+                
                 <div className="relative mt-4 mb-6 z-10">
                   <div className="absolute inset-0 rounded-full scale-150 blur-xl group-hover:scale-110 transition-transform duration-500" style={{ backgroundColor: card.glow }}></div>
                   <div className="w-14 h-14 relative flex items-center justify-center text-3xl drop-shadow-lg z-10">
                     {card.icon}
                   </div>
-                  {/* Faint ground line like in the screenshot */}
+                  
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-[2px] bg-white/10 rounded-full"></div>
                 </div>
 
-                {/* Text Content */}
+               
                 <div className="relative z-10 mt-auto">
-                  <h4 className="fraunces text-lg lg:text-base xl:text-lg font-medium text-[#E8D8B8] mb-2 leading-tight">
+                  <h4 className="Georgia text-lg lg:text-base xl:text-lg font-medium text-[#E8D8B8] mb-2 leading-tight">
                     {card.title}
                   </h4>
                   <p className="text-white/60 text-xs lg:text-[11px] xl:text-xs leading-relaxed">
@@ -1107,19 +1060,19 @@ const time = useCountdown();
             ))}
           </div>
 
-          {/* BOTTOM ROW: 4 Light Horizontal Cards */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
             {[
               {
                 badge: "BONUS", badgeColor: "text-[#D9481E] bg-[#D9481E]/10",
                 icon: "📅",
-                title: "Monthly Predictions — 1 Year",
-                desc: "Month-by-month insights across all life areas"
+                title: "Detailed Report on Every Area of Your Life",
+                desc: "A complete Vedic Surbhi Kundali Report for every aspect of your life."
               },
               {
                 badge: "EXCLUSIVE", badgeColor: "text-[#C8A84B] bg-[#C8A84B]/10",
                 icon: "🗓️",
-                title: "Yearly Predictions — 10 Years",
+                title: "In-Depth Year-by-Year Analysis",
                 desc: "A full decade roadmap for major decisions"
               },
               {
@@ -1132,7 +1085,7 @@ const time = useCountdown();
                 badge: "FREE", badgeColor: "text-[#8B1E1E] bg-[#8B1E1E]/10",
                 icon: "👥",
                 title: "Free 1 personalised question on whatsapp",
-                desc: "Lifetime access to private astrology group"
+                desc: "Surbhi gupta personally gives answers on WhatsApp"
               }
             ].map((card, i) => (
               <div 
@@ -1140,7 +1093,7 @@ const time = useCountdown();
                 className={`reveal d${(i % 4) + 1} bg-white rounded-2xl p-5 border border-[#E8D8B8] shadow-[0_5px_15px_rgba(61,22,0,0.03)] hover:shadow-[0_10px_25px_rgba(61,22,0,0.08)] transition-all duration-300 flex flex-col`}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="text-2xl bg-[#FCF7EE] w-10 h-10 rounded-lg flex items-center justify-center border border-[#E8D8B8]/50 shadow-sm shrink-0">
+                  <div className="text-3xl bg-[#FCF7EE] w-10 h-10 rounded-lg flex items-center justify-center border border-[#E8D8B8]/50 shadow-sm shrink-0">
                     {card.icon}
                   </div>
                   <div className={`text-[9px] font-medium tracking-widest px-2 py-1 rounded-md ${card.badgeColor}`}>
@@ -1148,7 +1101,7 @@ const time = useCountdown();
                   </div>
                 </div>
                 
-                <h4 className="fraunces text-[#3D1600] font-medium text-[15px] mb-1.5 leading-tight">
+                <h4 className="Georgia text-[#3D1600] font-medium text-[15px] mb-1.5 leading-tight">
                   {card.title}
                 </h4>
                 <p className="text-[#6B4423] text-xs leading-relaxed font-medium">
@@ -1167,7 +1120,7 @@ const time = useCountdown();
       {/* ════════════════════════════════
           INSIDE THE REPORT (Cinematic Cosmic Layout)
       ════════════════════════════════ */}
-     <section className="py-8 sm:py-12 md:py-14 relative overflow-hidden" style={{ background: C.dk2 }}>
+     <section className="py-8 sm:py-12 md:py-14 relative overflow-hidden" style={{ background: "linear-gradient(90deg, #ab500f, #E85D1F)" }}>
         
         {/* Cinematic Ambient Background Gradients */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(200,168,75,0.15)_0%,transparent_50%)] pointer-events-none" />
@@ -1186,13 +1139,16 @@ const time = useCountdown();
             </div>
             
             {/* Cinematic Gradient Title */}
-            <h2 className="fraunces text-[2.2rem] leading-tight sm:text-5xl lg:text-6xl font-medium mb-4 sm:mb-6 bg-gradient-to-br from-white via-[#F5D98A] to-[#C8A84B] bg-clip-text text-transparent drop-shadow-sm">
-              Get Your Smart <br className="hidden sm:block"/>Kundli Online
+            <h2 className="Georgia text-[2.2rem] leading-tight sm:text-5xl lg:text-6xl font-medium mb-4 sm:mb-6 bg-gradient-to-br from-white via-[#F5D98A] to-[#C8A84B] bg-clip-text text-transparent drop-shadow-sm">
+              Get Your Premium <br className="hidden sm:block"/> Surbhi Kundali Report 
             </h2>
             
             {/* Tightened margin (mb-6 on mobile, mb-10 on sm) */}
-            <p className="text-[#E8D8B8]/80 font-light text-sm sm:text-lg mb-6 sm:mb-10 leading-relaxed max-w-lg mx-auto sm:mx-0">
-              Apni online kundli banaiye aur apni janampatri ka detailed analysis paiye quickly aur accurately. Premium Kundali ek advanced online kundali making report hai jisme aap apni kundali check karke grahon ki position, life challenges aur unke practical solutions samajh sakte hain.
+          
+            <p className="text-[#ffffff] font-light text-sm sm:text-lg mb-6 sm:mb-10 leading-relaxed max-w-lg mx-auto sm:mx-0">
+              Get a detailed analysis of your birth chart quickly and accurately.
+
+Our Premium Surbhi Kundali Report helps you understand your planetary positions, key life challenges, and practical solutions in a simple and easy-to-understand way. Check your Surbhi Kundali  online and gain valuable insights into your career, relationships, health, and future.
             </p>
             
             {/* Upgraded Glassmorphism Feature Grid - Tightened gaps for mobile */}
@@ -1216,13 +1172,13 @@ const time = useCountdown();
             <div className="flex flex-col sm:flex-row items-center sm:items-center gap-5 sm:gap-8 reveal d3">
               <div className="flex flex-col items-center sm:items-start">
                 <span className="text-[10px] sm:text-xs text-white/50 uppercase tracking-widest font-medium mb-0.5 sm:mb-1">Total Value</span>
-                <div className="fraunces text-3xl sm:text-4xl lg:text-5xl font-medium text-white flex items-center gap-3">
+                <div className="font-sans text-3xl sm:text-4xl lg:text-5xl font-medium text-white flex items-center gap-3">
                   ₹999 <del className="text-lg sm:text-xl lg:text-2xl text-white/30 font-sans font-medium">₹2999</del>
                 </div>
               </div>
               
               <a href="#offer" className="btn-auto-shine block w-full sm:w-auto bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-8 sm:px-10 py-3.5 sm:py-5 rounded-full sm:rounded-2xl font-bold text-base sm:text-lg hover:shadow-[0_0_40px_rgba(239,207,122,0.4)] hover:-translate-y-1 transition-all text-center">
-                Get Premium Kundali Now
+                Get My Surbhi Kundali Now
               </a>
             </div>
           </div>
@@ -1249,25 +1205,25 @@ const time = useCountdown();
             </div>
 
             {/* Floating Book in Center - SIGNIFICANTLY BIGGER ON MOBILE (200px vs old 160px) */}
-            <div className="w-[200px] sm:w-[220px] lg:w-[260px] aspect-[1/1.4] bg-white rounded-xl rounded-r-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8),_0_0_40px_rgba(200,168,75,0.4)] z-20 flex flex-col items-center justify-center relative animate-float border-r-2 border-[#C8A84B]/50">
+            <div className="w-[200px] sm:w-[220px] lg:w-[350px] aspect-[1/1.4]  rounded-xl rounded-r-2xl  z-20 flex flex-col items-center justify-center relative animate-float">
                
                {/* Assuming reportImgError and setReportImgError are defined in your component state */}
                {!reportImgError ? (
-                 <Image 
-  src="/smart-kundli.png" 
-  alt="Premium Kundali Book" 
-  quality={50}
-  width={260}            // Matches the maximum width in your desktop CSS
-  height={364}           // Matches the 1/1.4 aspect ratio in your CSS
-  sizes="(max-width: 768px) 110px, 220px"
-  className="w-full h-full object-cover rounded-xl rounded-r-2xl" 
-  // onError={() => setReportImgError(true)}
-  // Default is lazy loading, which is perfect for this section
-/>
+                 <div className="w-[140px] md:w-[250px] lg:w-[350px] aspect-[1/1.4] overflow-hidden rounded-xl rounded-r-2xl">
+                  <video 
+                  src="/gif.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className= "w-full h-full object-cover"
+                  />
+                 </div>
+
                ) : (
                  <div className="absolute inset-1 border-2 border-[#C8A84B] flex flex-col items-center justify-center p-3 text-center bg-gradient-to-b from-[#FCF7EE] to-[#E8D8B8] rounded-lg rounded-r-xl">
-                   <div className="fraunces text-[#3D1600] font-medium text-xs sm:text-sm tracking-widest mb-1">SMART</div>
-                   <div className="fraunces text-[#8B1E1E] font-medium text-2xl sm:text-3xl mb-6">KUNDLI</div>
+                   <div className="Georgia text-[#3D1600] font-medium text-xs sm:text-sm tracking-widest mb-1">PREMIUM</div>
+                   <div className="Georgia text-[#8B1E1E] font-medium text-2xl sm:text-3xl mb-6">Surbhi KUNDALI</div>
                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-[#C8A84B] flex items-center justify-center text-2xl bg-white shadow-inner">👁️</div>
                  </div>
                )}
@@ -1277,22 +1233,101 @@ const time = useCountdown();
         </div>
       </section>
 
+{/* ════════════════════════════════
+          PREMIUM BABY REPORT SECTION
+      ════════════════════════════════ */}
+      <section className="py-8 md:py-14 bg-[#FCF7EE]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-5">
+          <div className="reveal bg-white rounded-[1.5rem] lg:rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(61,22,0,0.06)] border border-[#E8D8B8] flex flex-col lg:flex-row hover:shadow-[0_25px_60px_rgba(61,22,0,0.1)] transition-shadow duration-500">
+            
+            {/* Image Side */}
+            <div className="w-full lg:w-1/2 relative min-h-[300px] sm:min-h-[400px] lg:min-h-full">
+              {/* Fade gradient to blend the image smoothly into the white text area */}
+              <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-white via-white/20 to-transparent z-10"></div>
+              <Image 
+                src="https://i.pinimg.com/736x/65/90/d7/6590d77c14d037afde320222419247b6.jpg" 
+                alt="Premium Baby Naming & Future Report"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover object-center"
+              />
+              {/* Premium Floating Badge overlay */}
+              <div className="absolute top-6 left-6 z-20 bg-white/95 backdrop-blur-sm border border-[#C8A84B]/40 px-4 py-2 rounded-full shadow-[0_10px_20px_rgba(0,0,0,0.1)] flex items-center gap-2">
+                 <span className="text-xl">👶</span>
+                 <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#4A2E10]">For Newborns & Kids</span>
+              </div>
+            </div>
+
+            {/* Content Side */}
+            <div className="w-full lg:w-1/2 p-8 sm:p-10 lg:p-14 xl:p-16 relative z-20 flex flex-col justify-center bg-white">
+              <div className="inline-block w-fit bg-[#F5D98A]/20 text-[#84623F] text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1.5 rounded-md mb-5 border border-[#C8A84B]/30">
+                New Arrival Special
+              </div>
+              
+              <h2 className="Georgia text-3xl sm:text-4xl lg:text-[2.75rem] leading-[1.2] font-medium text-[#2A1400] mb-5 tracking-tight">
+                Secure Your Child's <br />
+                <em className="text-[#C8A84B] italic">Cosmic Destiny.</em>
+              </h2>
+              
+              <p className="text-[#6B4423] text-sm sm:text-base leading-relaxed mb-8">
+                Every child is born with a unique cosmic blueprint. Our expert Vedic astrologers deeply analyze your baby's birth chart to provide auspicious Nakshatra-based naming syllables, predict core strengths, and offer lifelong remedies for health, intelligence, and prosperity.
+              </p>
+
+              <ul className="space-y-4 mb-10">
+                {[
+                  { icon: "✨", text: "Auspicious Initial Letters (Nakshatra based)" },
+                  { icon: "🧠", text: "Intelligence, Education & Career Yogas" },
+                  { icon: "🛡️", text: "Health Predictions & Lifelong Remedies" },
+                  { icon: "💬", text: "Includes 1 Free WhatsApp Question for Parents" }
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3.5">
+                    <div className="w-8 h-8 rounded-full bg-[#FCF7EE] border border-[#E8D8B8] flex items-center justify-center text-sm shrink-0 shadow-sm">
+                      {item.icon}
+                    </div>
+                    <span className="text-[#4A2E10] font-medium text-sm sm:text-base">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Action Area */}
+              <div className="flex flex-col sm:flex-row items-center gap-6 pt-6 border-t border-[#E8D8B8]/50">
+                <a 
+                  href="https://kundalireport.surabhiastrology.com/checkout?service=Baby%20Name%20Report&plan=Baby%20Report%20(%E2%82%B91,100)" 
+                  className="btn-auto-shine w-full sm:w-auto bg-gradient-to-r from-[#2A0E00] to-[#4A2E10] text-[#FDF7EC] px-8 py-4 rounded-xl font-medium text-center shadow-[0_10px_20px_rgba(42,14,0,0.2)] hover:shadow-[0_15px_30px_rgba(42,14,0,0.3)] hover:-translate-y-1 transition-all duration-300"
+                >
+                  Get My Baby Report →
+                </a>
+                <div className="flex flex-col items-center sm:items-start">
+                  <span className="text-[#8B6B52] text-[10px] font-bold uppercase tracking-[0.15em] mb-1">Starting At</span>
+                  <div className="flex items-baseline text-[#2A1400]">
+                    <span className="text-lg font-bold mr-0.5 text-[#C8A84B]">₹</span>
+                    <span className="Georgia text-2xl lg:text-3xl font-bold leading-none">999 <del className="font-sans text-[#8B6B52] text-2xl">2,999</del> </span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
       {/* ════════════════════════════════
           AUTHORITY (Acharya Style)
       ════════════════════════════════ */}
       <section className="py-8 md:py-14 bg-[#FCF7EE]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-5">
+        <div className="max-w-full mx-auto px-4 sm:px-0">
           {/* Changed to flex-col-reverse for mobile so the image shows at the top, switches to grid on desktop */}
-          <div className="bg-[#F5D98A] rounded-[1.5rem] lg:rounded-3xl overflow-hidden shadow-2xl flex flex-col-reverse lg:grid lg:grid-cols-2">
+          <div className="bg-[#F5D98A] overflow-hidden shadow-2xl flex flex-col-reverse lg:grid lg:grid-cols-2">
             
             {/* Text Side */}
             <div className="p-6 sm:p-10 lg:p-16 flex flex-col justify-center">
-              <h2 className="fraunces text-2xl sm:text-3xl lg:text-4xl font-medium text-[#2A1400] mb-1.5 lg:mb-2">Trust the Best —</h2>
+              <h2 className="Georgia text-2xl sm:text-3xl lg:text-4xl font-medium text-[#2A1400] mb-1.5 lg:mb-2">Trust the Best —</h2>
               <div className="bg-white inline-block px-3 py-1.5 lg:px-4 lg:py-2 mb-4 lg:mb-6 rounded-md lg:rounded-none w-fit">
-                <h3 className="fraunces text-xl sm:text-2xl lg:text-3xl font-medium text-[#8B1E1E] italic">Celebrity Astrologer Surbhi Gupta!</h3>
+                <h3 className="Georgia text-xl sm:text-2xl lg:text-3xl font-medium text-[#8B1E1E] italic">Celebrity Astrologer Surbhi Gupta!</h3>
               </div>
               <p className="text-[#4A2E10] mb-5 lg:mb-8 leading-snug lg:leading-relaxed text-sm sm:text-base lg:text-lg">
-                Celebrity Astrologer Surbhi Gupta, recognized as the Pride of Bharat, is an elite Astrologer in India. She is a highly regarded expert in the fields of Astrology, Vastu, Numerology, and Tantra. She has gained recognition for providing satisfactory, deeply accurate solutions to a wide range of problems, endorsed by top celebrities and business leaders!
+                Celebrity Astrologer Surbhi Gupta, proudly recognized as the Pride of Bharat, is one of India’s most trusted astrology experts. She specializes in Astrology, Vastu, and Numerology, helping people find clarity and practical guidance for life’s challenges. Her accurate insights and personalized consultations have earned the trust of celebrities, business leaders, and thousands of satisfied clients across India.
               </p>
               <p className="text-[#2A1400] font-medium italic text-base sm:text-lg lg:text-xl mb-6 lg:mb-10">
                 Your destiny is precious. Don't leave it to guesswork.
@@ -1302,7 +1337,7 @@ const time = useCountdown();
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
                 {[
                   { i: "✡", t: "35+ Years in Occult Science" },
-                  { i: "👥", t: "Trusted by 5,000+ Worldwide" },
+                  { i: "👥", t: "Trusted by 1,50,000+ Worldwide" },
                   { i: "📖", t: "Author & Thought Leader" },
                   { i: "🎯", t: "Solution Driven Approach" }
                 ].map((stat, i) => (
@@ -1328,12 +1363,15 @@ const time = useCountdown();
   placeholder="blur" // Instant visual feedback
   blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU39AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMElEQVR4nGNgYGBoYmBgSGRgYChmYGBoYmBgSGVgYChmYGBoYmBgSGRgYChmYGBoYmBgAAYBAf7p9jEAAAAASUVORK5CYII=" 
   sizes="(max-width: 1024px) 100vw, 50vw" 
-  quality={50}
   className="object-cover object-[center_top] lg:object-center" 
 />
+
+{/* svg */}
+
+
                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#F5D98A] to-transparent h-24 lg:h-32 flex items-end justify-center pb-4 lg:pb-6">
                  {/* Hidden on mobile to save space since it's already in the text box below it */}
-                 <h3 className="hidden lg:block fraunces text-3xl font-medium text-[#2A1400] drop-shadow-md italic">
+                 <h3 className="hidden lg:block Georgia text-3xl font-medium text-[#2A1400] drop-shadow-md italic">
                    Celebrity Astrologer Surbhi Gupta!
                  </h3>
                </div>
@@ -1343,7 +1381,7 @@ const time = useCountdown();
 
           {/* Full width button on mobile */}
           <div className="mt-8 lg:mt-12 text-center reveal">
-             <a href="#offer" className="btn-auto-shine block w-full sm:inline-block sm:w-auto bg-[#3D1600] text-white px-6 py-4 lg:px-12 lg:py-5 rounded-xl lg:rounded-2xl font-medium text-base sm:text-lg lg:text-xl shadow-xl hover:scale-105 transition-transform">
+             <a href="#offer" className="btn-auto-shine block w-full sm:inline-block sm:w-auto bg-gradient-to-br from-[#200404] via-[#3d0808] to-[#200404] text-white px-6 py-4 lg:px-12 lg:py-5 rounded-xl lg:rounded-2xl font-medium text-base sm:text-lg lg:text-xl shadow-xl hover:scale-105 transition-transform">
                 Get Your Report From the Best!
              </a>
           </div>
@@ -1364,8 +1402,8 @@ const time = useCountdown();
       <section id="offer" className="py-20 px-4 bg-[#FCF7EE]">
         <div className="max-w-[850px] mx-auto reveal">
           
-          <div className="relative rounded-3xl p-8 sm:p-12 shadow-[0_20px_40px_rgba(61,22,0,0.15)] overflow-hidden border-2 border-[#E8D8B8]"
-               style={{ background: 'linear-gradient(180deg, #5C2B09 0%, #2A0E00 100%)' }}>
+          <div className="relative bg-gradient-to-br from-[#200404] via-[#3d0808] to-[#200404] rounded-3xl p-8 sm:p-12 shadow-[0_20px_40px_rgba(61,22,0,0.15)] overflow-hidden border-2 border-[#E8D8B8]"
+               >
             
             {/* Corner ribbon (Matching inspiration) */}
             <div className="absolute top-6 -right-10 bg-[#D9481E] text-white text-[10px] font-medium py-1.5 px-12 rotate-45 shadow-lg tracking-widest uppercase">
@@ -1375,9 +1413,9 @@ const time = useCountdown();
             {/* Headers */}
             <div className="text-center mb-8">
               <div className="text-[#E8D8B8] text-xs font-medium tracking-[0.2em] uppercase mb-2">
-                Premium Personalized Kundali
+                Premium Surbhi Kundali
               </div>
-              <h2 className="fraunces text-3xl sm:text-4xl font-medium text-white">
+              <h2 className="Georgia text-3xl sm:text-4xl font-medium text-white">
                 Your Complete Life Blueprint
               </h2>
             </div>
@@ -1389,10 +1427,11 @@ const time = useCountdown();
               <div className="space-y-4">
                 {[
                   "10-Year Detailed Prediction Report",
-                  "Dosh, Dasha & Ank Jyotish Analysis",
-                  "Gemstone & Puja Recommendations",
-                  "Monthly Predictions for 12 Months",
-                  "Astrograph / Bhavbhal Chart",
+                  "Complete Horoscope Analysis",
+                  "Shani Sade Sati, Mangalik & Kaal Sarp Analysis",
+                  "Personalized in depth Gemstone & Rudraksha Guide",
+                  "Customized Vedic Remedies",
+                  "Dasha & Life Cycle Analysis",
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-3 text-white/90 font-medium text-sm sm:text-base">
                     <div className="w-5 h-5 rounded-full bg-[#E2C06A] text-[#2A0E00] flex items-center justify-center text-xs flex-shrink-0 shadow-md mt-0.5">✓</div>
@@ -1409,7 +1448,7 @@ const time = useCountdown();
                   <span className="text-white/50 line-through text-xl font-medium mb-1">₹2,999</span>
                   <div className="flex items-start">
                     <span className="text-[#E2C06A] text-2xl font-medium mt-1 mr-1">₹</span>
-                    <span className="text-[#E2C06A] fraunces text-6xl font-medium leading-none tracking-tight">999</span>
+                    <span className="text-[#E2C06A] font-sans text-6xl font-medium leading-none tracking-tight">999</span>
                   </div>
                   <div className="bg-[#1B4D30]/80 border border-[#4ADE80]/30 text-[#A0F0C8] text-xs font-medium px-3 py-1 rounded-full mt-3">
                     You save ₹2,000 — Today Only!
@@ -1425,7 +1464,7 @@ const time = useCountdown();
                 </div>
 
                 {/* CTA Button */}
-                <a href="https://kundalireport.surabhiastrology.com/checkout?service=Surbhi%20Kundli&plan=10-Yr%20Report%20%2B%201Q%20(%E2%82%B9999)" className="btn-auto-shine block w-full bg-gradient-to-r from-[#D9481E] to-[#A32A0C] text-white py-4 rounded-xl font-medium text-center text-lg shadow-[0_10px_20px_rgba(217,72,30,0.3)] hover:-translate-y-0.5 transition-transform duration-300">
+                <a href="https://kundalireport.surabhiastrology.com/checkout?service=Surbhi%20Kundali&plan=10-Yr%20Report%20%2B%201Question%20(%E2%82%B9999)" className="btn-auto-shine block w-full bg-gradient-to-r from-[#D9481E] to-[#A32A0C] text-white py-4 rounded-xl font-medium text-center text-lg shadow-[0_10px_20px_rgba(217,72,30,0.3)] hover:-translate-y-0.5 transition-transform duration-300">
                   BUY NOW →
                 </a>
 
@@ -1464,10 +1503,10 @@ const time = useCountdown();
     {/* Left Side: Product Name & Bonus */}
     <div className="flex flex-col justify-center min-w-0 pr-2">
       <div className="font-semibold text-[13px] sm:text-lg text-white leading-tight truncate">
-        Premium Kundali <span className="hidden sm:inline">Report</span>
+        Premium  Surbhi Kundali <span className="hidden sm:inline">Report</span>
       </div>
       <div className="text-[10px] sm:text-sm text-[#F5D98A] font-medium leading-tight mt-0.5 truncate">
-        🎁 <span className="hidden sm:inline">+ Free WhatsApp Consultation</span><span className="sm:hidden">Free WA Consult</span>
+        🎁 <span className="hidden sm:inline">+ 1 Free WhatsApp Question</span><span className="sm:hidden">Free WA Question</span>
       </div>
     </div>
     
@@ -1479,7 +1518,7 @@ const time = useCountdown();
         <del className="text-white/60 text-[10px] sm:text-sm font-sans font-medium leading-none mb-1 decoration-[#EFCF7A]">
           ₹2999
         </del>
-        <div className="text-white fraunces text-[18px] sm:text-2xl font-bold leading-none">
+        <div className="text-white font-sans text-[18px] sm:text-2xl font-bold leading-none">
           ₹999
         </div>
       </div>

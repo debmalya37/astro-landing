@@ -32,6 +32,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'i.pinimg.com', // Added for your "Solve" cards
+      },
+      {
+        protocol: 'https',
         hostname: 'media.swncdn.com', // Added for your "Solve" cards
       },
       {

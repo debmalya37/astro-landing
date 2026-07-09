@@ -360,7 +360,7 @@ const CelebrityEndorsementSection = () => {
             </h1>
             
             <p className="reveal d2 text-base sm:text-lg text-[#3D1600] font-medium max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed">
-              Feeling stuck in life or lost about your future? celebrity astrologer Surbhi Gupta's Accurate Vedic Kundli Report reveals the answers hidden in your birth chart and exact timing for success.
+              Feeling stuck in life or lost about your future? celebrity astrologer Surbhi Gupta's Accurate Vedic  kundali  Report reveals the answers hidden in your birth chart and exact timing for success.
             </p>
 
             <div className="reveal d3 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
@@ -577,7 +577,7 @@ function ComparisonSlider() {
         <img src="/after-bg.jpg" alt="After" className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay" />
         <div className="absolute inset-0 flex items-center justify-end p-8 lg:p-16">
           <div className="text-right max-w-sm ml-auto z-10 pl-12">
-            <h3 className="fraunces text-3xl lg:text-4xl font-medium text-[#A0F0C8] mb-6">AFTER Smart Kundli</h3>
+            <h3 className="fraunces text-3xl lg:text-4xl font-medium text-[#A0F0C8] mb-6">AFTER Premium  kundali </h3>
             <ul className="space-y-5">
               {[
                 { t: "Crystal Clarity", d: "Understand exactly WHY things happen" },
@@ -604,7 +604,7 @@ function ComparisonSlider() {
         <img src="/before-bg.jpg" alt="Before" className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay grayscale" />
         <div className="absolute inset-0 flex items-center justify-start p-8 lg:p-16">
           <div className="text-left max-w-sm z-10 pr-12">
-            <h3 className="fraunces text-3xl lg:text-4xl font-medium text-[#FF8080] mb-6">BEFORE Smart Kundli</h3>
+            <h3 className="fraunces text-3xl lg:text-4xl font-medium text-[#FF8080] mb-6">BEFORE Premium  kundali </h3>
             <ul className="space-y-5">
               {[
                 { t: "Constant Confusion", d: "Not knowing why bad things happen" },
@@ -762,7 +762,7 @@ const time = useCountdown();
             </h1>
             
             <p className="reveal d2 text-sm sm:text-lg text-[#3D1600] font-medium max-w-lg mx-auto lg:mx-0 mb-6 lg:mb-8 leading-relaxed px-2 lg:px-0">
-              Feeling stuck in life or lost about your future? Celebrity astrologer Surbhi Gupta's Accurate Vedic Kundli Report reveals the answers hidden in your birth chart and exact timing for success.
+              Feeling stuck in life or lost about your future? Celebrity astrologer Surbhi Gupta's Accurate Vedic  kundali  Report reveals the answers hidden in your birth chart and exact timing for success.
             </p>
 
             <div className="reveal d3 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
@@ -915,7 +915,7 @@ const time = useCountdown();
       <section className="py-24 bg-[#FCF7EE]">
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-16 reveal">
-            <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400] mb-4">What Can Smart Kundli Solve for You?</h2>
+            <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400] mb-4">What Can Premium  kundali  Solve for You?</h2>
             <p className="text-lg text-[#4A2E10] max-w-2xl mx-auto">Get absolute clarity and powerful remedies for the most pressing challenges in your life.</p>
           </div>
 
@@ -979,7 +979,7 @@ const time = useCountdown();
           
           <div className="mt-20 text-center reveal">
             <a href="#offer" className="btn-auto-shine inline-block bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-12 py-5 rounded-2xl font-medium text-xl shadow-[0_15px_30px_rgba(200,168,75,0.3)] hover:-translate-y-2 transition-transform duration-300">
-              Fix Your Problems with Smart Kundli NOW!
+              Fix Your Problems with Premium  kundali  NOW!
             </a>
           </div>
         </div>
@@ -1110,9 +1110,9 @@ const time = useCountdown();
 
           {/* Timeline content */}
           <div className="reveal order-1 lg:order-2">
-            <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400] mb-6">Who Should Get a <br/>Janam Kundli Made?</h2>
+            <h2 className="fraunces text-4xl lg:text-5xl font-medium text-[#2A1400] mb-6">Who Should Get a <br/>Janam  kundali  Made?</h2>
             <p className="text-[#4A2E10] text-lg mb-12 leading-relaxed">
-              Anyone facing a dilemma in life can have your Kundli guide your next steps. It helps you understand the right timing, make better decisions, and move forward with confidence.
+              Anyone facing a dilemma in life can have your  kundali  guide your next steps. It helps you understand the right timing, make better decisions, and move forward with confidence.
             </p>
 
             <div className="relative timeline-line">
@@ -1327,7 +1327,7 @@ const time = useCountdown();
             </h2>
             
             <p className="text-[#E8D8B8]/80 font-light text-base sm:text-lg mb-10 leading-relaxed max-w-lg">
-              Apni online kundli banaiye aur apni janampatri ka detailed analysis paiye quickly aur accurately. Smart Kundli ek advanced online kundali making report hai jisme aap apni kundali check karke grahon ki position, life challenges aur unke practical solutions samajh sakte hain.
+              Apni online  kundali  banaiye aur apni janampatri ka detailed analysis paiye quickly aur accurately. Premium  kundali  ek advanced online kundali making report hai jisme aap apni kundali check karke grahon ki position, life challenges aur unke practical solutions samajh sakte hain.
             </p>
             
             {/* Upgraded Glassmorphism Feature Grid */}
@@ -1357,7 +1357,7 @@ const time = useCountdown();
               </div>
               
               <a href="#offer" className="btn-auto-shine block w-full sm:w-auto bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-10 py-4 sm:py-5 rounded-2xl font-medium text-lg hover:shadow-[0_0_40px_rgba(239,207,122,0.4)] hover:-translate-y-1 transition-all text-center">
-                Get Smart Kundli Now
+                Get Premium  kundali  Now
               </a>
             </div>
           </div>
@@ -1391,7 +1391,7 @@ const time = useCountdown();
                {!reportImgError ? (
                  <img 
                    src="/smart-kundli.png" 
-                   alt="Smart Kundli Book" 
+                   alt="Premium  kundali  Book" 
                    className="w-full h-full object-cover rounded-xl rounded-r-2xl" 
                    onError={() => setReportImgError(true)}
                  />
