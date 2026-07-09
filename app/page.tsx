@@ -388,7 +388,7 @@ const time = useCountdown();
           HERO SECTION (Warm Gold Aesthetic)
       ════════════════════════════════ */}
       <section 
-  className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-6 sm:py-10 lg:py-14" 
+  className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-2 sm:py-10 lg:py-10" 
   style={{ background: `linear-gradient(160deg, #FFFFFF 0%, #FDF7EC 55%, #F3E8D6 100%)` }}
 >
   <div className="max-w-7xl mx-auto px-4 sm:px-5 w-full relative z-10 grid lg:grid-cols-2 gap-2 sm:gap-8 lg:gap-12 items-center">
@@ -501,7 +501,7 @@ const time = useCountdown();
         </div>
 
         {/* 2. FLOATING SMALL BOOK (report-book.png) - Anchored perfectly to the Bottom-Left */}
-        <div className="absolute top-96 -left-12 sm:-bottom-8 sm:-left-16 lg:-bottom-12 lg:-left-24 z-20 animate-float transition-all duration-700 w-[140px] sm:w-[180px] lg:w-[200px] aspect-[1/1.4] drop-shadow-[25px_30px_50px_rgba(26,15,10,0.5)] pointer-events-none">
+        <div className="absolute top-60 md:top-96 -left-12 sm:-bottom-8 sm:-left-16 lg:-bottom-12 lg:-left-24 z-20 animate-float transition-all duration-700 w-[140px] sm:w-[180px] lg:w-[200px] aspect-[1/1.4] drop-shadow-[25px_30px_50px_rgba(26,15,10,0.5)] pointer-events-none">
           <Image
             src="/report-book.png"
             alt="Floating Premium Kundali Report"
@@ -558,20 +558,20 @@ const time = useCountdown();
   ` }} />
 
   {/* MAIN TEXT CONTAINER */}
- <div className="reveal text-center mb-12 lg:mb-16">
+ <div className="reveal text-center mb-6 lg:mb-12">
   <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-6" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>
     ✦ Real People. Real Shifts.
   </div>
   
   {/* CHANGED: leading-relaxed to leading-[1.9] for extra vertical spacing between lines */}
-  <h2 className="Georgia text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.9] tracking-[-0.02em]" style={{ color: C.td1 }}>
+  <h2 className="Georgia text-2xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.9] tracking-[-0.02em]" style={{ color: C.td1 }}>
     Trusted by <em className="font-sans" >1,50,000+</em> Individuals for <br/> 
-    <em className="block mt-4" style={{ fontStyle: "italic", color: C.g2 }}>Accurate Premium  Surbhi Kundali  Reports</em>
+    <em className="block mt-0 md:mt-4" style={{ fontStyle: "italic", color: C.g2 }}>Accurate Premium  Surbhi Kundali  Reports</em>
   </h2>
 </div>
 
   {/* CELEBRITY CAROUSEL (NOW AUTO-SCROLLING MARQUEE) */}
-  <div className="reveal d1 mb-16 lg:mb-[90px] relative w-full overflow-hidden">
+  <div className="reveal d1 mb-8 md:mb-12 lg:mb-[60px] relative w-full overflow-hidden">
     <div className="flex items-center gap-3 lg:gap-4 mb-10 max-w-[800px] mx-auto px-5">
       <div className="h-[1px] flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(200,168,75,0.3))" }} />
       <div className="text-[0.65rem] lg:text-[0.8rem] font-medium tracking-[0.2em] uppercase text-center whitespace-nowrap" style={{ color: C.g2 }}>Celebrity Consultations</div>
@@ -634,14 +634,14 @@ const time = useCountdown();
   </div>
   
   {/* PRESS HEADER */}
-  <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10 text-center mb-12 lg:mb-16">
-  <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-6" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>
+  <div className="max-w-[1100px] mx-auto px-5 lg:px-7 relative z-10 text-center mb-6 lg:mb-12">
+  <div className="inline-flex items-center gap-1.5 lg:gap-[7px] text-[10px] lg:text-[0.67rem] font-medium tracking-[0.2em] uppercase px-3.5 py-1.5 rounded-full mb-0 md:mb-4" style={{ color: C.g3, background: "rgba(200,168,75,.12)", border: "1px solid rgba(200,168,75,.3)" }}>
     ✦ As Featured In
   </div>
   
   <h2 className="Georgia text-3xl sm:text-4xl lg:text-[clamp(2.2rem,4vw,3.4rem)] font-medium leading-[1.9] tracking-[-0.02em]" style={{ color: C.td1 }}>
     Making Headlines.<br />
-    <em className="block mt-4" style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Press.</em>
+    <em className="block mt-0 md:mt-4" style={{ fontStyle: "italic", color: C.g2 }}>Trusted by the Press.</em>
   </h2>
 </div> 
 
@@ -733,7 +733,6 @@ const time = useCountdown();
 
                 {/* 2. Premium Dark Gradient Overlay (Protects Text Legibility) */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A0A00] via-[#1A0A00]/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500"></div>
-
                 {/* 3. Text Content Container (Positioned at Bottom) */}
                 <div className="absolute inset-x-0 bottom-0 p-8 lg:p-10 flex flex-col justify-end">
                   
@@ -753,9 +752,7 @@ const time = useCountdown();
                       </p>
                     </div>
                   </div>
-
                 </div>
-                
                 {/* 4. Optional Top-Right Icon (Adds to the 3D interactive feel) */}
                 <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white opacity-0 transform translate-x-4 -translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500">
                   ↗
@@ -765,7 +762,7 @@ const time = useCountdown();
             ))}
           </div>
           
-          <div className="mt-20 text-center reveal">
+          <div className="mt-10 md:mt-20 text-center reveal">
             <a href="#offer" className="btn-auto-shine inline-block bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-12 py-5 rounded-2xl font-medium text-xl shadow-[0_15px_30px_rgba(200,168,75,0.3)] hover:-translate-y-2 transition-transform duration-300">
               Fix Your Problems with Premium  Surbhi Kundali NOW!
             </a>
@@ -917,7 +914,7 @@ const time = useCountdown();
 
           {/* Timeline content */}
           <div className="reveal order-1 lg:order-2">
-            <h2 className="Georgia text-4xl lg:text-5xl font-medium text-[#2A1400] mb-6">Who Should Get a<br/> Premium Surbhi Kundali Report ?</h2>
+            <h2 className="Georgia text-3xl lg:text-5xl font-medium text-[#2A1400] mb-4">Who Should Get a<br/> Premium Surbhi Kundali Report ?</h2>
             <p className="text-[#4A2E10] text-lg mb-12 leading-relaxed">
               Anyone facing a dilemma in life can have your Surbhi Kundali  guide your next steps. It helps you understand the right timing, make better decisions, and move forward with confidence.
             </p>
@@ -942,7 +939,7 @@ const time = useCountdown();
               ))}
             </div>
             
-            <div className="mt-12 reveal">
+            <div className="mt-8 md:mt-12 reveal">
               <a href="#offer" className="btn-auto-shine inline-block bg-gradient-to-r from-[#DEB85D] to-[#EFCF7A] text-[#2A0E00] px-10 py-4 rounded-xl font-medium text-lg shadow-[0_10px_20px_rgba(200,168,75,0.3)] hover:-translate-y-1 transition-transform">
                 Order My Surbhi Kundali Now
               </a>
@@ -958,7 +955,7 @@ const time = useCountdown();
         <div className="max-w-[1300px] mx-auto px-5 relative z-10">
           
           
-          <div className="text-center mb-16 reveal">
+          <div className="text-center mb-8 md:mb-12 reveal">
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="w-12 h-[1px] bg-[#C8A84B]"></div>
               <span className="text-[#C8A84B] text-xs sm:text-sm font-medium tracking-[0.2em] uppercase">
@@ -966,7 +963,7 @@ const time = useCountdown();
               </span>
               <div className="w-12 h-[1px] bg-[#C8A84B]"></div>
             </div>
-            <h2 className="Georgia text-4xl lg:text-5xl font-medium text-[#2A1400]">
+            <h2 className="Georgia text-3xl lg:text-5xl font-medium text-[#2A1400]">
               What's Inside Your Premium  Surbhi Kundali
             </h2>
           </div>
@@ -1208,7 +1205,7 @@ Our Premium Surbhi Kundali Report helps you understand your planetary positions,
                
                {/* Assuming reportImgError and setReportImgError are defined in your component state */}
                {!reportImgError ? (
-                 <div className="w-[140px] md:w-[250px] lg:w-[350px] aspect-[1/1.4] overflow-hidden rounded-xl rounded-r-2xl">
+                 <div className="w-[200px] md:w-[250px] lg:w-[350px] aspect-[1/1.4] overflow-hidden rounded-xl rounded-r-2xl">
                   <video 
                   src="/gif.mp4"
                   autoPlay
@@ -1235,7 +1232,7 @@ Our Premium Surbhi Kundali Report helps you understand your planetary positions,
 {/* ════════════════════════════════
           PREMIUM BABY REPORT SECTION
       ════════════════════════════════ */}
-      <section className="py-8 md:py-14 bg-[#FCF7EE]">
+      <section className="py-6 md:py-12 bg-[#FCF7EE]">
         <div className="max-w-7xl mx-auto px-4 sm:px-5">
           <div className="reveal bg-white rounded-[1.5rem] lg:rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(61,22,0,0.06)] border border-[#E8D8B8] flex flex-col lg:flex-row hover:shadow-[0_25px_60px_rgba(61,22,0,0.1)] transition-shadow duration-500">
             
@@ -1390,15 +1387,15 @@ Our Premium Surbhi Kundali Report helps you understand your planetary positions,
 
 
       {/* ════════════════════════════════
-          TESTIMONIALS (Real Transformations)
+        TESTIMONIALS (Real Transformations)
       ════════════════════════════════ */}
       <TestimonialsSection />
 
-     
+  
       {/* ════════════════════════════════
           OFFER & CTA (Elegant Compact Design)
       ════════════════════════════════ */}
-      <section id="offer" className="py-20 px-4 bg-[#FCF7EE]">
+      <section id="offer" className="py-4 md:py-12 px-4 bg-[#FCF7EE]">
         <div className="max-w-[850px] mx-auto reveal">
           
           <div className="relative bg-gradient-to-br from-[#200404] via-[#3d0808] to-[#200404] rounded-3xl p-8 sm:p-12 shadow-[0_20px_40px_rgba(61,22,0,0.15)] overflow-hidden border-2 border-[#E8D8B8]"

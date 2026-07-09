@@ -42,7 +42,7 @@ export default function HowItWorksSection() {
   ];
 
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden bg-gradient-to-b from-[#b8560f] to-[#e8871e]">
+    <section className="py-10 md:py-12 relative overflow-hidden bg-gradient-to-b from-[#b8560f] to-[#e8871e]">
       
       {/* Subtle Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[300px] bg-[#C8A84B] opacity-[0.03] rounded-full blur-[100px] pointer-events-none"></div>
