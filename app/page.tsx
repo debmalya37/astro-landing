@@ -501,7 +501,7 @@ const time = useCountdown();
         </div>
 
         {/* 2. FLOATING SMALL BOOK (report-book.png) - Anchored perfectly to the Bottom-Left */}
-        <div className="absolute top-96 -left-12 sm:-bottom-8 sm:-left-16 lg:-bottom-12 lg:-left-24 z-20 animate-float transition-all duration-700 w-[160px] sm:w-[220px] lg:w-[280px] aspect-[1/1.4] drop-shadow-[25px_30px_50px_rgba(26,15,10,0.5)] pointer-events-none">
+        <div className="absolute top-96 -left-12 sm:-bottom-8 sm:-left-16 lg:-bottom-12 lg:-left-24 z-20 animate-float transition-all duration-700 w-[140px] sm:w-[180px] lg:w-[200px] aspect-[1/1.4] drop-shadow-[25px_30px_50px_rgba(26,15,10,0.5)] pointer-events-none">
           <Image
             src="/report-book.png"
             alt="Floating Premium Kundali Report"
