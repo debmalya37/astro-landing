@@ -292,10 +292,7 @@ function CheckoutContent() {
             </h4>
             <div className={isMatchmaking ? "grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4" : "space-y-4"}>
               <div><Label>Full Name</Label><input name="name" placeholder="Enter name" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} /></div>
-              <div>
-              <Label>Pin Code</Label>
-              <input name="pinCode" placeholder="e.g. 110001" className={inputClass} onChange={handleChange} />
-            </div>
+              
               <div className={isMatchmaking ? "block" : "grid grid-cols-1 sm:grid-cols-2 gap-5"}>
                   <div className="mb-4">
                     <Label>Date of Birth</Label>
@@ -309,9 +306,13 @@ function CheckoutContent() {
               </div>
               <div className={isMatchmaking ? "block" : "grid grid-cols-1 sm:grid-cols-2 gap-5"}>
                 <div className="mb-4">
-                   <Label>Birth City</Label>
-                   <input name="city" placeholder="Enter city" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
+                   <Label>Place of Birth</Label>
+                   <input name="city" placeholder="Enter place of birth" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
                 </div>
+                <div>
+              <Label>Pin Code</Label>
+              <input name="pinCode" placeholder="e.g. 110001" className={inputClass} onChange={handleChange} />
+            </div>
                 <div>
                    <Label>Gender</Label>
                    <select name="gender" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange}>
@@ -333,7 +334,7 @@ function CheckoutContent() {
                 <div><Label>Partner's Name</Label><input name="partnerName" placeholder="Enter partner's name" className={matchmakingInputClass} onChange={handleChange} /></div>
                 <div><Label>Partner's Date of Birth</Label><input name="partnerDob" type="date" className={matchmakingInputClass} onChange={handleChange} /></div>
                 <div><Label>Partner's Time of Birth</Label><input name="partnerTob" type="time" className={matchmakingInputClass} onChange={handleChange} /></div>
-                <div><Label>Partner's Birth Place</Label><input name="partnerCity" placeholder="Enter birth place" className={matchmakingInputClass} onChange={handleChange} /></div>
+                <div><Label>Partner's Place of Birth</Label><input name="partnerCity" placeholder="Enter place of birth" className={matchmakingInputClass} onChange={handleChange} /></div>
                 <div>
                    <Label>Partner's Gender</Label>
                    <select name="partnerGender" className={matchmakingInputClass} onChange={handleChange}>
