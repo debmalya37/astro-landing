@@ -162,11 +162,34 @@ function CheckoutContent() {
       return;
     }
 
-    const commonFields = form.email && form.phone && form.dob && form.name;
-    const matchmakingFields = form.partnerName && form.partnerDob;
+    // 1. STRICT CHECK: Every single common field must be filled
+    const isCommonValid = 
+      form.name.trim() !== "" && 
+      form.email.trim() !== "" && 
+      form.phone.trim() !== "" && 
+      form.dob.trim() !== "" && 
+      form.tob.trim() !== "" && 
+      form.city.trim() !== "" && 
+      form.pinCode.trim() !== "" && 
+      form.gender.trim() !== "";
 
-    if (!commonFields || (isMatchmaking && !matchmakingFields)) {
-      alert("Please fill in all birth details for both partners to continue.");
+    // 2. STRICT CHECK: If Matchmaking, every partner field must be filled
+    let isPartnerValid = true;
+    if (isMatchmaking) {
+      isPartnerValid = 
+        form.partnerName.trim() !== "" &&
+        form.partnerDob.trim() !== "" &&
+        form.partnerTob.trim() !== "" &&
+        form.partnerCity.trim() !== "" &&
+        form.partnerGender.trim() !== "";
+    }
+
+    // 3. STRICT CHECK: Challenge/Question must be filled (unless Matchmaking where it's auto-filled)
+    const isChallengeValid = form.challenge.trim() !== "";
+
+    // 4. FINAL GATE: Stop them if ANYTHING is missing
+    if (!isCommonValid || !isPartnerValid || !isChallengeValid) {
+      alert("Please fill in ALL required fields (including Time of Birth, Place, Gender, and your Question) before proceeding to payment.");
       return;
     }
 
@@ -279,7 +302,7 @@ function CheckoutContent() {
             </div>
             <div>
               <Label>Report Language</Label>
-              <select name="language" className={inputClass} value={form.language} onChange={handleChange}>
+              <select required name="language" className={inputClass} value={form.language} onChange={handleChange}>
                 <option value="hindi">Hindi (हिंदी)</option>
                 <option value="english">English</option>
               </select>
@@ -296,26 +319,26 @@ function CheckoutContent() {
               <div className={isMatchmaking ? "block" : "grid grid-cols-1 sm:grid-cols-2 gap-5"}>
                   <div className="mb-4">
                     <Label>Date of Birth</Label>
-                    <input name="dob" type="date" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
+                    <input required name="dob" type="date" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
                   </div>
                   
                   <div>
                     <Label>Time of Birth</Label>
-                    <input name="tob" type="time" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
+                    <input required name="tob" type="time" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
                   </div>
               </div>
               <div className={isMatchmaking ? "block" : "grid grid-cols-1 sm:grid-cols-2 gap-5"}>
                 <div className="mb-4">
                    <Label>Place of Birth</Label>
-                   <input name="city" placeholder="Enter place of birth" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
+                   <input required name="city" placeholder="Enter place of birth" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange} />
                 </div>
                 <div>
               <Label>Pin Code</Label>
-              <input name="pinCode" placeholder="e.g. 110001" className={inputClass} onChange={handleChange} />
+              <input required name="pinCode" placeholder="e.g. 110001" className={inputClass} onChange={handleChange} />
             </div>
                 <div>
                    <Label>Gender</Label>
-                   <select name="gender" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange}>
+                   <select required name="gender" className={isMatchmaking ? matchmakingInputClass : inputClass} onChange={handleChange}>
                       <option value="">Select</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>

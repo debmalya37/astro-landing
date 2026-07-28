@@ -286,8 +286,8 @@ export function nextMessage(
       const checkoutImage = isSurbhiKundli ? `${baseUrl}/surbhi-15.png` : `${baseUrl}/surbhi-16.png`;
       
       let checkoutMsg = isHi
-        ? `धन्यवाद! 🌟\n\nअब अपनी कुंडली की शुरुआत करने के लिए, नीचे दिए गए *'Start My Kundli'* बटन पर क्लिक करें।\nआपकी सभी जानकारी पूरी तरह सुरक्षित और गोपनीय रहेगी। 🙏👇`
-        : `Thank you! 🌟\n\nTo begin your consultation and secure your privacy, please click the *'Start My  kundali '* button below 👇`;
+        ? `धन्यवाद! 🌟\n\nअपने अनुरोध की पुष्टि करने और अपनी बुकिंग सुरक्षित करने के लिए, कृपया नीचे दिए गए *'Complete Payment'* बटन पर क्लिक करें। 👇`
+        : `Thank you! 🌟\n\nTo confirm your request and secure your booking, please click the *'Complete Payment'* button below 👇`;
         
       if (isCareerService(data.intent)) {
         checkoutMsg += isHi 
@@ -299,7 +299,7 @@ export function nextMessage(
         reply: checkoutMsg,
         image: checkoutImage, 
         urlButton: {
-          text: isHi ? "Start My  kundali " : "Start My  kundali ",
+          text: isHi ? "Complete Payment " : "Complete Payment ",
           url: checkoutUrl
         },
         newState: { step: "F2_CHECKOUT", userData: data },
