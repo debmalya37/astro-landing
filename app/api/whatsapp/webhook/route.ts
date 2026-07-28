@@ -175,7 +175,7 @@ Available Services for your reference:
 - Couple Match Making: Basic (₹1,100), Match+1Q (₹3,300), Match+Call (₹11,000)
 - Baby Name Report: Report (₹1,100), Report+Name (₹5,100)
 - Career/Love/Health Problem: PDF Report (₹999), 1-on-1 Call (₹11,000)
-- Surbhi Kundli: 10-Yr Report (₹999)
+- Surbhi Kundli: 10-Yr Report (₹999) & Life Report + 1Q (₹2,999)
 
 Service Recommendations
 
